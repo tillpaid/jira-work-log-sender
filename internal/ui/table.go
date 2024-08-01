@@ -16,7 +16,6 @@ func DrawTable(screen *goncurses.Window, width int, workLogs []model.WorkLog) {
 	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
 	workLogsTable := buildWorkLogsTable(workLogs)
 
-	// make menu title blue
 	menuTitle := getRow("Log works for today", width)
 	totalRow := getRow("Total time: 6h 20m | Left: 1h 40m", width)
 
