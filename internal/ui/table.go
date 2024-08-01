@@ -14,7 +14,7 @@ func DrawTable(screen *goncurses.Window, width int, workLogs []model.WorkLog) {
 	}
 
 	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
-	workLogsTable := buildWorkLogsTable(workLogs, width)
+	workLogsTable := buildWorkLogsTable(workLogs)
 
 	// make menu title blue
 	menuTitle := getRow("Log works for today", width)
@@ -40,12 +40,12 @@ func DrawTable(screen *goncurses.Window, width int, workLogs []model.WorkLog) {
 	screen.Refresh()
 }
 
-func buildWorkLogsTable(workLogs []model.WorkLog, width int) []string {
+func buildWorkLogsTable(workLogs []model.WorkLog) []string {
 	var rows []string
 	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
 
 	for _, workLog := range workLogs {
-		rows = append(rows, workLog.ToStringWithSpaces(workLogsTableWidth, width))
+		rows = append(rows, workLog.ToStringWithSpaces(workLogsTableWidth))
 	}
 
 	return rows

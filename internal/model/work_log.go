@@ -14,14 +14,15 @@ type WorkLog struct {
 	Description  string
 }
 
-func (w *WorkLog) ToStringWithSpaces(width *WorkLogTableWidth, screenWidth int) string {
-	number := getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number)
-	originalTime := getTextWithSpaces(w.OriginalTime, width.OriginalTime)
-	modifiedTime := getTextWithSpaces(w.ModifiedTime, width.ModifiedTime)
-	issueNumber := getTextWithSpaces(w.IssueNumber, width.IssueNumber)
-
-	return fmt.Sprintf("%s %s | %s | %s | %s",
-		number, originalTime, modifiedTime, issueNumber, w.Description)
+func (w *WorkLog) ToStringWithSpaces(width *WorkLogTableWidth) string {
+	return fmt.Sprintf(
+		"%s %s | %s | %s | %s",
+		getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number),
+		getTextWithSpaces(w.OriginalTime, width.OriginalTime),
+		getTextWithSpaces(w.ModifiedTime, width.ModifiedTime),
+		getTextWithSpaces(w.IssueNumber, width.IssueNumber),
+		w.Description,
+	)
 }
 
 func getTextWithSpaces(text string, width int) string {
