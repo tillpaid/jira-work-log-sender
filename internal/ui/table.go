@@ -13,44 +13,35 @@ func DrawTable(screen *goncurses.Window, width int, workLogs []model.WorkLog) {
 		log.Fatalf("Error clearing screen: %v", err)
 	}
 
-	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
-	workLogsTable := buildWorkLogsTable(workLogs)
+	tableRows := buildTableRows(workLogs, width)
 
-	menuTitle := getRow("Log works for today", width)
-	totalRow := getRow("Total time: 6h 20m | Left: 1h 40m", width)
-
-	rows := []string{
-		delimiter,
-		menuTitle,
-		delimiter,
+	for i, line := range tableRows {
+		screen.MovePrint(i, 0, prepareRow(line, width))
 	}
 
-	for _, row := range workLogsTable {
-		rows = append(rows, getRow(row, width))
-	}
-
-	rows = append(rows, delimiter)
-	rows = append(rows, totalRow)
-	rows = append(rows, delimiter)
-
-	for i, line := range rows {
-		screen.MovePrint(i, 0, line)
-	}
 	screen.Refresh()
 }
 
-func buildWorkLogsTable(workLogs []model.WorkLog) []string {
-	var rows []string
+func buildTableRows(workLogs []model.WorkLog, width int) []string {
+	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
+	menuTitle := "Log works for today"
+	totalRow := "Total time: 6h 20m | Left: 1h 40m"
+
 	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
+	rows := []string{delimiter, menuTitle, delimiter}
 
 	for _, workLog := range workLogs {
 		rows = append(rows, workLog.ToStringWithSpaces(workLogsTableWidth))
 	}
 
-	return rows
+	return append(rows, delimiter, totalRow, delimiter)
 }
 
-func getRow(text string, width int) string {
+func prepareRow(text string, width int) string {
+	if text[0] == '+' {
+		return text
+	}
+
 	textLen := len(text)
 	spacesLen := width - 4 - textLen
 
