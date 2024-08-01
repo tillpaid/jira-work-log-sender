@@ -14,8 +14,8 @@ func main() {
 	defer ui.EndScreen()
 
 	_, width := screen.MaxYX()
-
 	workLogs := service.GetWorkLogs()
+
 	ui.DrawTable(screen, width, workLogs)
 	screen.GetChar()
 }
