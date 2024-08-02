@@ -1,14 +1,25 @@
 package main
 
 import (
-	"github.com/tillpaid/paysera-log-time-golang/internal/import_data"
+	"fmt"
+	"github.com/rthornton128/goncurses"
+	"github.com/tillpaid/paysera-log-time-golang/internal/app"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
-	"log"
 )
 
 func main() {
+	config, screen := initResources()
+	defer ui.EndScreen()
+
+	if err := app.StartApp(config, screen); err != nil {
+		ui.EndScreen()
+		service.PrintFatalError(err)
+	}
+}
+
+func initResources() (*resource.Config, *goncurses.Window) {
 	config, err := resource.InitConfig()
 	if err != nil {
 		service.PrintFatalError(err)
@@ -16,22 +27,8 @@ func main() {
 
 	screen, err := ui.InitializeScreen()
 	if err != nil {
-		log.Fatalf("Error initializing screen: %v", err)
-	}
-	defer ui.EndScreen()
-
-	workLogs, err := import_data.ParseWorkLogs(config)
-	if err != nil {
-		ui.EndScreen()
-		service.PrintFatalError(err)
+		service.PrintFatalError(fmt.Errorf("error initializing screen: %v", err))
 	}
 
-	workLogs = service.ModifyWorkLogsTime(workLogs)
-
-	if err = ui.DrawTable(screen, workLogs); err != nil {
-		ui.EndScreen()
-		service.PrintFatalError(err)
-	}
-
-	screen.GetChar()
+	return config, screen
 }

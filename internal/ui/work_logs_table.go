@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/table"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/work_logs_table"
 	"strings"
 )
 
-func DrawTable(screen *goncurses.Window, workLogs []model.WorkLog) error {
+func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error {
 	if err := screen.Clear(); err != nil {
 		return fmt.Errorf("error clearing screen: %v", err)
 	}
@@ -28,9 +28,9 @@ func buildTableRows(workLogs []model.WorkLog, width int) []string {
 	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
 	var rows []string
 
-	rows = append(rows, table.GetHeader(delimiter)...)
-	rows = append(rows, table.GetBody(workLogs)...)
-	rows = append(rows, table.GetFooter(workLogs, delimiter)...)
+	rows = append(rows, work_logs_table.GetHeader(delimiter)...)
+	rows = append(rows, work_logs_table.GetBody(workLogs)...)
+	rows = append(rows, work_logs_table.GetFooter(workLogs, delimiter)...)
 
 	return rows
 }

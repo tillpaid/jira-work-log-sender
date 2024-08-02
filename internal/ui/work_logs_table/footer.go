@@ -1,4 +1,4 @@
-package table
+package work_logs_table
 
 import (
 	"fmt"
