@@ -13,8 +13,9 @@ func GetFooter(workLogs []model.WorkLog, delimiter string) []string {
 	totalModifiedTime := calculateTotalModifiedTime(workLogs)
 
 	totalRow := fmt.Sprintf("%s | %s | %s", totalTime, leftTime, totalModifiedTime)
+    helpRow := "Help: R-Reload | [Q/Space/Return/Esc]-Exit"
 
-	return []string{delimiter, totalRow, delimiter}
+	return []string{delimiter, totalRow, delimiter, helpRow, delimiter}
 }
 
 func calculateTotalTime(totalInMinutes int) string {
