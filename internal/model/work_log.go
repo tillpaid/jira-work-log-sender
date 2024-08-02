@@ -6,9 +6,14 @@ import (
 	"strings"
 )
 
+type WorkLogTime struct {
+	Hours   int
+	Minutes int
+}
+
 type WorkLog struct {
 	Number       int
-	OriginalTime string
+	OriginalTime WorkLogTime
 	ModifiedTime string
 	IssueNumber  string
 	Description  string
@@ -17,15 +22,15 @@ type WorkLog struct {
 func (w *WorkLog) ToStringWithSpaces(width *WorkLogTableWidth) string {
 	return fmt.Sprintf(
 		"%s %s | %s | %s | %s",
-		getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number),
-		getTextWithSpaces(w.OriginalTime, width.OriginalTime),
-		getTextWithSpaces(w.ModifiedTime, width.ModifiedTime),
-		getTextWithSpaces(w.IssueNumber, width.IssueNumber),
-		w.Description,
+		w.getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number),
+		w.getTextWithSpaces(w.OriginalTime.String(), width.OriginalTime),
+		w.getTextWithSpaces(w.ModifiedTime, width.ModifiedTime),
+		w.getTextWithSpaces(w.IssueNumber, width.IssueNumber),
+		strings.ReplaceAll(w.Description, "\n", " "),
 	)
 }
 
-func getTextWithSpaces(text string, width int) string {
+func (w *WorkLog) getTextWithSpaces(text string, width int) string {
 	neededSpaces := width - len(text)
 
 	spaces := ""
@@ -34,4 +39,18 @@ func getTextWithSpaces(text string, width int) string {
 	}
 
 	return text + spaces
+}
+
+func (wt *WorkLogTime) String() string {
+	var result string
+
+	if wt.Hours > 0 {
+		result += strconv.Itoa(wt.Hours) + "h"
+	}
+
+	if wt.Minutes > 0 {
+		result += strconv.Itoa(wt.Minutes) + "m"
+	}
+
+	return result
 }

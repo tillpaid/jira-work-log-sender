@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"log"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/table"
 	"strings"
 )
 
-func DrawTable(screen *goncurses.Window, workLogs []model.WorkLog) {
+func DrawTable(screen *goncurses.Window, workLogs []model.WorkLog) error {
 	if err := screen.Clear(); err != nil {
-		log.Fatalf("Error clearing screen: %v", err)
+		return fmt.Errorf("error clearing screen: %v", err)
 	}
 
 	_, width := screen.MaxYX()
@@ -21,21 +21,18 @@ func DrawTable(screen *goncurses.Window, workLogs []model.WorkLog) {
 	}
 
 	screen.Refresh()
+	return nil
 }
 
 func buildTableRows(workLogs []model.WorkLog, width int) []string {
 	delimiter := fmt.Sprintf("+%s+", strings.Repeat("-", width-2))
-	menuTitle := "Log works for today"
-	totalRow := "Total time: 6h 20m | Left: 1h 40m"
+	var rows []string
 
-	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
-	rows := []string{delimiter, menuTitle, delimiter}
+	rows = append(rows, table.GetHeader(delimiter)...)
+	rows = append(rows, table.GetBody(workLogs)...)
+	rows = append(rows, table.GetFooter(workLogs, delimiter)...)
 
-	for _, workLog := range workLogs {
-		rows = append(rows, workLog.ToStringWithSpaces(workLogsTableWidth))
-	}
-
-	return append(rows, delimiter, totalRow, delimiter)
+	return rows
 }
 
 func prepareRow(text string, width int) string {

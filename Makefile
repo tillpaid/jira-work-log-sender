@@ -1,5 +1,10 @@
 run:
-	go run cmd/main.go
+	go run cmd/app/main.go
 
 build:
-	go build -o bin/main cmd/main.go
+	go build -o bin/app cmd/app/main.go
+
+test:
+	clear
+	go test ./internal/...
+

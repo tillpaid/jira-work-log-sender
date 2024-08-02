@@ -15,8 +15,8 @@ func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog) *WorkLogTableWidth
 	}
 
 	for _, workLog := range workLogs {
-		if len(workLog.OriginalTime) > w.OriginalTime {
-			w.OriginalTime = len(workLog.OriginalTime)
+		if len(workLog.OriginalTime.String()) > w.OriginalTime {
+			w.OriginalTime = len(workLog.OriginalTime.String())
 		}
 		if len(workLog.ModifiedTime) > w.ModifiedTime {
 			w.ModifiedTime = len(workLog.ModifiedTime)
