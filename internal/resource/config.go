@@ -4,6 +4,11 @@ import (
 	"errors"
 	"github.com/joho/godotenv"
 	"os"
+	"path/filepath"
+)
+
+const (
+	envFileName = ".config/paysera-log-time/env"
 )
 
 type Config struct {
@@ -11,7 +16,7 @@ type Config struct {
 }
 
 func InitConfig() (*Config, error) {
-	err := godotenv.Load()
+	err := godotenv.Load(filepath.Join(os.Getenv("HOME"), envFileName))
 	if err != nil {
 		return nil, errors.New("error loading .env file")
 	}
