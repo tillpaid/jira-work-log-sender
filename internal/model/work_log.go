@@ -14,7 +14,7 @@ type WorkLogTime struct {
 type WorkLog struct {
 	Number       int
 	OriginalTime WorkLogTime
-	ModifiedTime string
+	ModifiedTime WorkLogTime
 	IssueNumber  string
 	Description  string
 }
@@ -24,7 +24,7 @@ func (w *WorkLog) ToStringWithSpaces(width *WorkLogTableWidth) string {
 		"%s %s | %s | %s | %s",
 		w.getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number),
 		w.getTextWithSpaces(w.OriginalTime.String(), width.OriginalTime),
-		w.getTextWithSpaces(w.ModifiedTime, width.ModifiedTime),
+		w.getTextWithSpaces(w.ModifiedTime.String(), width.ModifiedTime),
 		w.getTextWithSpaces(w.IssueNumber, width.IssueNumber),
 		strings.ReplaceAll(w.Description, "\n", " "),
 	)

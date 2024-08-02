@@ -10,8 +10,9 @@ func GetFooter(workLogs []model.WorkLog, delimiter string) []string {
 
 	totalTime := calculateTotalTime(totalInMinutes)
 	leftTime := calculateLeftTime(totalInMinutes)
+	totalModifiedTime := calculateTotalModifiedTime(workLogs)
 
-	totalRow := fmt.Sprintf("%s | %s", totalTime, leftTime)
+	totalRow := fmt.Sprintf("%s | %s | %s", totalTime, leftTime, totalModifiedTime)
 
 	return []string{delimiter, totalRow, delimiter}
 }
@@ -41,6 +42,23 @@ func calculateLeftTime(totalInMinutes int) string {
 	minutes = minutes % 60
 
 	return fmt.Sprintf("Left: %s%dh %dm", minusSign, hours, minutes)
+}
+
+func calculateTotalModifiedTime(workLogs []model.WorkLog) string {
+	var totalInMinutes int
+	var hours, minutes int
+
+	for _, workLog := range workLogs {
+		totalInMinutes += workLog.ModifiedTime.Hours * 60
+		totalInMinutes += workLog.ModifiedTime.Minutes
+	}
+
+	if totalInMinutes > 0 {
+		hours = totalInMinutes / 60
+		minutes = totalInMinutes % 60
+	}
+
+	return fmt.Sprintf("Total modified time: %dh %dm", hours, minutes)
 }
 
 func getTotalInMinutes(workLogs []model.WorkLog) int {

@@ -26,6 +26,8 @@ func main() {
 		service.PrintFatalError(err)
 	}
 
+	workLogs = service.ModifyWorkLogsTime(workLogs)
+
 	if err = ui.DrawTable(screen, workLogs); err != nil {
 		ui.EndScreen()
 		service.PrintFatalError(err)
