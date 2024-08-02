@@ -8,11 +8,12 @@ import (
 	"strings"
 )
 
-func DrawTable(screen *goncurses.Window, width int, workLogs []model.WorkLog) {
+func DrawTable(screen *goncurses.Window, workLogs []model.WorkLog) {
 	if err := screen.Clear(); err != nil {
 		log.Fatalf("Error clearing screen: %v", err)
 	}
 
+	_, width := screen.MaxYX()
 	tableRows := buildTableRows(workLogs, width)
 
 	for i, line := range tableRows {
