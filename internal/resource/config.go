@@ -17,9 +17,11 @@ const (
 type Config struct {
 	PathToInputFile string
 	OutputShellFile string
+	AllowedTags     []string
 }
 
 func InitConfig() (*Config, error) {
+	allowedTags := []string{"CODING", "INVESTIGATION", "REVIEW", "DEPLOYMENT", "DOC", "RESEARCH", "MEETING", "OTHER"}
 	homeDir := os.Getenv("HOME")
 
 	err := godotenv.Load(filepath.Join(homeDir, envFileName))
@@ -40,6 +42,7 @@ func InitConfig() (*Config, error) {
 	return &Config{
 		PathToInputFile: filepath.Join(homeDir, pathToInputFile),
 		OutputShellFile: filepath.Join(homeDir, outputShellFile),
+		AllowedTags:     allowedTags,
 	}, nil
 }
 

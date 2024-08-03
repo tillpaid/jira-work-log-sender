@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorkLogFromSection(section []string, number int) (model.WorkLog, error) {
+func buildWorkLogFromSection(config *resource.Config, section []string, number int) (model.WorkLog, error) {
 	workLog := model.WorkLog{
 		Number: number,
 	}
@@ -25,6 +26,11 @@ func buildWorkLogFromSection(section []string, number int) (model.WorkLog, error
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
 	workLog.Description = strings.Join(section[1:], "\n")
+
+	validDescription := checkWorkLogAllowedTag(config, workLog.Description)
+	if !validDescription {
+		return workLog, fmt.Errorf("description does not contain allowed tags for section %d", number)
+	}
 
 	return workLog, nil
 }

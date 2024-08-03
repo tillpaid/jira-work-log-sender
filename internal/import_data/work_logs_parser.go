@@ -23,7 +23,7 @@ func ParseWorkLogs(config *resource.Config) ([]model.WorkLog, error) {
 	}
 
 	for i, section := range sections {
-		workLog, err := buildWorkLogFromSection(section, i+1)
+		workLog, err := buildWorkLogFromSection(config, section, i+1)
 		if err != nil {
 			return nil, fmt.Errorf("error building work log: %v", err)
 		}
