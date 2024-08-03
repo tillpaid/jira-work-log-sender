@@ -12,8 +12,8 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error
 		return fmt.Errorf("error clearing screen: %v", err)
 	}
 
-	_, width := screen.MaxYX()
-	tableRows := buildTableRows(workLogs, width)
+	height, width := screen.MaxYX()
+	tableRows := buildTableRows(workLogs, height, width)
 
 	for i, line := range tableRows {
 		screen.MovePrint(i, 0, prepareRow(line, width))
@@ -23,14 +23,22 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error
 	return nil
 }
 
-func buildTableRows(workLogs []model.WorkLog, width int) []string {
+func buildTableRows(workLogs []model.WorkLog, height int, width int) []string {
 	delimiter := getDelimiter(width)
 	var rows []string
 
-	rows = append(rows, page_work_logs.GetHeader(delimiter)...)
-	rows = append(rows, page_work_logs.GetBody(workLogs)...)
-	rows = append(rows, page_work_logs.GetTimeRow(workLogs, delimiter)...)
-	rows = append(rows, page_work_logs.GetFooter(delimiter)...)
+	header := page_work_logs.GetHeader(delimiter)
+	body := page_work_logs.GetBody(workLogs)
+	timeRow := page_work_logs.GetTimeRow(workLogs, delimiter)
+	footer := page_work_logs.GetFooter(delimiter)
+
+	otherRowsLen := len(header) + len(timeRow) + len(footer)
+	body = cutBody(body, otherRowsLen, height, width)
+
+	rows = append(rows, header...)
+	rows = append(rows, body...)
+	rows = append(rows, timeRow...)
+	rows = append(rows, footer...)
 
 	return rows
 }

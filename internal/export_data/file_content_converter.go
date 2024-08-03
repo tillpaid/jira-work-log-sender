@@ -12,7 +12,7 @@ func convertWorkLogsToFileContent(workLogs []model.WorkLog) string {
 	builder.WriteString("#!/bin/bash\n\n")
 
 	for _, workLog := range workLogs {
-		firstLine := fmt.Sprintf("echo \"Command number: %d\"\n", workLog.Number)
+		firstLine := fmt.Sprintf("echo \"Command number: %d\" && ", workLog.Number)
 		secondLine := fmt.Sprintf("please log-time %s \"%s\" \"%s\"\n\n",
 			workLog.IssueNumber, workLog.ModifiedTime.String(), workLog.Description)
 

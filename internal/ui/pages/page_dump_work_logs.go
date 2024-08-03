@@ -12,8 +12,11 @@ func DrawDumpWorkLogs(screen *goncurses.Window, config *resource.Config) error {
 		return fmt.Errorf("error clearing screen: %v", err)
 	}
 
-	_, width := screen.MaxYX()
-	rows := buildDumpWorkLogsRows(config, width)
+	height, width := screen.MaxYX()
+	rows, err := buildDumpWorkLogsRows(config, height, width)
+	if err != nil {
+		return err
+	}
 
 	for i, line := range rows {
 		screen.MovePrint(i, 0, prepareRow(line, width))
@@ -23,13 +26,24 @@ func DrawDumpWorkLogs(screen *goncurses.Window, config *resource.Config) error {
 	return nil
 }
 
-func buildDumpWorkLogsRows(config *resource.Config, width int) []string {
+func buildDumpWorkLogsRows(config *resource.Config, height int, width int) ([]string, error) {
 	delimiter := getDelimiter(width)
 	var rows []string
 
-	rows = append(rows, page_dump_work_logs.GetHeader(delimiter)...)
-	rows = append(rows, page_dump_work_logs.GetBody(config)...)
-	rows = append(rows, page_dump_work_logs.GetFooter(delimiter)...)
+	header := page_dump_work_logs.GetHeader(delimiter)
+	footer := page_dump_work_logs.GetFooter(delimiter)
 
-	return rows
+	body, err := page_dump_work_logs.GetBody(config, delimiter)
+	if err != nil {
+		return nil, err
+	}
+
+	otherRowsLen := len(header) + len(footer)
+	body = cutBody(body, otherRowsLen, height, width)
+
+	rows = append(rows, header...)
+	rows = append(rows, body...)
+	rows = append(rows, footer...)
+
+	return rows, nil
 }
