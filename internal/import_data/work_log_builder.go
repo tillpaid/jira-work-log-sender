@@ -23,14 +23,18 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 		return workLog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
 	}
 
+	if len(section) < 2 {
+		return workLog, fmt.Errorf("no description for task %s", issueNumber)
+	}
+
+	validDescription := checkWorkLogAllowedTag(config, section[1])
+	if !validDescription {
+		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
+	}
+
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
-	workLog.Description = strings.Join(section[1:], "\n")
-
-	validDescription := checkWorkLogAllowedTag(config, workLog.Description)
-	if !validDescription {
-		return workLog, fmt.Errorf("description does not contain allowed tags for section %d", number)
-	}
+	workLog.Description = strings.TrimLeft(strings.Join(section[1:], "\n"), "- ")
 
 	return workLog, nil
 }
