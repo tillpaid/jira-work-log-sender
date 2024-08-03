@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	actionQuit   = iota
 	actionReload = iota
+	actionDump   = iota
+	actionQuit   = iota
 )
 
 func StartApp(config *resource.Config, screen *goncurses.Window) error {
@@ -20,6 +21,10 @@ func StartApp(config *resource.Config, screen *goncurses.Window) error {
 		switch waitForAction(screen) {
 		case actionReload:
 			if err := action.PrintWorkLogs(config, screen); err != nil {
+				return err
+			}
+		case actionDump:
+			if err := action.DumpWorkLogs(config, screen); err != nil {
 				return err
 			}
 		case actionQuit:

@@ -4,8 +4,7 @@ import (
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/import_data"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
 func PrintWorkLogs(config *resource.Config, screen *goncurses.Window) error {
@@ -14,9 +13,7 @@ func PrintWorkLogs(config *resource.Config, screen *goncurses.Window) error {
 		return err
 	}
 
-	workLogs = service.ModifyWorkLogsTime(workLogs)
-
-	if err = ui.DrawWorkLogsTable(screen, workLogs); err != nil {
+	if err = pages.DrawWorkLogsTable(screen, workLogs); err != nil {
 		return err
 	}
 

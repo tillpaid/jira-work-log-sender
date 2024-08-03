@@ -7,6 +7,8 @@ func waitForAction(screen *goncurses.Window) int {
 		switch screen.GetChar() {
 		case 'r':
 			return actionReload
+		case 'l':
+			return actionDump
 		case 'q', ' ', goncurses.KEY_ESC, goncurses.KEY_RETURN:
 			return actionQuit
 		}

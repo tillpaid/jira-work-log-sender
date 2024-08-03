@@ -1,11 +1,11 @@
-package work_logs_table
+package page_work_logs
 
 import (
 	"fmt"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 )
 
-func GetFooter(workLogs []model.WorkLog, delimiter string) []string {
+func GetTimeRow(workLogs []model.WorkLog, delimiter string) []string {
 	totalInMinutes := getTotalInMinutes(workLogs)
 
 	totalTime := calculateTotalTime(totalInMinutes)
@@ -13,9 +13,8 @@ func GetFooter(workLogs []model.WorkLog, delimiter string) []string {
 	totalModifiedTime := calculateTotalModifiedTime(workLogs)
 
 	totalRow := fmt.Sprintf("%s | %s | %s", totalTime, leftTime, totalModifiedTime)
-    helpRow := "Action keys: R-Reload | [Q/Space/Return/Esc]-Exit"
 
-	return []string{delimiter, totalRow, delimiter, helpRow, delimiter}
+	return []string{delimiter, totalRow}
 }
 
 func calculateTotalTime(totalInMinutes int) string {

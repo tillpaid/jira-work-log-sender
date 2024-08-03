@@ -1,4 +1,4 @@
-package work_logs_table
+package page_work_logs
 
 import "github.com/tillpaid/paysera-log-time-golang/internal/model"
 

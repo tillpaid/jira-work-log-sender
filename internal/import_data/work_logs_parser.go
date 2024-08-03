@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 	"os"
 )
 
@@ -29,6 +30,8 @@ func ParseWorkLogs(config *resource.Config) ([]model.WorkLog, error) {
 
 		workLogs = append(workLogs, workLog)
 	}
+
+	workLogs = service.ModifyWorkLogsTime(workLogs)
 
 	return workLogs, nil
 }
