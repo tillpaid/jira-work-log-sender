@@ -3,10 +3,11 @@ package app
 import "github.com/rthornton128/goncurses"
 
 func waitForAction(screen *goncurses.Window) int {
-	var previousKey goncurses.Key
+	var pressedKey, previousKey goncurses.Key
 
 	for {
-		pressedKey := screen.GetChar()
+		previousKey = pressedKey
+		pressedKey = screen.GetChar()
 
 		switch pressedKey {
 		case 'r':
@@ -18,7 +19,5 @@ func waitForAction(screen *goncurses.Window) int {
 		case 'q', ' ', goncurses.KEY_ESC, goncurses.KEY_RETURN:
 			return actionQuit
 		}
-
-		previousKey = pressedKey
 	}
 }
