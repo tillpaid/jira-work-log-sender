@@ -126,3 +126,5 @@ Unable to add worklog.
 - After title goes a list of descriptions of what you did
   - Each description should start with `-` symbol
   - The first row used as a `TAG` for the work log and will be validated against predefined tags we use in Jira
+
+In case is file not valid, you forgot to fill some required fields, app will show you an error message. You for sure will not send wrong data to Jira.
