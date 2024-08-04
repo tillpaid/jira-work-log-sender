@@ -6,7 +6,7 @@ import (
 )
 
 func checkWorkLogAllowedTag(config *resource.Config, description string) bool {
-	firstPart := strings.ToUpper(strings.TrimSpace(strings.ReplaceAll(description, "-", "")))
+	firstPart := strings.ToLower(strings.TrimSpace(strings.ReplaceAll(description, "-", "")))
 
 	for _, allowedTag := range config.AllowedTags {
 		if firstPart == allowedTag {

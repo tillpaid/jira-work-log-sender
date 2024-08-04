@@ -21,7 +21,10 @@ type Config struct {
 }
 
 func InitConfig() (*Config, error) {
-	allowedTags := []string{"CODING", "INVESTIGATION", "REVIEW", "DEPLOYMENT", "DOC", "RESEARCH", "MEETING", "OTHER"}
+	allowedTags := []string{
+		"engineering activities", "documentation", "deployment&monitoring", "research&investigation",
+		"code review", "communication", "environment issue", "operational work", "other",
+	}
 	homeDir := os.Getenv("HOME")
 
 	err := godotenv.Load(filepath.Join(homeDir, envFileName))
