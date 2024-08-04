@@ -4,6 +4,7 @@ import (
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 )
 
 const (
@@ -24,9 +25,8 @@ func StartApp(config *resource.Config, screen *goncurses.Window) error {
 				return err
 			}
 		case actionDump:
-			if err := action.DumpWorkLogs(config, screen); err != nil {
-				return err
-			}
+			ui.EndScreen()
+			return action.DumpWorkLogs(config)
 		case actionQuit:
 			return nil
 		}

@@ -1,19 +1,26 @@
 package action
 
 import (
-	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/export_data"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
+	"os"
+	"os/exec"
 )
 
-func DumpWorkLogs(config *resource.Config, screen *goncurses.Window) error {
+func DumpWorkLogs(config *resource.Config) error {
 	if err := export_data.DumpWorkLogs(config); err != nil {
 		return err
 	}
 
-	if err := pages.DrawDumpWorkLogs(screen, config); err != nil {
-		return err
+	cmd := exec.Command(config.OutputShellFile)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		_, err = os.Stderr.WriteString(err.Error())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

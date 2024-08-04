@@ -11,12 +11,8 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	totalLeft := 480 - totalInMinutes
 	leftToAdd := totalLeft
 
-	if totalLeft <= 0 {
-		return workLogs
-	}
-
 	for i, workLog := range workLogs {
-		if workLog.IssueNumber == excluded {
+		if workLog.IssueNumber == excluded || totalLeft <= 0 {
 			workLogs[i].ModifiedTime.Hours = workLog.OriginalTime.Hours
 			workLogs[i].ModifiedTime.Minutes = workLog.OriginalTime.Minutes
 			continue
