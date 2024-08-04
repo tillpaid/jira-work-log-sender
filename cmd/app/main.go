@@ -11,7 +11,6 @@ import (
 
 func main() {
 	config, screen := initResources()
-	defer ui.EndScreen()
 
 	if err := app.StartApp(config, screen); err != nil {
 		ui.EndScreen()

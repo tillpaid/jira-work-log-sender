@@ -28,6 +28,7 @@ func StartApp(config *resource.Config, screen *goncurses.Window) error {
 			ui.EndScreen()
 			return action.DumpWorkLogs(config)
 		case actionQuit:
+			ui.EndScreen()
 			return nil
 		}
 	}
