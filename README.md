@@ -68,17 +68,17 @@ Filled .md file with the data:
 Command output
 
 ```shell
-+------------------------------------------------------------+
-| Log works for today                                        |
-+------------------------------------------------------------+
-| 1. 10m   | 10m   | test-505 | Communication - Daily        |
-| 2. 2h10m | 2h10m | test-444 | Research&Investigation - ... |
-| 3. 2h10m | 2h10m | test-444 | Engineering activities - ... |
-+------------------------------------------------------------+
-| Total time: 4h 30m | Left: 3h 30m | Total modified time... |
-+------------------------------------------------------------+
-| Action keys: R-Reload | L-Send work logs (double press)... |
-+------------------------------------------------------------+
++---------------------------------------------------------------+
+| Log works for today                                           |
++---------------------------------------------------------------+
+| 1. 10m   | 10m   | test-505 | Communication - Daily           |
+| 2. 2h10m | 2h10m | test-444 | Research&Investigation - Did... |
+| 3. 2h10m | 2h10m | test-444 | Engineering activities - Did... |
++---------------------------------------------------------------+
+| Total time: 4h 30m | Left: 3h 30m                             |
++---------------------------------------------------------------+
+| Action keys: R-Reload | L-Send work logs (double press) | ... |
++---------------------------------------------------------------+
 ```
 
 Then you can press `l` two times to send work logs to Jira
