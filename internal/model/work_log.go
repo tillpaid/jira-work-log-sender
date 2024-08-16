@@ -42,15 +42,15 @@ func (w *WorkLog) getTextWithSpaces(text string, width int) string {
 }
 
 func (wt *WorkLogTime) String() string {
-	var result string
+	var parts []string
 
 	if wt.Hours > 0 {
-		result += strconv.Itoa(wt.Hours) + "h"
+		parts = append(parts, strconv.Itoa(wt.Hours)+"h")
 	}
 
 	if wt.Minutes > 0 {
-		result += strconv.Itoa(wt.Minutes) + "m"
+		parts = append(parts, strconv.Itoa(wt.Minutes)+"m")
 	}
 
-	return result
+	return strings.Join(parts, " ")
 }

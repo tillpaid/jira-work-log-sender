@@ -3,58 +3,80 @@ package resource
 import (
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"os"
 	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
 const (
 	envFileName           = ".config/paysera-log-time/env"
 	envKeyPathToInputFile = "PATH_TO_INPUT_FILE"
 	envKeyOutputShellFile = "OUTPUT_SHELL_FILE"
+	envKeyJiraBaseUrl     = "JIRA_BASE_URL"
+	envKeyJiraUsername    = "JIRA_USERNAME"
+	envKeyJiraApiToken    = "JIRA_API_TOKEN"
 )
+
+var allowedTags = []string{
+	"engineering activities", "documentation", "deployment&monitoring", "research&investigation",
+	"code review", "communication", "environment issue", "operational work", "other",
+}
+
+type jiraConfig struct {
+	BaseUrl  string
+	Username string
+	ApiToken string
+}
 
 type Config struct {
 	PathToInputFile string
 	OutputShellFile string
+	Jira            jiraConfig
 	AllowedTags     []string
 }
 
 func InitConfig() (*Config, error) {
-	allowedTags := []string{
-		"engineering activities", "documentation", "deployment&monitoring", "research&investigation",
-		"code review", "communication", "environment issue", "operational work", "other",
-	}
 	homeDir := os.Getenv("HOME")
 
-	err := godotenv.Load(filepath.Join(homeDir, envFileName))
-	if err != nil {
+	if err := godotenv.Load(filepath.Join(homeDir, envFileName)); err != nil {
 		return nil, errors.New("error loading env file")
 	}
 
-	pathToInputFile, err := getEnvValue(envKeyPathToInputFile)
-	if err != nil {
-		return nil, err
-	}
-
-	outputShellFile, err := getEnvValue(envKeyOutputShellFile)
+	envValues, err := getEnvValues(
+		envKeyPathToInputFile,
+		envKeyOutputShellFile,
+		envKeyJiraBaseUrl,
+		envKeyJiraUsername,
+		envKeyJiraApiToken,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Config{
-		PathToInputFile: filepath.Join(homeDir, pathToInputFile),
-		OutputShellFile: filepath.Join(homeDir, outputShellFile),
-		AllowedTags:     allowedTags,
+		PathToInputFile: filepath.Join(homeDir, envValues[envKeyPathToInputFile]),
+		OutputShellFile: filepath.Join(homeDir, envValues[envKeyOutputShellFile]),
+		Jira: jiraConfig{
+			BaseUrl:  envValues[envKeyJiraBaseUrl],
+			Username: envValues[envKeyJiraUsername],
+			ApiToken: envValues[envKeyJiraApiToken],
+		},
+		AllowedTags: allowedTags,
 	}, nil
 }
 
-func getEnvValue(key string) (string, error) {
-	value := os.Getenv(key)
+func getEnvValues(keys ...string) (map[string]string, error) {
+	envMap := make(map[string]string)
 
-	if value == "" {
-		return "", fmt.Errorf("env variable %s is not set", key)
+	for _, key := range keys {
+		value := os.Getenv(key)
+		if value == "" {
+			return nil, fmt.Errorf("env variable %s is not set", key)
+		}
+
+		envMap[key] = value
 	}
 
-	return value, nil
+	return envMap, nil
 }
