@@ -2,8 +2,9 @@ package export_data
 
 import (
 	"fmt"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"strings"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 )
 
 func convertWorkLogsToFileContent(workLogs []model.WorkLog) string {

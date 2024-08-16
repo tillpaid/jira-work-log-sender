@@ -3,9 +3,10 @@ package import_data
 import (
 	"errors"
 	"fmt"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"strconv"
 	"strings"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 )
 
 func parseTimeString(timeString string) (model.WorkLogTime, error) {

@@ -12,9 +12,9 @@ import (
 )
 
 func main() {
-	config, screen, _ := initResources()
+	config, screen, client := initResources()
 
-	if err := app.StartApp(config, screen); err != nil {
+	if err := app.StartApp(client, config, screen); err != nil {
 		ui.EndScreen()
 		service.PrintFatalError(err)
 	}

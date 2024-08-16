@@ -2,13 +2,15 @@ package export_data
 
 import (
 	"fmt"
-	"github.com/tillpaid/paysera-log-time-golang/internal/import_data"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"os"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/import_data"
+	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
+	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 )
 
-func DumpWorkLogs(config *resource.Config) error {
-	workLogs, err := import_data.ParseWorkLogs(config)
+func DumpWorkLogs(client *jira.Client, config *resource.Config) error {
+	workLogs, err := import_data.ParseWorkLogs(client, config)
 	if err != nil {
 		return err
 	}

@@ -36,11 +36,12 @@ func NewClient(config *resource.Config) (*Client, error) {
 	// Ping Jira to check if the authentication is successful
 	_, response, err := jiraClient.User.GetSelf()
 	if err != nil {
+		newError := fmt.Errorf("failed to authenticate with Jira: %v", err)
 		if response != nil {
-			return nil, fmt.Errorf("failed to authenticate with Jira. Response code is %d", response.StatusCode)
-		} else {
-			return nil, fmt.Errorf("failed to authenticate with Jira: %v", err)
+			newError = fmt.Errorf("failed to authenticate with Jira. Response code is %d", response.StatusCode)
 		}
+
+		return nil, newError
 	}
 
 	return &Client{

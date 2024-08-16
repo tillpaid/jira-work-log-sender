@@ -2,6 +2,7 @@ package pages
 
 import (
 	"fmt"
+
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_work_logs"

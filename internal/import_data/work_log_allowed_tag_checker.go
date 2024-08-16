@@ -1,8 +1,9 @@
 package import_data
 
 import (
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"strings"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 )
 
 func checkWorkLogAllowedTag(config *resource.Config, description string) bool {

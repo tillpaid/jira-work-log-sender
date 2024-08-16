@@ -14,7 +14,7 @@ make build
 
 Move the binary to the bin folder:
 
-> Example for macOS. For example I would like to call it `tt`
+> Example for macOS. For example, I would like to call it `tt`
 
 ```shell
 sudo mv ./bin/app /usr/local/bin/tt

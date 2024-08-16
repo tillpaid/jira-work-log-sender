@@ -3,9 +3,11 @@ package import_data
 import (
 	"errors"
 	"fmt"
+	"strings"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"strings"
 )
 
 const (
@@ -13,7 +15,7 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorkLogFromSection(config *resource.Config, section []string, number int) (model.WorkLog, error) {
+func buildWorkLogFromSection(client *jira.Client, config *resource.Config, section []string, number int) (model.WorkLog, error) {
 	workLog := model.WorkLog{
 		Number: number,
 	}
@@ -30,6 +32,10 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	validDescription := checkWorkLogAllowedTag(config, section[1])
 	if !validDescription {
 		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
+	}
+
+	if !client.IssueService.IsIssueExists(issueNumber) {
+		return workLog, fmt.Errorf("issue %s does not exist", issueNumber)
 	}
 
 	workLog.IssueNumber = issueNumber
