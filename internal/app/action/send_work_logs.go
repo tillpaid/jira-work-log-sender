@@ -48,7 +48,7 @@ func sendAndUpdateRow(client *jira.Client, screen *goncurses.Window, workLog mod
 }
 
 func sendWorkLog(client *jira.Client, screen *goncurses.Window, workLog model.WorkLog, row int, offset int) (int, error) {
-	if err := printColored(screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
+	if err := pages.PrintColored(screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
 		return offset, err
 	}
 	screen.Refresh()
@@ -63,7 +63,7 @@ func sendWorkLog(client *jira.Client, screen *goncurses.Window, workLog model.Wo
 	}
 
 	screen.MovePrint(row, offset, textInProgressClear)
-	if err = printColored(screen, statusColor, row, offset, statusText); err != nil {
+	if err = pages.PrintColored(screen, statusColor, row, offset, statusText); err != nil {
 		return offset, err
 	}
 
@@ -76,7 +76,7 @@ func sendWorkLog(client *jira.Client, screen *goncurses.Window, workLog model.Wo
 }
 
 func spentTime(client *jira.Client, screen *goncurses.Window, workLog model.WorkLog, row int, offset int) error {
-	if err := printColored(screen, ui.YellowOnBlack, row, offset, textGetting); err != nil {
+	if err := pages.PrintColored(screen, ui.YellowOnBlack, row, offset, textGetting); err != nil {
 		return err
 	}
 	screen.Refresh()
@@ -86,20 +86,6 @@ func spentTime(client *jira.Client, screen *goncurses.Window, workLog model.Work
 	screen.MovePrint(row, offset, textGettingClear)
 	screen.MovePrint(row, offset, "Total: "+totalTime)
 	screen.Refresh()
-
-	return nil
-}
-
-func printColored(screen *goncurses.Window, color int16, y int, x int, text string) error {
-	if err := screen.ColorOn(color); err != nil {
-		return err
-	}
-
-	screen.MovePrint(y, x, text)
-
-	if err := screen.ColorOff(color); err != nil {
-		return err
-	}
 
 	return nil
 }

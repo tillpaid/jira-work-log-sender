@@ -43,7 +43,7 @@ func (w *workLogService) GetSpentTime(issueID string) string {
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 	// todo: temp code
-	time.Sleep(1 * time.Second)
+	time.Sleep(200 * time.Millisecond)
 	return nil
 	// todo: temp code
 

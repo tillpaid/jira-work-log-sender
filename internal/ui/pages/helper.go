@@ -3,6 +3,8 @@ package pages
 import (
 	"fmt"
 	"strings"
+
+	"github.com/rthornton128/goncurses"
 )
 
 func prepareRow(text string, width int) string {
@@ -43,4 +45,18 @@ func cutBody(body []string, otherRowsLen int, height int, width int) []string {
 	dotsAfter := strings.Repeat(".", neededDotsLen-len(dotsBefore))
 
 	return append(body, dotsBefore+moreText+dotsAfter)
+}
+
+func PrintColored(screen *goncurses.Window, color int16, y int, x int, text string) error {
+	if err := screen.ColorOn(color); err != nil {
+		return err
+	}
+
+	screen.MovePrint(y, x, text)
+
+	if err := screen.ColorOff(color); err != nil {
+		return err
+	}
+
+	return nil
 }

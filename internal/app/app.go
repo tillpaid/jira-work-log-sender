@@ -7,6 +7,7 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
 const (
@@ -15,8 +16,9 @@ const (
 	actionQuit   = iota
 )
 
-func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window) error {
-	workLogs, err := import_data.ParseWorkLogs(client, config)
+func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
+	loading.PrintRow("Parsing and checking work logs...", 0)
+	workLogs, err := import_data.ParseWorkLogs(loading, client, config)
 	if err != nil {
 		return err
 	}

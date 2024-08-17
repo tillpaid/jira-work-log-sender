@@ -9,32 +9,40 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
 func main() {
-	config, screen, client := initResources()
+	config, loading, screen, client := initResources()
 
-	if err := app.StartApp(client, config, screen); err != nil {
+	if err := app.StartApp(client, config, screen, loading); err != nil {
 		ui.EndScreen()
 		service.PrintFatalError(err)
 	}
 }
 
-func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
-	config, err := resource.InitConfig()
-	if err != nil {
-		service.PrintFatalError(err)
-	}
-
-	client, err := jira.NewClient(config)
-	if err != nil {
-		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
-	}
-
+func initResources() (*resource.Config, *pages.Loading, *goncurses.Window, *jira.Client) {
 	screen, err := ui.InitializeScreen()
 	if err != nil {
 		service.PrintFatalError(fmt.Errorf("error initializing screen: %v", err))
 	}
 
-	return config, screen, client
+	loading := pages.NewLoading(screen)
+	loading.PrintBorder()
+
+	loading.PrintRow("Initializing configuration...", 0)
+	config, err := resource.InitConfig()
+	if err != nil {
+		ui.EndScreen()
+		service.PrintFatalError(err)
+	}
+
+	loading.PrintRow("Initializing jira client...", 0)
+	client, err := jira.NewClient(config)
+	if err != nil {
+		ui.EndScreen()
+		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
+	}
+
+	return config, loading, screen, client
 }

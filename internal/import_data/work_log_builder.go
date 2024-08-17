@@ -8,6 +8,7 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
 const (
@@ -15,7 +16,9 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorkLogFromSection(client *jira.Client, config *resource.Config, section []string, number int) (model.WorkLog, error) {
+func buildWorkLogFromSection(loading *pages.Loading, client *jira.Client, config *resource.Config, section []string, number int) (model.WorkLog, error) {
+	loading.PrintRow(fmt.Sprintf("Parsing workLog %d...", number), 2)
+
 	workLog := model.WorkLog{
 		Number: number,
 	}
@@ -33,6 +36,8 @@ func buildWorkLogFromSection(client *jira.Client, config *resource.Config, secti
 	if !validDescription {
 		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
 	}
+
+	loading.PrintRow(fmt.Sprintf("Checking workLog %d in jira...", number), 4)
 
 	if !client.IssueService.IsIssueExists(issueNumber) {
 		return workLog, fmt.Errorf("issue %s does not exist", issueNumber)
