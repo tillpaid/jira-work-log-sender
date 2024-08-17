@@ -10,6 +10,8 @@ import (
 )
 
 const (
+	textWaiting         = "Waiting..."
+	textWaitingClear    = "          "
 	textInProgress      = "Sending..."
 	textInProgressClear = "          "
 	textDone            = "Done!"
@@ -36,10 +38,25 @@ func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 
 	rows := page_send_work_logs.GetBody(workLogs, valuesWidth)
 
+	for i := range workLogs {
+		if err := a.setWaiting(i+3, len(rows[i])+3); err != nil {
+			return err
+		}
+	}
+	a.screen.Refresh()
+
 	for i, workLog := range workLogs {
 		if err := a.sendAndUpdateRow(workLog, i+3, len(rows[i])+3); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (a *SendWorkLogsAction) setWaiting(row int, offset int) error {
+	if err := pages.PrintColored(a.screen, ui.CyanOnBlack, row, offset, textWaiting); err != nil {
+		return err
 	}
 
 	return nil
@@ -57,6 +74,7 @@ func (a *SendWorkLogsAction) sendAndUpdateRow(workLog model.WorkLog, row int, of
 }
 
 func (a *SendWorkLogsAction) sendWorkLog(workLog model.WorkLog, row int, offset int) (int, error) {
+	a.screen.MovePrint(row, offset, textWaitingClear)
 	if err := pages.PrintColored(a.screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
 		return offset, err
 	}
