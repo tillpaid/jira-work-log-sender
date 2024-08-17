@@ -42,6 +42,11 @@ func (w *workLogService) GetSpentTime(issueID string) string {
 }
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
+	// todo: temp code
+	time.Sleep(1 * time.Second)
+	return nil
+	// todo: temp code
+
 	record := &jira.WorklogRecord{
 		TimeSpent: workLog.ModifiedTime.String(),
 		Comment:   workLog.Description,

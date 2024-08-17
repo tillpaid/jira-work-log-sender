@@ -14,7 +14,7 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error
 	}
 
 	height, width := screen.MaxYX()
-	tableRows := buildTableRows(workLogs, height, width)
+	tableRows := buildWorkLogsTableRows(workLogs, height, width)
 
 	for i, line := range tableRows {
 		screen.MovePrint(i, 0, prepareRow(line, width))
@@ -24,7 +24,7 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error
 	return nil
 }
 
-func buildTableRows(workLogs []model.WorkLog, height int, width int) []string {
+func buildWorkLogsTableRows(workLogs []model.WorkLog, height int, width int) []string {
 	delimiter := getDelimiter(width)
 	var rows []string
 

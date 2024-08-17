@@ -1,7 +1,7 @@
-package page_work_logs
+package page_send_work_logs
 
 func GetHeader(delimiter string) []string {
-	menuTitle := "Work logs for today"
+	menuTitle := "Send work logs"
 
 	return []string{delimiter, menuTitle, delimiter}
 }

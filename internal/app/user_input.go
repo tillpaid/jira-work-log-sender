@@ -14,7 +14,7 @@ func waitForAction(screen *goncurses.Window) int {
 			return actionReload
 		case 'l':
 			if previousKey == 'l' {
-				return actionDump
+				return actionSend
 			}
 		case 'q', ' ', goncurses.KEY_ESC, goncurses.KEY_RETURN:
 			return actionQuit

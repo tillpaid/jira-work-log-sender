@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -17,28 +16,6 @@ type WorkLog struct {
 	ModifiedTime WorkLogTime
 	IssueNumber  string
 	Description  string
-}
-
-func (w *WorkLog) ToStringWithSpaces(width *WorkLogTableWidth) string {
-	return fmt.Sprintf(
-		"%s %s | %s | %s | %s",
-		w.getTextWithSpaces(strconv.Itoa(w.Number)+".", width.Number),
-		w.getTextWithSpaces(w.OriginalTime.String(), width.OriginalTime),
-		w.getTextWithSpaces(w.ModifiedTime.String(), width.ModifiedTime),
-		w.getTextWithSpaces(w.IssueNumber, width.IssueNumber),
-		strings.ReplaceAll(w.Description, "\n", " "),
-	)
-}
-
-func (w *WorkLog) getTextWithSpaces(text string, width int) string {
-	neededSpaces := width - len(text)
-
-	spaces := ""
-	if neededSpaces > 0 {
-		spaces = strings.Repeat(" ", neededSpaces)
-	}
-
-	return text + spaces
 }
 
 func (wt *WorkLogTime) String() string {
