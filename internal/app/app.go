@@ -17,7 +17,8 @@ const (
 )
 
 func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
-	loading.PrintRow("Parsing and checking work logs...", 0)
+	loading.PrintRow("", 0)
+	loading.PrintRow("Processing workLogs", 0)
 	workLogs, err := import_data.ParseWorkLogs(loading, client, config)
 	if err != nil {
 		return err
