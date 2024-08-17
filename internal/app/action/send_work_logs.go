@@ -18,17 +18,26 @@ const (
 	textGettingClear    = "              "
 )
 
-func SendLogWorks(client *jira.Client, screen *goncurses.Window, workLogs []model.WorkLog) error {
+type SendWorkLogsAction struct {
+	client *jira.Client
+	screen *goncurses.Window
+}
+
+func NewSendWorkLogsAction(client *jira.Client, screen *goncurses.Window) *SendWorkLogsAction {
+	return &SendWorkLogsAction{client: client, screen: screen}
+}
+
+func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 	valuesWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
 
-	if err := pages.DrawSendWorkLogsPage(screen, workLogs, valuesWidth); err != nil {
+	if err := pages.DrawSendWorkLogsPage(a.screen, workLogs, valuesWidth); err != nil {
 		return err
 	}
 
 	rows := page_send_work_logs.GetBody(workLogs, valuesWidth)
 
 	for i, workLog := range workLogs {
-		if err := sendAndUpdateRow(client, screen, workLog, i+3, len(rows[i])+3); err != nil {
+		if err := a.sendAndUpdateRow(workLog, i+3, len(rows[i])+3); err != nil {
 			return err
 		}
 	}
@@ -36,56 +45,56 @@ func SendLogWorks(client *jira.Client, screen *goncurses.Window, workLogs []mode
 	return nil
 }
 
-func sendAndUpdateRow(client *jira.Client, screen *goncurses.Window, workLog model.WorkLog, row int, offset int) error {
+func (a *SendWorkLogsAction) sendAndUpdateRow(workLog model.WorkLog, row int, offset int) error {
 	var err error
 
-	offset, err = sendWorkLog(client, screen, workLog, row, offset)
+	offset, err = a.sendWorkLog(workLog, row, offset)
 	if err != nil {
 		return err
 	}
 
-	return spentTime(client, screen, workLog, row, offset)
+	return a.spentTime(workLog, row, offset)
 }
 
-func sendWorkLog(client *jira.Client, screen *goncurses.Window, workLog model.WorkLog, row int, offset int) (int, error) {
-	if err := pages.PrintColored(screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
+func (a *SendWorkLogsAction) sendWorkLog(workLog model.WorkLog, row int, offset int) (int, error) {
+	if err := pages.PrintColored(a.screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
 		return offset, err
 	}
-	screen.Refresh()
+	a.screen.Refresh()
 
 	statusText := textDone
 	var statusColor int16 = ui.GreenOnBlack
 
-	err := client.WorkLogService.SendWorkLog(workLog)
+	err := a.client.WorkLogService.SendWorkLog(workLog)
 	if err != nil {
 		statusText = textFailed
 		statusColor = ui.RedOnBlack
 	}
 
-	screen.MovePrint(row, offset, textInProgressClear)
-	if err = pages.PrintColored(screen, statusColor, row, offset, statusText); err != nil {
+	a.screen.MovePrint(row, offset, textInProgressClear)
+	if err = pages.PrintColored(a.screen, statusColor, row, offset, statusText); err != nil {
 		return offset, err
 	}
 
 	offset += len(statusText)
-	screen.MovePrint(row, offset, " | ")
+	a.screen.MovePrint(row, offset, " | ")
 	offset += 3
-	screen.Refresh()
+	a.screen.Refresh()
 
 	return offset, nil
 }
 
-func spentTime(client *jira.Client, screen *goncurses.Window, workLog model.WorkLog, row int, offset int) error {
-	if err := pages.PrintColored(screen, ui.YellowOnBlack, row, offset, textGetting); err != nil {
+func (a *SendWorkLogsAction) spentTime(workLog model.WorkLog, row int, offset int) error {
+	if err := pages.PrintColored(a.screen, ui.YellowOnBlack, row, offset, textGetting); err != nil {
 		return err
 	}
-	screen.Refresh()
+	a.screen.Refresh()
 
-	totalTime := client.WorkLogService.GetSpentTime(workLog.IssueNumber)
+	totalTime := a.client.WorkLogService.GetSpentTime(workLog.IssueNumber)
 
-	screen.MovePrint(row, offset, textGettingClear)
-	screen.MovePrint(row, offset, "Total: "+totalTime)
-	screen.Refresh()
+	a.screen.MovePrint(row, offset, textGettingClear)
+	a.screen.MovePrint(row, offset, "Total: "+totalTime)
+	a.screen.Refresh()
 
 	return nil
 }

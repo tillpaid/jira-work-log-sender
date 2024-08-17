@@ -17,25 +17,25 @@ const (
 )
 
 func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
-	loading.PrintRow("", 0)
-	loading.PrintRow("Processing workLogs", 0)
+	actions := action.NewActions(client, screen)
+
 	workLogs, err := import_data.ParseWorkLogs(loading, client, config)
 	if err != nil {
 		return err
 	}
 
-	if err := action.PrintWorkLogs(screen, workLogs); err != nil {
+	if err = actions.PrintWorkLogs.Print(workLogs); err != nil {
 		return err
 	}
 
 	for {
 		switch waitForAction(screen) {
 		case actionReload:
-			if err := action.PrintWorkLogs(screen, workLogs); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs); err != nil {
 				return err
 			}
 		case actionSend:
-			if err := action.SendLogWorks(client, screen, workLogs); err != nil {
+			if err = actions.SendWorkLogs.Send(workLogs); err != nil {
 				return err
 			}
 		case actionQuit:

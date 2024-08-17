@@ -12,6 +12,9 @@ import (
 )
 
 func ParseWorkLogs(loading *pages.Loading, client *jira.Client, config *resource.Config) ([]model.WorkLog, error) {
+	loading.PrintRow("", 0)
+	loading.PrintRow("Processing workLogs", 0)
+
 	file, err := os.Open(config.PathToInputFile)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file during parsing work logs: %v", err)
