@@ -12,7 +12,6 @@ import (
 const (
 	envFileName           = ".config/paysera-log-time/env"
 	envKeyPathToInputFile = "PATH_TO_INPUT_FILE"
-	envKeyOutputShellFile = "OUTPUT_SHELL_FILE"
 	envKeyJiraBaseUrl     = "JIRA_BASE_URL"
 	envKeyJiraUsername    = "JIRA_USERNAME"
 	envKeyJiraApiToken    = "JIRA_API_TOKEN"
@@ -31,7 +30,6 @@ type jiraConfig struct {
 
 type Config struct {
 	PathToInputFile string
-	OutputShellFile string
 	Jira            jiraConfig
 	AllowedTags     []string
 }
@@ -45,7 +43,6 @@ func InitConfig() (*Config, error) {
 
 	envValues, err := getEnvValues(
 		envKeyPathToInputFile,
-		envKeyOutputShellFile,
 		envKeyJiraBaseUrl,
 		envKeyJiraUsername,
 		envKeyJiraApiToken,
@@ -56,7 +53,6 @@ func InitConfig() (*Config, error) {
 
 	return &Config{
 		PathToInputFile: filepath.Join(homeDir, envValues[envKeyPathToInputFile]),
-		OutputShellFile: filepath.Join(homeDir, envValues[envKeyOutputShellFile]),
 		Jira: jiraConfig{
 			BaseUrl:  envValues[envKeyJiraBaseUrl],
 			Username: envValues[envKeyJiraUsername],
