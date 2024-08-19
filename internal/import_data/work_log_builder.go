@@ -17,8 +17,6 @@ const (
 )
 
 func buildWorkLogFromSection(loading *pages.Loading, client *jira.Client, config *resource.Config, section []string, number int) (model.WorkLog, error) {
-	loading.PrintRow(fmt.Sprintf("Parsing workLog %d...", number), 0)
-
 	workLog := model.WorkLog{
 		Number: number,
 	}
@@ -37,7 +35,7 @@ func buildWorkLogFromSection(loading *pages.Loading, client *jira.Client, config
 		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
 	}
 
-	loading.PrintRow("Checking workLog in jira...", 0)
+	loading.PrintRow(fmt.Sprintf("Checking workLog %s in jira...", issueNumber), 0)
 
 	if !client.IssueService.IsIssueExists(issueNumber) {
 		return workLog, fmt.Errorf("issue %s does not exist", issueNumber)

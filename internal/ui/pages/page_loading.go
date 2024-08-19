@@ -27,9 +27,9 @@ func NewLoading(screen *goncurses.Window) *Loading {
 
 func (l *Loading) PrintRow(text string, x int) {
 	l.screen.MovePrint(l.currentRow, x+2, text)
-	l.screen.Refresh()
-
 	_ = PrintColored(l.screen, ui.GreenOnBlack, l.lastPrint.row, l.lastPrint.x+2, l.lastPrint.text)
+
+	l.screen.Refresh()
 
 	l.lastPrint.row = l.currentRow
 	l.lastPrint.x = x
