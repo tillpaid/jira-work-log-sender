@@ -17,6 +17,7 @@ const (
 )
 
 func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
+	var workLogsSent bool
 	actions := action.NewActions(client, screen)
 
 	workLogs, err := import_data.ParseWorkLogs(loading, client, config)
@@ -35,8 +36,12 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 				return err
 			}
 		case actionSend:
-			if err = actions.SendWorkLogs.Send(workLogs); err != nil {
-				return err
+			if !workLogsSent {
+				workLogsSent = true
+
+				if err = actions.SendWorkLogs.Send(workLogs); err != nil {
+					return err
+				}
 			}
 		case actionQuit:
 			ui.EndScreen()
