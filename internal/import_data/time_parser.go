@@ -31,6 +31,9 @@ func parseTimeString(timeString string) (model.WorkLogTime, error) {
 		return workLogTime, err
 	}
 
+    workLogTime.Hours += workLogTime.Minutes / 60
+    workLogTime.Minutes = workLogTime.Minutes % 60
+
 	if workLogTime.Hours == 0 && workLogTime.Minutes == 0 {
 		return workLogTime, errors.New("no hours or minutes in time string")
 	}

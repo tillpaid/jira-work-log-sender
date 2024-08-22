@@ -39,6 +39,12 @@ func Test_parseTimeString(t *testing.T) {
 		{"24. Negative hours and minutes", args{"-2h2m"}, 0, 0, true},
 		{"25. Negative hours and minutes", args{"2h-2m"}, 0, 0, true},
 		{"26. Hours, minutes and seconds", args{"2h30m30s"}, 2, 30, false},
+		{"27. 60m", args{"60m"}, 1, 0, false},
+		{"28. 64m", args{"64m"}, 1, 4, false},
+		{"29. 120m", args{"120m"}, 2, 0, false},
+		{"30. 124m", args{"124m"}, 2, 4, false},
+		{"31. 1h120m", args{"1h120m"}, 3, 0, false},
+		{"32. 1h124m", args{"1h124m"}, 3, 4, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
