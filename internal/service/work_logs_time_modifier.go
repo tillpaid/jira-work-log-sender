@@ -2,9 +2,7 @@ package service
 
 import "github.com/tillpaid/paysera-log-time-golang/internal/model"
 
-const (
-	excluded = "TIME-505"
-)
+var excluded = []string{"TIME-505", "COMP-804"}
 
 func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	totalInMinutes := getTotalInMinutes(workLogs)
@@ -12,7 +10,7 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	leftToAdd := totalLeft
 
 	for i, workLog := range workLogs {
-		if workLog.IssueNumber == excluded || totalLeft <= 0 {
+		if isExcluded(workLog.IssueNumber) || totalLeft <= 0 {
 			workLogs[i].ModifiedTime.Hours = workLog.OriginalTime.Hours
 			workLogs[i].ModifiedTime.Minutes = workLog.OriginalTime.Minutes
 			continue
@@ -49,4 +47,14 @@ func getTotalInMinutes(workLogs []model.WorkLog) int {
 	}
 
 	return total
+}
+
+func isExcluded(issueNumber string) bool {
+	for _, excludedIssueNumber := range excluded {
+		if issueNumber == excludedIssueNumber {
+			return true
+		}
+	}
+
+	return false
 }
