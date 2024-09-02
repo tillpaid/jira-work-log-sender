@@ -1,8 +1,10 @@
 package service
 
-import "github.com/tillpaid/paysera-log-time-golang/internal/model"
+import (
+	"os"
 
-var excluded = []string{"TIME-505", "COMP-804"}
+	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+)
 
 func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	totalInMinutes := getTotalInMinutes(workLogs)
@@ -50,6 +52,12 @@ func getTotalInMinutes(workLogs []model.WorkLog) int {
 }
 
 func isExcluded(issueNumber string) bool {
+	excluded := []string{"TIME-505"}
+
+	if len(os.Args) > 1 {
+		excluded = append(excluded, os.Args[1:]...)
+	}
+
 	for _, excludedIssueNumber := range excluded {
 		if issueNumber == excludedIssueNumber {
 			return true
