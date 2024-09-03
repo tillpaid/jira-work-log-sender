@@ -37,7 +37,11 @@ func buildWorkLogFromSection(loading *pages.Loading, client *jira.Client, config
 
 	loading.PrintRow(fmt.Sprintf("Checking workLog %s in jira...", issueNumber), 0)
 
-	if !client.IssueService.IsIssueExists(issueNumber) {
+	issueExists, err := client.IssueService.IsIssueExists(issueNumber)
+	if err != nil {
+		return workLog, fmt.Errorf("impossible to check issue %s in jira: %s", issueNumber, err)
+	}
+	if !issueExists {
 		return workLog, fmt.Errorf("issue %s does not exist", issueNumber)
 	}
 

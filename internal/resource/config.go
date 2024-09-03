@@ -15,6 +15,7 @@ const (
 	envKeyJiraBaseUrl     = "JIRA_BASE_URL"
 	envKeyJiraUsername    = "JIRA_USERNAME"
 	envKeyJiraApiToken    = "JIRA_API_TOKEN"
+	envKeyCacheDir        = "CACHE_DIR"
 )
 
 var allowedTags = []string{
@@ -30,6 +31,7 @@ type jiraConfig struct {
 
 type Config struct {
 	PathToInputFile string
+	CacheDir        string
 	Jira            jiraConfig
 	AllowedTags     []string
 }
@@ -46,6 +48,7 @@ func InitConfig() (*Config, error) {
 		envKeyJiraBaseUrl,
 		envKeyJiraUsername,
 		envKeyJiraApiToken,
+		envKeyCacheDir,
 	)
 	if err != nil {
 		return nil, err
@@ -53,6 +56,7 @@ func InitConfig() (*Config, error) {
 
 	return &Config{
 		PathToInputFile: filepath.Join(homeDir, envValues[envKeyPathToInputFile]),
+		CacheDir:        filepath.Join(homeDir, envValues[envKeyCacheDir]),
 		Jira: jiraConfig{
 			BaseUrl:  envValues[envKeyJiraBaseUrl],
 			Username: envValues[envKeyJiraUsername],

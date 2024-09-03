@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/andygrunwald/go-jira"
+	"github.com/tillpaid/paysera-log-time-golang/internal/cache"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 )
 
 type IssueServiceInterface interface {
-	IsIssueExists(issueID string) bool
+	IsIssueExists(issueID string) (bool, error)
 }
 
 type WorkLogServiceInterface interface {
@@ -26,6 +27,11 @@ func NewClient(config *resource.Config) (*Client, error) {
 	tp := jira.BasicAuthTransport{
 		Username: config.Jira.Username,
 		Password: config.Jira.ApiToken,
+	}
+
+	issuesExistenceCache, err := cache.NewIssuesExistenceCache(config.CacheDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create issues existence cache: %v", err)
 	}
 
 	jiraClient, err := jira.NewClient(tp.Client(), config.Jira.BaseUrl)
@@ -45,7 +51,7 @@ func NewClient(config *resource.Config) (*Client, error) {
 	}
 
 	return &Client{
-		IssueService:   newIssueService(jiraClient),
+		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
 		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient),
 	}, nil
 }
