@@ -18,6 +18,16 @@ type WorkLog struct {
 	Description  string
 }
 
+func (wt *WorkLogTime) AddMinutes(minutes int) {
+	wt.Hours += minutes / 60
+	wt.Minutes += minutes % 60
+
+	if wt.Minutes >= 60 {
+		wt.Hours += wt.Minutes / 60
+		wt.Minutes = wt.Minutes % 60
+	}
+}
+
 func (wt *WorkLogTime) String() string {
 	var parts []string
 
