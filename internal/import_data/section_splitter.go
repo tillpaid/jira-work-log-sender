@@ -10,6 +10,7 @@ import (
 const (
 	mainInformationAnchor = "## "
 	descriptionAnchor     = "- "
+	tagAnchor             = "["
 )
 
 func splitFileToSections(file *os.File) ([][]string, error) {
@@ -59,5 +60,5 @@ func isMainInformationLine(line string) bool {
 }
 
 func isDescriptionLine(line string) bool {
-	return strings.Index(line, descriptionAnchor) == 0
+	return strings.Index(line, descriptionAnchor) == 0 || strings.Index(line, tagAnchor) == 0
 }

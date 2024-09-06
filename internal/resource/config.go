@@ -19,8 +19,15 @@ const (
 )
 
 var allowedTags = []string{
-	"engineering activities", "documentation", "deployment&monitoring", "research&investigation",
-	"code review", "communication", "environment issue", "operational work", "other",
+	"[Engineering activities]",
+	"[Documentation]",
+	"[Deployment&Monitoring]",
+	"[Research&Investigation]",
+	"[Code review]",
+	"[Communication]",
+	"[Environment Issue]",
+	"[Operational work]",
+	"[Other]",
 }
 
 type jiraConfig struct {
