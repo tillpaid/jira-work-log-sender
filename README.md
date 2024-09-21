@@ -1,5 +1,25 @@
 # Setup
 
+Copy `.env.dist` file to `~/.config/paysera-log-time/env`
+
+```shell
+mkdir -p ~/.config/paysera-log-time
+cp .env.dist ~/.config/paysera-log-time/env
+```
+
+- Fill `PATH_TO_INPUT_FILE` - it should be a relative path from your home directory
+- Fill `CACHE_DIR` - it should be a relative path from your home directory. And this directory should exist
+
+Example:
+
+```markdown
+PATH_TO_INPUT_FILE="Icloud/Documents/IA-writer/2. My day.md"
+CACHE_DIR=".config/paysera-log-time/cache"
+JIRA_BASE_URL="https://jira.paysera.net"
+JIRA_USERNAME="your_email"
+JIRA_API_TOKEN="your_token"
+```
+
 Install the dependencies:
 
 ```shell
@@ -20,23 +40,6 @@ Move the binary to the bin folder:
 sudo mv ./bin/app /usr/local/bin/tt
 ```
 
-Copy `.env.dist` file to `~/.config/paysera-log-time/env`
-
-```shell
-mkdir -p ~/.config/paysera-log-time
-cp .env.dist ~/.config/paysera-log-time/env
-```
-
-- Fill `PATH_TO_INPUT_FILE` - it should be a relative path from your home directory
-- Fill `PATH_TO_INPUT_FILE` - it should be a relative path from your home directory
-
-Example:
-
-```markdown
-PATH_TO_INPUT_FILE="Icloud/Documents/IA-writer/2. My day.md"
-OUTPUT_SHELL_FILE=".config/paysera-log-time/output.sh"
-```
-
 Run the application:
 
 ```shell
@@ -48,71 +51,49 @@ tt
 Filled .md file with the data:
 
 ```markdown
-#  Work logs
+#  Worklogs
 
-##  Time | test-505 10m
-- Communication
+##  Time | TIME-505 10m
+[Communication]
+- RocketChat communication / emails reading
 - Daily
 
-##  1 - Custom system rules - initial research | test-444 2h10m
-- Research&Investigation
-- Did something useful
-- And did another useful stuff
-
-##  2 - Some another ticket | test-234 3h10m
-- Engineering activities
-- Did something useful
-- And did another useful stuff
+##  1 - Separate bank charge creation | COMP-904 3h
+[Engineering activities]
+- Worked on something important
+- Added something new
+- Fixed something broken
 ```
 
 Command output
 
 ```shell
-+---------------------------------------------------------------+
-| Log works for today                                           |
-+---------------------------------------------------------------+
-| 1. 10m   | 10m   | test-505 | Communication - Daily           |
-| 2. 2h10m | 2h10m | test-444 | Research&Investigation - Did... |
-| 3. 2h10m | 2h10m | test-444 | Engineering activities - Did... |
-+---------------------------------------------------------------+
-| Total time: 4h 30m | Left: 3h 30m                             |
-+---------------------------------------------------------------+
-| Action keys: R-Reload | L-Send work logs (double press) | ... |
-+---------------------------------------------------------------+
++---------------------------------------------------------------------------------------+
+| Work logs for today                                                                   |
++---------------------------------------------------------------------------------------+
+| 1. 10m | TIME-505 | [Communication] - RocketChat communication / emails r...          |
+| 2. 3h  | COMP-904 | [Engineering activities] - Worked on something import...          |
++---------------------------------------------------------------------------------------+
+| Total time: 3h 10m | Left: 4h 50m                                                     |
++---------------------------------------------------------------------------------------+
+| Action keys: R-Reload | L-Send work logs (double press) | [Q/Space/Return/Esc]-Exit   |
++---------------------------------------------------------------------------------------+
 ```
 
 Then you can press `l` two times to send work logs to Jira
 
-- App will generate a shell script
+- App will send worklogs to jira and print you total time logged to the ticket (only your worklogs)
 
 ```shell
-#!/bin/bash
-
-echo "Command number: 1" && please log-time test-505 "10m" "Communication
-- Daily"
-
-echo "Command number: 2" && please log-time test-444 "2h10m" "Research&Investigation
-- Did something useful
-- And did another useful stuff"
-
-echo "Command number: 3" && please log-time test-444 "2h10m" "Engineering activities
-- Did something useful
-- And did another useful stuff"
++---------------------------------------------------------------------------------------+
+| Send work logs                                                                        |
++---------------------------------------------------------------------------------------+
+| 1. TIME-505 | 10m | Done! | Total: 657h 21m                                           |
+| 2. COMP-904 | 3h  | Done! | Total: 13h 29m                                            |
++---------------------------------------------------------------------------------------+
+| Action keys: R-Reload | L-Send work logs (double press) | [Q/Space/Return/Esc]-Exit   |
++---------------------------------------------------------------------------------------+
 ```
-
-And app will run it. You will see the output of the command
-
-```shell
-Command number: 1
-Unable to add worklog.
-Command number: 2
-Unable to add worklog.
-Command number: 3
-Unable to add worklog.
-```
-
-- In my case I don't want to send a real work logs to Jira, so I set wrong ticket numbers.
-- With real data you can see other messages from `please log-time`
 
 ## Input file explanation
 
