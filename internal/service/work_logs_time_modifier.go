@@ -11,6 +11,10 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	totalInMinutes := getTotalInMinutes(workLogs, true)
 	totalNotExcludedInMinutes := getTotalInMinutes(workLogs, false)
 
+	if totalInMinutes == 0 {
+		return workLogs
+	}
+
 	totalLeft := 480 - totalInMinutes
 	leftToAdd := totalLeft
 	lastUpdatedIndex := -1

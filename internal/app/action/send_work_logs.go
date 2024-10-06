@@ -1,6 +1,8 @@
 package action
 
 import (
+	"fmt"
+
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
@@ -30,6 +32,12 @@ func NewSendWorkLogsAction(client *jira.Client, screen *goncurses.Window) *SendW
 }
 
 func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
+	for _, workLog := range workLogs {
+		if workLog.OriginalTime.Hours == 0 && workLog.OriginalTime.Minutes == 0 {
+			return fmt.Errorf("work log with issue number %s has no time spent", workLog.IssueNumber)
+		}
+	}
+
 	valuesWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
 
 	if err := pages.DrawSendWorkLogsPage(a.screen, workLogs, valuesWidth); err != nil {

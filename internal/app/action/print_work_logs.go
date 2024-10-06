@@ -14,6 +14,6 @@ func NewPrintWorkLogsAction(screen *goncurses.Window) *PrintWorkLogsAction {
 	return &PrintWorkLogsAction{screen: screen}
 }
 
-func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog) error {
-	return pages.DrawWorkLogsTable(a.screen, workLogs)
+func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, selectedRow int) error {
+	return pages.DrawWorkLogsTable(a.screen, workLogs, selectedRow)
 }

@@ -8,13 +8,13 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_work_logs"
 )
 
-func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error {
+func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog, selectedRow int) error {
 	if err := screen.Clear(); err != nil {
 		return fmt.Errorf("error clearing screen: %v", err)
 	}
 
 	height, width := screen.MaxYX()
-	tableRows := buildWorkLogsTableRows(workLogs, height, width)
+	tableRows := buildWorkLogsTableRows(workLogs, selectedRow, height, width)
 
 	for i, line := range tableRows {
 		screen.MovePrint(i, 0, prepareRow(line, width))
@@ -24,12 +24,12 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog) error
 	return nil
 }
 
-func buildWorkLogsTableRows(workLogs []model.WorkLog, height int, width int) []string {
+func buildWorkLogsTableRows(workLogs []model.WorkLog, selectedRow int, height int, width int) []string {
 	delimiter := getDelimiter(width)
 	var rows []string
 
 	header := page_work_logs.GetHeader(delimiter)
-	body := page_work_logs.GetBody(workLogs)
+	body := page_work_logs.GetBody(workLogs, selectedRow)
 	timeRow := page_work_logs.GetTimeRow(workLogs, delimiter)
 	footer := page_work_logs.GetFooter(delimiter)
 

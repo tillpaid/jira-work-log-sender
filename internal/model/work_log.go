@@ -11,6 +11,7 @@ type WorkLogTime struct {
 }
 
 type WorkLog struct {
+	HeaderText   string
 	Number       int
 	OriginalTime WorkLogTime
 	ModifiedTime WorkLogTime
@@ -37,6 +38,10 @@ func (wt *WorkLogTime) String() string {
 
 	if wt.Minutes > 0 {
 		parts = append(parts, strconv.Itoa(wt.Minutes)+"m")
+	}
+
+	if wt.Minutes == 0 && wt.Hours == 0 {
+		parts = append(parts, "0m")
 	}
 
 	return strings.Join(parts, " ")

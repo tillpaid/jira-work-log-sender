@@ -45,6 +45,7 @@ func buildWorkLogFromSection(loading *pages.Loading, client *jira.Client, config
 		return workLog, fmt.Errorf("issue %s does not exist", issueNumber)
 	}
 
+	workLog.HeaderText = strings.TrimLeft(section[0], "# ")
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
 	workLog.Description = strings.TrimLeft(strings.Join(section[1:], "\n"), "- ")
@@ -58,15 +59,23 @@ func getMainInformation(line string) (string, model.WorkLogTime, error) {
 	lastSpaceRelativeIndex := strings.Index(line[pipeIndex+2:], " ")
 	lastSpaceIndex := pipeIndex + 2 + lastSpaceRelativeIndex
 
-	if dashIndex == -1 || pipeIndex == -1 || lastSpaceRelativeIndex == -1 {
+	if dashIndex == -1 || pipeIndex == -1 {
 		return "", model.WorkLogTime{}, errors.New("no dash or pipe or space after pipe")
 	}
 
-	issueNumber := strings.TrimSpace(line[pipeIndex+2 : lastSpaceIndex])
+	if lastSpaceIndex <= pipeIndex+2 {
+		lastSpaceIndex = len(line)
+	}
 
-	originalTime, err := parseTimeString(strings.TrimSpace(line[lastSpaceIndex+1:]))
-	if err != nil {
-		return "", model.WorkLogTime{}, fmt.Errorf("impossible to parse time string: %s", err)
+	issueNumber := strings.TrimSpace(line[pipeIndex+2 : lastSpaceIndex])
+	originalTime := model.WorkLogTime{}
+
+	if lastSpaceRelativeIndex != -1 {
+		var err error
+		originalTime, err = parseTimeString(strings.TrimSpace(line[lastSpaceIndex+1:]))
+		if err != nil {
+			return "", model.WorkLogTime{}, fmt.Errorf("impossible to parse time string: %s", err)
+		}
 	}
 
 	return issueNumber, originalTime, nil
