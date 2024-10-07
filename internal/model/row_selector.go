@@ -9,6 +9,14 @@ func NewRowSelector(rowsCount int) *RowSelector {
 	return &RowSelector{Row: 1, rowsCount: rowsCount}
 }
 
+func (r *RowSelector) FirstRow() {
+	r.Row = 1
+}
+
+func (r *RowSelector) LastRow() {
+	r.Row = r.rowsCount
+}
+
 func (r *RowSelector) NextRow() {
 	r.Row++
 

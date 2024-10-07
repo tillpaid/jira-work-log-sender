@@ -20,6 +20,12 @@ func waitForAction(screen *goncurses.Window) int {
 			return actionNextRow
 		case 'k', goncurses.KEY_UP:
 			return actionPrevRow
+		case 'g':
+			if previousKey == 'g' {
+				return actionFirstRow
+			}
+		case 'G':
+			return actionLastRow
 		case 'y':
 			return actionCopy
 		case 'q', ' ', goncurses.KEY_ESC, goncurses.KEY_RETURN:

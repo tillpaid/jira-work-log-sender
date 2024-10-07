@@ -13,12 +13,14 @@ import (
 )
 
 const (
-	actionReload  = iota
-	actionSend    = iota
-	actionNextRow = iota
-	actionPrevRow = iota
-	actionCopy    = iota
-	actionQuit    = iota
+	actionReload   = iota
+	actionSend     = iota
+	actionNextRow  = iota
+	actionPrevRow  = iota
+	actionFirstRow = iota
+	actionLastRow  = iota
+	actionCopy     = iota
+	actionQuit     = iota
 )
 
 func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
@@ -58,6 +60,18 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 			}
 		case actionPrevRow:
 			rowSelector.PrevRow()
+
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+				return err
+			}
+		case actionFirstRow:
+			rowSelector.FirstRow()
+
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+				return err
+			}
+		case actionLastRow:
+			rowSelector.LastRow()
 
 			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
 				return err
