@@ -2,7 +2,6 @@ package page_work_logs
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
@@ -27,9 +26,9 @@ func buildRow(workLog model.WorkLog, width *model.WorkLogTableWidth, isSelected 
 	}
 
 	return fmt.Sprintf(
-		"%s | %s %s | %s | %s | %s",
+		"%s | %s | %s | %s | %s | %s",
 		arrow,
-		service.GetTextWithSpaces(strconv.Itoa(workLog.Number)+".", width.Number),
+		service.GetTextWithSpaces(workLog.GetHeader(), width.HeaderText),
 		service.GetTextWithSpaces(workLog.OriginalTime.String(), width.OriginalTime),
 		service.GetTextWithSpaces(workLog.ModifiedTime.String(), width.ModifiedTime),
 		service.GetTextWithSpaces(workLog.IssueNumber, width.IssueNumber),

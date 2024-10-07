@@ -4,6 +4,7 @@ import "strconv"
 
 type WorkLogTableWidth struct {
 	Number       int
+	HeaderText   int
 	OriginalTime int
 	ModifiedTime int
 	IssueNumber  int
@@ -15,6 +16,9 @@ func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog) *WorkLogTableWidth
 	}
 
 	for _, workLog := range workLogs {
+		if len(workLog.GetHeader()) > w.HeaderText {
+			w.HeaderText = len(workLog.GetHeader())
+		}
 		if len(workLog.OriginalTime.String()) > w.OriginalTime {
 			w.OriginalTime = len(workLog.OriginalTime.String())
 		}

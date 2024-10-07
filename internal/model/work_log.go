@@ -19,6 +19,14 @@ type WorkLog struct {
 	Description  string
 }
 
+func (w *WorkLog) GetHeader() string {
+	if len(w.HeaderText) > 30 {
+		return w.HeaderText[:30]
+	}
+
+	return w.HeaderText
+}
+
 func (wt *WorkLogTime) AddMinutes(minutes int) {
 	wt.Hours += minutes / 60
 	wt.Minutes += minutes % 60
