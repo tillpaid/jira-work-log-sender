@@ -7,6 +7,7 @@ const (
 	RedOnBlack    = iota + 1
 	GreenOnBlack  = iota + 1
 	CyanOnBlack   = iota + 1
+	DefaultColor  = -1
 )
 
 func InitializeScreen() (*goncurses.Window, error) {
@@ -23,19 +24,23 @@ func InitializeScreen() (*goncurses.Window, error) {
 			return nil, err
 		}
 
-		if err = goncurses.InitPair(YellowOnBlack, goncurses.C_YELLOW, goncurses.C_BLACK); err != nil {
+		if err = goncurses.UseDefaultColors(); err != nil {
 			return nil, err
 		}
 
-		if err = goncurses.InitPair(RedOnBlack, goncurses.C_RED, goncurses.C_BLACK); err != nil {
+		if err = goncurses.InitPair(YellowOnBlack, goncurses.C_YELLOW, DefaultColor); err != nil {
 			return nil, err
 		}
 
-		if err = goncurses.InitPair(GreenOnBlack, goncurses.C_GREEN, goncurses.C_BLACK); err != nil {
+		if err = goncurses.InitPair(RedOnBlack, goncurses.C_RED, DefaultColor); err != nil {
 			return nil, err
 		}
 
-		if err = goncurses.InitPair(CyanOnBlack, goncurses.C_CYAN, goncurses.C_BLACK); err != nil {
+		if err = goncurses.InitPair(GreenOnBlack, goncurses.C_GREEN, DefaultColor); err != nil {
+			return nil, err
+		}
+
+		if err = goncurses.InitPair(CyanOnBlack, goncurses.C_CYAN, DefaultColor); err != nil {
 			return nil, err
 		}
 	}

@@ -24,6 +24,7 @@ func main() {
 func initResources() (*resource.Config, *pages.Loading, *goncurses.Window, *jira.Client) {
 	screen, err := ui.InitializeScreen()
 	if err != nil {
+		ui.EndScreen()
 		service.PrintFatalError(fmt.Errorf("error initializing screen: %v", err))
 	}
 
