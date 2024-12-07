@@ -19,11 +19,13 @@ func (i *issueService) IsIssueExists(issueID string) (bool, error) {
 		return true, nil
 	}
 
-	_, _, jiraError := i.jiraClient.Issue.Get(issueID, nil)
+	if _, _, jiraError := i.jiraClient.Issue.Get(issueID, nil); jiraError != nil {
+		return false, nil
+	}
 
 	if err := i.issuesExistenceCache.SaveExists(issueID); err != nil {
 		return false, err
 	}
 
-	return jiraError == nil, nil
+	return true, nil
 }

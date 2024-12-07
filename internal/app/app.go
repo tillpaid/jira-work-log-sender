@@ -41,6 +41,13 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 	for {
 		switch waitForAction(screen) {
 		case actionReload:
+			workLogs, err = import_data.ParseWorkLogs(loading, client, config)
+			if err != nil {
+				return err
+			}
+
+			rowSelector = model.NewRowSelector(len(workLogs))
+
 			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
 				return err
 			}

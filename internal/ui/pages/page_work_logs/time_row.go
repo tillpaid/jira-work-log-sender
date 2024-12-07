@@ -6,16 +6,14 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 )
 
-func GetTimeRow(workLogs []model.WorkLog, delimiter string) []string {
+func getTimeRow(workLogs []model.WorkLog) []string {
 	totalInMinutes := getTotalInMinutes(workLogs)
 
-	totalTime := calculateTotalTime(totalInMinutes)
-	leftTime := calculateLeftTime(totalInMinutes)
-	totalModifiedTime := calculateTotalModifiedTime(workLogs)
-
-	totalRow := fmt.Sprintf("%s | %s | %s", totalTime, leftTime, totalModifiedTime)
-
-	return []string{delimiter, totalRow}
+	return []string{
+		calculateTotalTime(totalInMinutes),
+		calculateLeftTime(totalInMinutes),
+		calculateTotalModifiedTime(workLogs),
+	}
 }
 
 func calculateTotalTime(totalInMinutes int) string {

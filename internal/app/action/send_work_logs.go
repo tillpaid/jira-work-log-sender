@@ -38,7 +38,8 @@ func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 		}
 	}
 
-	valuesWidth := model.NewWorkLogTableWidthWithCalculations(workLogs)
+	_, width := a.screen.MaxYX()
+	valuesWidth := model.NewWorkLogTableWidthWithCalculations(workLogs, width)
 
 	if err := pages.DrawSendWorkLogsPage(a.screen, workLogs, valuesWidth); err != nil {
 		return err

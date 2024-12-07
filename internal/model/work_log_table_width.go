@@ -1,6 +1,8 @@
 package model
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type WorkLogTableWidth struct {
 	Number       int
@@ -8,9 +10,10 @@ type WorkLogTableWidth struct {
 	OriginalTime int
 	ModifiedTime int
 	IssueNumber  int
+	Description  int
 }
 
-func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog) *WorkLogTableWidth {
+func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, screenWidth int) *WorkLogTableWidth {
 	w := &WorkLogTableWidth{
 		Number: len(strconv.Itoa(len(workLogs))) + 1,
 	}
@@ -28,6 +31,15 @@ func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog) *WorkLogTableWidth
 		if len(workLog.IssueNumber) > w.IssueNumber {
 			w.IssueNumber = len(workLog.IssueNumber)
 		}
+		if len(workLog.Description) > w.Description {
+			w.Description = len(workLog.Description)
+		}
+	}
+
+	screenWidth -= 20
+	total := w.Number + w.HeaderText + w.OriginalTime + w.ModifiedTime + w.IssueNumber + w.Description
+	if total > screenWidth {
+		w.Description = w.Description - (total - screenWidth)
 	}
 
 	return w

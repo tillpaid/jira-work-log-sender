@@ -53,6 +53,10 @@ func InitializeScreen() (*goncurses.Window, error) {
 		return nil, err
 	}
 
+	if err := screen.Keypad(true); err != nil {
+		return nil, err
+	}
+
 	return screen, nil
 }
 

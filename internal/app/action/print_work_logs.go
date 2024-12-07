@@ -3,7 +3,7 @@ package action
 import (
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_work_logs"
 )
 
 type PrintWorkLogsAction struct {
@@ -15,5 +15,5 @@ func NewPrintWorkLogsAction(screen *goncurses.Window) *PrintWorkLogsAction {
 }
 
 func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, selectedRow int) error {
-	return pages.DrawWorkLogsTable(a.screen, workLogs, selectedRow)
+	return page_work_logs.DrawWorkLogsTable(a.screen, workLogs, selectedRow)
 }

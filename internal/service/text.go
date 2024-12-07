@@ -1,8 +1,16 @@
 package service
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func GetTextWithSpaces(text string, width int) string {
+	width += 2
+
+	text = strings.Replace(text, "\n", "|", -1)
+	text = fmt.Sprintf(" %s ", text)
+
 	neededSpaces := width - len(text)
 
 	spaces := ""
@@ -10,5 +18,11 @@ func GetTextWithSpaces(text string, width int) string {
 		spaces = strings.Repeat(" ", neededSpaces)
 	}
 
-	return text + spaces
+	text = text + spaces
+
+	if len(text) > width {
+		text = text[:width-1] + " "
+	}
+
+	return text
 }
