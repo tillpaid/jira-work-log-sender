@@ -2,7 +2,6 @@ package jira
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
 	"github.com/andygrunwald/go-jira"
