@@ -3,11 +3,11 @@ package ui
 import "github.com/rthornton128/goncurses"
 
 const (
-	YellowOnBlack = iota + 1
-	RedOnBlack    = iota + 1
-	GreenOnBlack  = iota + 1
-	CyanOnBlack   = iota + 1
-	DefaultColor  = -1
+	RedOnBlack     = iota + 1
+	GreenOnBlack   = iota + 1
+	CyanOnBlack    = iota + 1
+	MagentaOnBlack = iota + 1
+	DefaultColor   = -1
 )
 
 func InitializeScreen() (*goncurses.Window, error) {
@@ -28,10 +28,6 @@ func InitializeScreen() (*goncurses.Window, error) {
 			return nil, err
 		}
 
-		if err = goncurses.InitPair(YellowOnBlack, goncurses.C_YELLOW, DefaultColor); err != nil {
-			return nil, err
-		}
-
 		if err = goncurses.InitPair(RedOnBlack, goncurses.C_RED, DefaultColor); err != nil {
 			return nil, err
 		}
@@ -41,6 +37,10 @@ func InitializeScreen() (*goncurses.Window, error) {
 		}
 
 		if err = goncurses.InitPair(CyanOnBlack, goncurses.C_CYAN, DefaultColor); err != nil {
+			return nil, err
+		}
+
+		if err = goncurses.InitPair(MagentaOnBlack, goncurses.C_MAGENTA, DefaultColor); err != nil {
 			return nil, err
 		}
 	}

@@ -6,6 +6,6 @@ type Header struct {
 
 func NewHeader(columns []*Column, position int) *Header {
 	return &Header{
-		Row: NewRow(columns, false, position),
+		Row: NewRow(columns, 2, false, position),
 	}
 }

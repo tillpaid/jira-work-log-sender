@@ -4,6 +4,11 @@ import (
 	"strconv"
 )
 
+const (
+	SendStatusWidth = 15
+	TotalTimeWidth  = 15
+)
+
 type WorkLogTableWidth struct {
 	Number       int
 	HeaderText   int
@@ -11,11 +16,15 @@ type WorkLogTableWidth struct {
 	ModifiedTime int
 	IssueNumber  int
 	Description  int
+	SendStatus   int
+	TotalTime    int
 }
 
 func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, screenWidth int) *WorkLogTableWidth {
 	w := &WorkLogTableWidth{
-		Number: len(strconv.Itoa(len(workLogs))) + 1,
+		Number:     len(strconv.Itoa(len(workLogs))) + 1,
+		SendStatus: SendStatusWidth,
+		TotalTime:  TotalTimeWidth,
 	}
 
 	for _, workLog := range workLogs {

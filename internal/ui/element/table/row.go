@@ -2,12 +2,14 @@ package table
 
 type Row struct {
 	Columns    []*Column
+	Number     int
 	IsSelected bool
 }
 
-func NewRow(columns []*Column, isSelected bool, position int) *Row {
+func NewRow(columns []*Column, number int, isSelected bool, position int) *Row {
 	row := &Row{
 		Columns:    []*Column{},
+		Number:     number,
 		IsSelected: isSelected,
 	}
 

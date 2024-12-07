@@ -56,31 +56,31 @@ func drawFooter(screen *goncurses.Window, height int) {
 
 func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {
 	columns := []*table.Column{
-		{"Name", workLogsTableWidth.HeaderText, 0},
-		{"T", workLogsTableWidth.OriginalTime, 0},
-		{"MT", workLogsTableWidth.ModifiedTime, 0},
-		{"Issue", workLogsTableWidth.IssueNumber, 0},
-		{"Description", workLogsTableWidth.Description, 0},
+		{"Name", workLogsTableWidth.HeaderText, 0, 0},
+		{"T", workLogsTableWidth.OriginalTime, 0, 0},
+		{"MT", workLogsTableWidth.ModifiedTime, 0, 0},
+		{"Issue", workLogsTableWidth.IssueNumber, 0, 0},
+		{"Description", workLogsTableWidth.Description, 0, 0},
 	}
 
 	return table.NewHeader(columns, 3)
 }
 
 func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWidth, selectedRow int) []*table.Row {
-	var workLogsRows []*table.Row
+	var rows []*table.Row
 
 	for i, log := range workLogs {
 		columns := []*table.Column{
-			{log.GetHeader(), workLogsTableWidth.HeaderText, 0},
-			{log.OriginalTime.String(), workLogsTableWidth.OriginalTime, 0},
-			{log.ModifiedTime.String(), workLogsTableWidth.ModifiedTime, 0},
-			{log.IssueNumber, workLogsTableWidth.IssueNumber, 0},
-			{log.Description, workLogsTableWidth.Description, 0},
+			{log.GetHeader(), workLogsTableWidth.HeaderText, 0, 0},
+			{log.OriginalTime.String(), workLogsTableWidth.OriginalTime, 0, 0},
+			{log.ModifiedTime.String(), workLogsTableWidth.ModifiedTime, 0, 0},
+			{log.IssueNumber, workLogsTableWidth.IssueNumber, 0, 0},
+			{log.Description, workLogsTableWidth.Description, 0, 0},
 		}
 
 		isSelected := i+1 == selectedRow
-		workLogsRows = append(workLogsRows, table.NewRow(columns, isSelected, 3))
+		rows = append(rows, table.NewRow(columns, i+1+3, isSelected, 3))
 	}
 
-	return workLogsRows
+	return rows
 }

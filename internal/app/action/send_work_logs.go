@@ -2,25 +2,62 @@ package action
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_send_work_logs"
 )
 
 const (
-	textWaiting         = "Waiting..."
-	textWaitingClear    = "          "
-	textInProgress      = "Sending..."
-	textInProgressClear = "          "
-	textDone            = "Done!"
-	textFailed          = "Fail!"
-	textGetting         = "Calculating..."
-	textGettingClear    = "              "
+	toWaiting = iota
+	toSending
+	toDone
+	toFailed
+	toCalculating
+	toCustomText
 )
+
+const (
+	statusIndex = 3
+	timeIndex   = 4
+)
+
+const (
+	textWaiting     = "Waiting..."
+	textSending     = "Sending..."
+	textDone        = "Done!"
+	textFailed      = "Failed!"
+	textCalculating = "Calculating..."
+	emptyText       = ""
+)
+
+type Transition struct {
+	Previous string
+	Next     string
+	Color    int16
+}
+
+func (st *Transition) GetText() string {
+	if len(st.Previous) > len(st.Next) {
+		return st.Next + strings.Repeat(" ", len(st.Previous)-len(st.Next))
+	}
+
+	return st.Next
+}
+
+var transitions = map[int16]*Transition{
+	toWaiting:     {emptyText, textWaiting, ui.CyanOnBlack},
+	toSending:     {textWaiting, textSending, ui.MagentaOnBlack},
+	toDone:        {textSending, textDone, ui.GreenOnBlack},
+	toFailed:      {textSending, textFailed, ui.RedOnBlack},
+	toCalculating: {textWaiting, textCalculating, ui.MagentaOnBlack},
+	toCustomText:  {textCalculating, emptyText, ui.DefaultColor},
+}
 
 type SendWorkLogsAction struct {
 	client *jira.Client
@@ -38,90 +75,61 @@ func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 		}
 	}
 
-	_, width := a.screen.MaxYX()
-	valuesWidth := model.NewWorkLogTableWidthWithCalculations(workLogs, width)
-
-	if err := pages.DrawSendWorkLogsPage(a.screen, workLogs, valuesWidth); err != nil {
+	t, err := page_send_work_logs.DrawSendWorkLogsPage(a.screen, workLogs)
+	if err != nil {
 		return err
 	}
-
-	rows := page_send_work_logs.GetBody(workLogs, valuesWidth)
 
 	for i := range workLogs {
-		if err := a.setWaiting(i+3, len(rows[i])+3); err != nil {
-			return err
-		}
+		a.mSleep(50)
+		a.applyTransition(t, i, timeIndex, transitions[toWaiting])
 	}
-	a.screen.Refresh()
+
+	for i := range workLogs {
+		a.mSleep(50)
+		a.applyTransition(t, len(workLogs)-1-i, statusIndex, transitions[toWaiting])
+	}
 
 	for i, workLog := range workLogs {
-		if err := a.sendAndUpdateRow(workLog, i+3, len(rows[i])+3); err != nil {
-			return err
-		}
+		a.sendWorkLog(t, workLog, i)
+	}
+
+	for i, workLog := range workLogs {
+		a.setSpentTime(t, workLog, i)
 	}
 
 	return nil
 }
 
-func (a *SendWorkLogsAction) setWaiting(row int, offset int) error {
-	if err := pages.PrintColored(a.screen, ui.CyanOnBlack, row, offset, textWaiting); err != nil {
-		return err
+func (a *SendWorkLogsAction) sendWorkLog(table *table.Table, workLog model.WorkLog, i int) {
+	a.applyTransition(table, i, statusIndex, transitions[toSending])
+
+	if err := a.client.WorkLogService.SendWorkLog(workLog); err != nil {
+		a.applyTransition(table, i, statusIndex, transitions[toFailed])
+		return
 	}
 
-	return nil
+	a.applyTransition(table, i, statusIndex, transitions[toDone])
 }
 
-func (a *SendWorkLogsAction) sendAndUpdateRow(workLog model.WorkLog, row int, offset int) error {
-	var err error
-
-	offset, err = a.sendWorkLog(workLog, row, offset)
-	if err != nil {
-		return err
-	}
-
-	return a.spentTime(workLog, row, offset)
-}
-
-func (a *SendWorkLogsAction) sendWorkLog(workLog model.WorkLog, row int, offset int) (int, error) {
-	a.screen.MovePrint(row, offset, textWaitingClear)
-	if err := pages.PrintColored(a.screen, ui.YellowOnBlack, row, offset, textInProgress); err != nil {
-		return offset, err
-	}
-	a.screen.Refresh()
-
-	statusText := textDone
-	var statusColor int16 = ui.GreenOnBlack
-
-	err := a.client.WorkLogService.SendWorkLog(workLog)
-	if err != nil {
-		statusText = textFailed
-		statusColor = ui.RedOnBlack
-	}
-
-	a.screen.MovePrint(row, offset, textInProgressClear)
-	if err = pages.PrintColored(a.screen, statusColor, row, offset, statusText); err != nil {
-		return offset, err
-	}
-
-	offset += len(statusText)
-	a.screen.MovePrint(row, offset, " | ")
-	offset += 3
-	a.screen.Refresh()
-
-	return offset, nil
-}
-
-func (a *SendWorkLogsAction) spentTime(workLog model.WorkLog, row int, offset int) error {
-	if err := pages.PrintColored(a.screen, ui.YellowOnBlack, row, offset, textGetting); err != nil {
-		return err
-	}
-	a.screen.Refresh()
+func (a *SendWorkLogsAction) setSpentTime(table *table.Table, workLog model.WorkLog, i int) {
+	a.applyTransition(table, i, timeIndex, transitions[toCalculating])
 
 	totalTime := a.client.WorkLogService.GetSpentTime(workLog.IssueNumber)
 
-	a.screen.MovePrint(row, offset, textGettingClear)
-	a.screen.MovePrint(row, offset, "Total: "+totalTime)
-	a.screen.Refresh()
+	transitions[toCustomText].Next = totalTime
+	a.applyTransition(table, i, timeIndex, transitions[toCustomText])
+}
 
-	return nil
+func (a *SendWorkLogsAction) applyTransition(table *table.Table, rowI int, columnI int, transition *Transition) {
+	row := table.Rows[rowI]
+	row.Columns[columnI].Text = transition.GetText()
+	row.Columns[columnI].Color = transition.Color
+
+	table.ReDrawRow(row)
+	a.screen.Refresh()
+}
+
+func (a *SendWorkLogsAction) mSleep(milliseconds int) {
+	time.Sleep(time.Duration(milliseconds) * time.Millisecond)
 }

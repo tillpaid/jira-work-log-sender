@@ -2,6 +2,7 @@ package table
 
 import (
 	"github.com/rthornton128/goncurses"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 )
 
 type Table struct {
@@ -34,26 +35,28 @@ func (t *Table) Draw() {
 	t.drawRows()
 }
 
+func (t *Table) ReDrawRow(row *Row) {
+	t.printRowText(row)
+}
+
 func (t *Table) drawHeader() {
 	baseY := 1
 
 	t.printBorderChars(baseY, 2, t.GetBorderChars(BorderTypeHeaderTop))
-	t.printRowText(baseY+1, t.Header.Row)
+	t.printRowText(t.Header.Row)
 	t.printBorderChars(baseY+2, 2, t.GetBorderChars(BorderTypeHeaderBottom))
 	t.printBorderChars(baseY+3+len(t.Rows), 2, t.GetBorderChars(BorderTypeTableBottom))
 }
 
 func (t *Table) drawRows() {
-	baseY := 4
-
-	for i, row := range t.Rows {
-		t.printRowText(baseY+i, row)
+	for _, row := range t.Rows {
+		t.printRowText(row)
 	}
 }
 
-func (t *Table) printRowText(y int, row *Row) {
+func (t *Table) printRowText(row *Row) {
 	if len(row.Columns) > 0 {
-		t.screen.MoveAddChar(y, row.Columns[0].Position-1, goncurses.ACS_VLINE)
+		t.screen.MoveAddChar(row.Number, row.Columns[0].Position-1, goncurses.ACS_VLINE)
 	}
 
 	if row.IsSelected {
@@ -62,16 +65,25 @@ func (t *Table) printRowText(y int, row *Row) {
 
 	for i, column := range row.Columns {
 		if i > 0 {
-			t.screen.MoveAddChar(y, column.Position-1, goncurses.ACS_VLINE)
+			t.screen.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
 		}
-		t.screen.MovePrint(y, column.Position, column.GetText())
+
+		if column.Color != 0 && column.Color != ui.DefaultColor {
+			t.screen.ColorOn(column.Color)
+		}
+
+		t.screen.MovePrint(row.Number, column.Position, column.GetText())
+
+		if column.Color != 0 && column.Color != ui.DefaultColor {
+			t.screen.ColorOff(column.Color)
+		}
 	}
 
 	if row.IsSelected {
 		t.screen.AttrOff(goncurses.A_REVERSE)
 	}
 
-	t.screen.MoveAddChar(y, row.CalculateLastPosition(), goncurses.ACS_VLINE)
+	t.screen.MoveAddChar(row.Number, row.CalculateLastPosition(), goncurses.ACS_VLINE)
 }
 
 func (t *Table) printBorderChars(y int, x int, borderChars []TableBorderChars) {
