@@ -19,17 +19,13 @@ func NewPrintWorkLogsAction(client *jira.Client, screen *goncurses.Window) *Prin
 	return &PrintWorkLogsAction{client: client, screen: screen}
 }
 
-func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model.RowSelector, needCheck bool) (*table.Table, error) {
-	t, err := page_work_logs.DrawWorkLogsTable(a.screen, workLogs, rowSelector.Row, !needCheck)
+func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model.RowSelector) (*table.Table, error) {
+	t, err := page_work_logs.DrawWorkLogsTable(a.screen, workLogs, rowSelector.Row)
 	if err != nil {
 		return t, err
 	}
 
-	if needCheck {
-		return t, a.checkWorkLogs(t, workLogs)
-	}
-
-	return t, nil
+	return t, a.checkWorkLogs(t, workLogs)
 }
 
 func (a *PrintWorkLogsAction) UpdateSelectedRow(t *table.Table, rowSelector *model.RowSelector) {

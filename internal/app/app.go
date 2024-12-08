@@ -33,7 +33,7 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 	actions := action.NewActions(client, screen)
 	rowSelector := model.NewRowSelector(len(workLogs))
 
-	t, err := actions.PrintWorkLogs.Print(workLogs, rowSelector, true)
+	t, err := actions.PrintWorkLogs.Print(workLogs, rowSelector)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 
 			rowSelector = model.NewRowSelector(len(workLogs))
 
-			t, err = actions.PrintWorkLogs.Print(workLogs, rowSelector, true)
+			t, err = actions.PrintWorkLogs.Print(workLogs, rowSelector)
 			if err != nil {
 				return err
 			}

@@ -2,7 +2,7 @@ package table
 
 import (
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/utils"
 )
 
 type Table struct {
@@ -55,35 +55,22 @@ func (t *Table) drawRows() {
 }
 
 func (t *Table) printRowText(row *Row) {
-	if len(row.Columns) > 0 {
-		t.screen.MoveAddChar(row.Number, row.Columns[0].Position-1, goncurses.ACS_VLINE)
+	defer t.screen.MoveAddChar(row.Number, row.Columns[0].Position-1, goncurses.ACS_VLINE)
+	utils.SelectedOn(t.screen, row.IsSelected)
+
+	for _, column := range row.Columns {
+		t.printColumnText(row, column)
 	}
 
-	if row.IsSelected {
-		t.screen.AttrOn(goncurses.A_REVERSE)
-	}
-
-	for i, column := range row.Columns {
-		if i > 0 {
-			t.screen.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
-		}
-
-		if column.Color != 0 && column.Color != ui.DefaultColor {
-			t.screen.ColorOn(column.Color)
-		}
-
-		t.screen.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
-
-		if column.Color != 0 && column.Color != ui.DefaultColor {
-			t.screen.ColorOff(column.Color)
-		}
-	}
-
-	if row.IsSelected {
-		t.screen.AttrOff(goncurses.A_REVERSE)
-	}
-
+	utils.SelectedOff(t.screen, row.IsSelected)
 	t.screen.MoveAddChar(row.Number, row.CalculateLastPosition(), goncurses.ACS_VLINE)
+}
+
+func (t *Table) printColumnText(row *Row, column *Column) {
+	t.screen.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
+	utils.ColorOn(t.screen, column.Color)
+	t.screen.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
+	utils.ColorOff(t.screen, column.Color)
 }
 
 func (t *Table) printBorderChars(y int, x int, borderChars []TableBorderChars) {

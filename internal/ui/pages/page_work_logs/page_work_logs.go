@@ -14,7 +14,7 @@ const (
 	footerText = " Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog, selectedRow int, showRows bool) (*table.Table, error) {
+func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
 	if err := screen.Clear(); err != nil {
 		return nil, fmt.Errorf("error clearing screen: %v", err)
 	}
@@ -24,7 +24,7 @@ func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog, selec
 
 	t := table.NewTable(
 		getHeader(workLogsTableWidth),
-		getRows(workLogs, workLogsTableWidth, selectedRow, showRows),
+		getRows(workLogs, workLogsTableWidth, selectedRow),
 		screen,
 	)
 
@@ -66,7 +66,7 @@ func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {
 	return table.NewHeader(columns, 3)
 }
 
-func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWidth, selectedRow int, showRows bool) []*table.Row {
+func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWidth, selectedRow int) []*table.Row {
 	var rows []*table.Row
 
 	for i, log := range workLogs {
@@ -79,7 +79,7 @@ func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWid
 		}
 
 		isSelected := i+1 == selectedRow
-		rows = append(rows, table.NewRow(columns, i+1+3, isSelected, 3, showRows))
+		rows = append(rows, table.NewRow(columns, i+1+3, isSelected, 3, false))
 	}
 
 	return rows

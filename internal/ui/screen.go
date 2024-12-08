@@ -2,14 +2,6 @@ package ui
 
 import "github.com/rthornton128/goncurses"
 
-const (
-	RedOnBlack     = iota + 1
-	GreenOnBlack   = iota + 1
-	CyanOnBlack    = iota + 1
-	MagentaOnBlack = iota + 1
-	DefaultColor   = -1
-)
-
 func InitializeScreen() (*goncurses.Window, error) {
 	screen, err := goncurses.Init()
 	if err != nil {
@@ -19,41 +11,19 @@ func InitializeScreen() (*goncurses.Window, error) {
 	goncurses.Raw(true)
 	goncurses.Echo(false)
 
-	if goncurses.HasColors() {
-		if err = goncurses.StartColor(); err != nil {
-			return nil, err
-		}
-
-		if err = goncurses.UseDefaultColors(); err != nil {
-			return nil, err
-		}
-
-		if err = goncurses.InitPair(RedOnBlack, goncurses.C_RED, DefaultColor); err != nil {
-			return nil, err
-		}
-
-		if err = goncurses.InitPair(GreenOnBlack, goncurses.C_GREEN, DefaultColor); err != nil {
-			return nil, err
-		}
-
-		if err = goncurses.InitPair(CyanOnBlack, goncurses.C_CYAN, DefaultColor); err != nil {
-			return nil, err
-		}
-
-		if err = goncurses.InitPair(MagentaOnBlack, goncurses.C_MAGENTA, DefaultColor); err != nil {
-			return nil, err
-		}
+	if err := initColors(); err != nil {
+		return nil, err
 	}
 
 	if err := goncurses.Cursor(0); err != nil {
 		return nil, err
 	}
 
-	if err := screen.Clear(); err != nil {
+	if err := screen.Keypad(true); err != nil {
 		return nil, err
 	}
 
-	if err := screen.Keypad(true); err != nil {
+	if err := screen.Clear(); err != nil {
 		return nil, err
 	}
 
@@ -62,4 +32,33 @@ func InitializeScreen() (*goncurses.Window, error) {
 
 func EndScreen() {
 	goncurses.End()
+}
+
+func initColors() error {
+	if !goncurses.HasColors() {
+		return nil
+	}
+
+	if err := goncurses.StartColor(); err != nil {
+		return err
+	}
+
+	if err := goncurses.UseDefaultColors(); err != nil {
+		return err
+	}
+
+	colorPairs := map[int16][2]int16{
+		RedOnBlack:     {goncurses.C_RED, DefaultColor},
+		GreenOnBlack:   {goncurses.C_GREEN, DefaultColor},
+		CyanOnBlack:    {goncurses.C_CYAN, DefaultColor},
+		MagentaOnBlack: {goncurses.C_MAGENTA, DefaultColor},
+	}
+
+	for pairID, colors := range colorPairs {
+		if err := goncurses.InitPair(pairID, colors[0], colors[1]); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
