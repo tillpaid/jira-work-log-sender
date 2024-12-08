@@ -9,7 +9,6 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
 const (
@@ -23,10 +22,10 @@ const (
 	actionQuit     = iota
 )
 
-func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window, loading *pages.Loading) error {
+func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window) error {
 	var workLogsSent bool
 
-	workLogs, err := import_data.ParseWorkLogs(loading, client, config)
+	workLogs, err := import_data.ParseWorkLogs(config)
 	if err != nil {
 		return err
 	}
@@ -34,21 +33,21 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 	actions := action.NewActions(client, screen)
 	rowSelector := model.NewRowSelector(len(workLogs))
 
-	if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+	if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, true); err != nil {
 		return err
 	}
 
 	for {
 		switch waitForAction(screen) {
 		case actionReload:
-			workLogs, err = import_data.ParseWorkLogs(loading, client, config)
+			workLogs, err = import_data.ParseWorkLogs(config)
 			if err != nil {
 				return err
 			}
 
 			rowSelector = model.NewRowSelector(len(workLogs))
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, true); err != nil {
 				return err
 			}
 		case actionSend:
@@ -62,25 +61,25 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 		case actionNextRow:
 			rowSelector.NextRow()
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
 				return err
 			}
 		case actionPrevRow:
 			rowSelector.PrevRow()
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
 				return err
 			}
 		case actionFirstRow:
 			rowSelector.FirstRow()
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
 				return err
 			}
 		case actionLastRow:
 			rowSelector.LastRow()
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row); err != nil {
+			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
 				return err
 			}
 		case actionCopy:

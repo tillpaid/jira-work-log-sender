@@ -12,7 +12,7 @@ type Actions struct {
 
 func NewActions(client *jira.Client, screen *goncurses.Window) *Actions {
 	return &Actions{
-		PrintWorkLogs: NewPrintWorkLogsAction(screen),
+		PrintWorkLogs: NewPrintWorkLogsAction(client, screen),
 		SendWorkLogs:  NewSendWorkLogsAction(client, screen),
 	}
 }

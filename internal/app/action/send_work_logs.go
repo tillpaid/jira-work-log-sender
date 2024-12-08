@@ -69,6 +69,10 @@ func NewSendWorkLogsAction(client *jira.Client, screen *goncurses.Window) *SendW
 }
 
 func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
+	if err := a.client.Ping(); err != nil {
+		return err
+	}
+
 	for _, workLog := range workLogs {
 		if workLog.OriginalTime.Hours == 0 && workLog.OriginalTime.Minutes == 0 {
 			return fmt.Errorf("work log with issue number %s has no time spent", workLog.IssueNumber)

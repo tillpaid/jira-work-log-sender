@@ -72,7 +72,7 @@ func (t *Table) printRowText(row *Row) {
 			t.screen.ColorOn(column.Color)
 		}
 
-		t.screen.MovePrint(row.Number, column.Position, column.GetText())
+		t.screen.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
 
 		if column.Color != 0 && column.Color != ui.DefaultColor {
 			t.screen.ColorOff(column.Color)

@@ -4,13 +4,15 @@ type Row struct {
 	Columns    []*Column
 	Number     int
 	IsSelected bool
+	ShowText   bool
 }
 
-func NewRow(columns []*Column, number int, isSelected bool, position int) *Row {
+func NewRow(columns []*Column, number int, isSelected bool, position int, showText bool) *Row {
 	row := &Row{
 		Columns:    []*Column{},
 		Number:     number,
 		IsSelected: isSelected,
+		ShowText:   showText,
 	}
 
 	for _, column := range columns {

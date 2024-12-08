@@ -65,7 +65,7 @@ func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWid
 			{"", workLogsTableWidth.TotalTime, 0, 0},
 		}
 
-		rows = append(rows, table.NewRow(columns, i+1+3, false, 3))
+		rows = append(rows, table.NewRow(columns, i+1+3, false, 3, true))
 	}
 
 	return rows

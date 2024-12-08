@@ -4,17 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/service"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages"
 )
 
-func ParseWorkLogs(loading *pages.Loading, client *jira.Client, config *resource.Config) ([]model.WorkLog, error) {
-	loading.PrintRow("", 0)
-	loading.PrintRow("Processing workLogs", 0)
-
+func ParseWorkLogs(config *resource.Config) ([]model.WorkLog, error) {
 	file, err := os.Open(config.PathToInputFile)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file during parsing work logs: %v", err)
@@ -29,7 +24,7 @@ func ParseWorkLogs(loading *pages.Loading, client *jira.Client, config *resource
 	}
 
 	for i, section := range sections {
-		workLog, err := buildWorkLogFromSection(loading, client, config, section, i+1)
+		workLog, err := buildWorkLogFromSection(config, section, i+1)
 		if err != nil {
 			return nil, fmt.Errorf("error building work log: %v", err)
 		}

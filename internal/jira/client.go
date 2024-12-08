@@ -19,6 +19,7 @@ type WorkLogServiceInterface interface {
 }
 
 type Client struct {
+	jiraClient     *jira.Client
 	IssueService   IssueServiceInterface
 	WorkLogService WorkLogServiceInterface
 }
@@ -39,19 +40,23 @@ func NewClient(config *resource.Config) (*Client, error) {
 		return nil, fmt.Errorf("failed to create Jira client: %v", err)
 	}
 
-	// Ping Jira to check if the authentication is successful
-	_, response, err := jiraClient.User.GetSelf()
+	return &Client{
+		jiraClient:     jiraClient,
+		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
+		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient),
+	}, nil
+}
+
+func (c *Client) Ping() error {
+	_, response, err := c.jiraClient.User.GetSelf()
 	if err != nil {
 		newError := fmt.Errorf("failed to authenticate with Jira: %v", err)
 		if response != nil {
 			newError = fmt.Errorf("failed to authenticate with Jira. Response code is %d", response.StatusCode)
 		}
 
-		return nil, newError
+		return newError
 	}
 
-	return &Client{
-		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
-		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient),
-	}, nil
+	return nil
 }

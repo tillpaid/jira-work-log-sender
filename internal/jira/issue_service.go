@@ -1,6 +1,11 @@
 package jira
 
 import (
+	"errors"
+	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/cache"
 )
@@ -19,8 +24,21 @@ func (i *issueService) IsIssueExists(issueID string) (bool, error) {
 		return true, nil
 	}
 
-	if _, _, jiraError := i.jiraClient.Issue.Get(issueID, nil); jiraError != nil {
-		return false, nil
+	_, response, jiraError := i.jiraClient.Issue.Get(issueID, nil)
+	if jiraError != nil {
+		if response != nil {
+			if response.StatusCode == http.StatusNotFound {
+				return false, errors.New("issue not found in Jira")
+			}
+
+			return false, fmt.Errorf("got %d status code", response.StatusCode)
+		}
+
+		if strings.Contains(jiraError.Error(), "no such host") {
+			return false, errors.New("cannot resolve Jura host")
+		}
+
+		return false, jiraError
 	}
 
 	if err := i.issuesExistenceCache.SaveExists(issueID); err != nil {
