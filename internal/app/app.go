@@ -33,7 +33,8 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 	actions := action.NewActions(client, screen)
 	rowSelector := model.NewRowSelector(len(workLogs))
 
-	if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, true); err != nil {
+	t, err := actions.PrintWorkLogs.Print(workLogs, rowSelector, true)
+	if err != nil {
 		return err
 	}
 
@@ -47,7 +48,8 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 
 			rowSelector = model.NewRowSelector(len(workLogs))
 
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, true); err != nil {
+			t, err = actions.PrintWorkLogs.Print(workLogs, rowSelector, true)
+			if err != nil {
 				return err
 			}
 		case actionSend:
@@ -60,28 +62,16 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 			}
 		case actionNextRow:
 			rowSelector.NextRow()
-
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
-				return err
-			}
+			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
 		case actionPrevRow:
 			rowSelector.PrevRow()
-
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
-				return err
-			}
+			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
 		case actionFirstRow:
 			rowSelector.FirstRow()
-
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
-				return err
-			}
+			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
 		case actionLastRow:
 			rowSelector.LastRow()
-
-			if err = actions.PrintWorkLogs.Print(workLogs, rowSelector.Row, false); err != nil {
-				return err
-			}
+			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
 		case actionCopy:
 			if err = clipboard.CopyToClipboard(workLogs[rowSelector.Row-1].HeaderText); err != nil {
 				return err
