@@ -18,11 +18,10 @@ func (c *Column) GetText(showText bool) string {
 		return strings.Repeat(" ", limit)
 	}
 
-	if len(c.Text) > limit {
-		return c.Text[:limit-1] + " "
+	text := " " + strings.ReplaceAll(c.Text, "\n", "|") + " "
+	if len(text) > limit {
+		return text[:limit-1] + " "
 	}
-
-	text := " " + strings.Replace(c.Text, "\n", "|", -1)
 
 	neededSpaces := limit - len(text)
 	if neededSpaces > 0 {
