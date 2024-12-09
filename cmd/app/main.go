@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/app"
@@ -48,7 +47,6 @@ func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
 func panicHandler() {
 	if r := recover(); r != nil {
 		ui.EndScreen()
-		fmt.Printf("Application encountered a panic: %v\n", r)
-		os.Exit(1)
+		panic(r)
 	}
 }
