@@ -14,39 +14,39 @@ import (
 func main() {
 	defer panicHandler()
 
-	config, screen, client := initResources()
+	config, window, client := initResources()
 
-	if err := app.StartApp(client, config, screen); err != nil {
-		ui.EndScreen()
+	if err := app.StartApp(client, config, window); err != nil {
+		ui.EndWindow()
 		service.PrintFatalError(err)
 	}
 }
 
 func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
-	screen, err := ui.InitializeScreen()
+	window, err := ui.InitializeWindow()
 	if err != nil {
-		ui.EndScreen()
-		service.PrintFatalError(fmt.Errorf("error initializing screen: %v", err))
+		ui.EndWindow()
+		service.PrintFatalError(fmt.Errorf("error initializing window: %v", err))
 	}
 
 	config, err := resource.InitConfig()
 	if err != nil {
-		ui.EndScreen()
+		ui.EndWindow()
 		service.PrintFatalError(err)
 	}
 
 	client, err := jira.NewClient(config)
 	if err != nil {
-		ui.EndScreen()
+		ui.EndWindow()
 		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
 	}
 
-	return config, screen, client
+	return config, window, client
 }
 
 func panicHandler() {
 	if r := recover(); r != nil {
-		ui.EndScreen()
+		ui.EndWindow()
 		panic(r)
 	}
 }

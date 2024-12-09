@@ -2,8 +2,8 @@ package ui
 
 import "github.com/rthornton128/goncurses"
 
-func InitializeScreen() (*goncurses.Window, error) {
-	screen, err := goncurses.Init()
+func InitializeWindow() (*goncurses.Window, error) {
+	window, err := goncurses.Init()
 	if err != nil {
 		return nil, err
 	}
@@ -19,18 +19,18 @@ func InitializeScreen() (*goncurses.Window, error) {
 		return nil, err
 	}
 
-	if err := screen.Keypad(true); err != nil {
+	if err := window.Keypad(true); err != nil {
 		return nil, err
 	}
 
-	if err := screen.Clear(); err != nil {
+	if err := window.Clear(); err != nil {
 		return nil, err
 	}
 
-	return screen, nil
+	return window, nil
 }
 
-func EndScreen() {
+func EndWindow() {
 	goncurses.End()
 }
 

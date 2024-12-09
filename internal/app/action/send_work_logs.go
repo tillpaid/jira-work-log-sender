@@ -61,11 +61,11 @@ var transitions = map[int16]*Transition{
 
 type SendWorkLogsAction struct {
 	client *jira.Client
-	screen *goncurses.Window
+	window *goncurses.Window
 }
 
-func NewSendWorkLogsAction(client *jira.Client, screen *goncurses.Window) *SendWorkLogsAction {
-	return &SendWorkLogsAction{client: client, screen: screen}
+func NewSendWorkLogsAction(client *jira.Client, window *goncurses.Window) *SendWorkLogsAction {
+	return &SendWorkLogsAction{client: client, window: window}
 }
 
 func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
@@ -79,7 +79,7 @@ func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 		}
 	}
 
-	t, err := page_send_work_logs.DrawSendWorkLogsPage(a.screen, workLogs)
+	t, err := page_send_work_logs.DrawSendWorkLogsPage(a.window, workLogs)
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func (a *SendWorkLogsAction) applyTransition(table *table.Table, rowI int, colum
 	row.Columns[columnI].Color = transition.Color
 
 	table.ReDrawRow(row)
-	a.screen.Refresh()
+	a.window.Refresh()
 }
 
 func (a *SendWorkLogsAction) mSleep(milliseconds int) {

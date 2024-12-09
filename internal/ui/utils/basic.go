@@ -5,26 +5,26 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 )
 
-func ColorOn(screen *goncurses.Window, color int16) {
+func ColorOn(window *goncurses.Window, color int16) {
 	if color != ui.DefaultColor {
-		screen.ColorOn(color)
+		window.ColorOn(color)
 	}
 }
 
-func ColorOff(screen *goncurses.Window, color int16) {
+func ColorOff(window *goncurses.Window, color int16) {
 	if color != ui.DefaultColor {
-		screen.ColorOff(color)
+		window.ColorOff(color)
 	}
 }
 
-func SelectedOn(screen *goncurses.Window, isSelected bool) {
+func SelectedOn(window *goncurses.Window, isSelected bool) {
 	if isSelected {
-		screen.AttrOn(goncurses.A_REVERSE)
+		window.AttrOn(goncurses.A_REVERSE)
 	}
 }
 
-func SelectedOff(screen *goncurses.Window, isSelected bool) {
+func SelectedOff(window *goncurses.Window, isSelected bool) {
 	if isSelected {
-		screen.AttrOff(goncurses.A_REVERSE)
+		window.AttrOff(goncurses.A_REVERSE)
 	}
 }

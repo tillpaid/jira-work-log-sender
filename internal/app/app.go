@@ -22,7 +22,7 @@ const (
 	actionQuit     = iota
 )
 
-func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Window) error {
+func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Window) error {
 	var workLogsSent bool
 
 	workLogs, err := import_data.ParseWorkLogs(config)
@@ -30,7 +30,7 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 		return err
 	}
 
-	actions := action.NewActions(client, screen)
+	actions := action.NewActions(client, window)
 	rowSelector := model.NewRowSelector(len(workLogs))
 
 	t, err := actions.PrintWorkLogs.Print(workLogs, rowSelector)
@@ -39,7 +39,7 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 	}
 
 	for {
-		switch waitForAction(screen) {
+		switch waitForAction(window) {
 		case actionReload:
 			workLogs, err = import_data.ParseWorkLogs(config)
 			if err != nil {
@@ -77,10 +77,10 @@ func StartApp(client *jira.Client, config *resource.Config, screen *goncurses.Wi
 				return err
 			}
 
-			ui.EndScreen()
+			ui.EndWindow()
 			return nil
 		case actionQuit:
-			ui.EndScreen()
+			ui.EndWindow()
 			return nil
 		}
 	}

@@ -10,9 +10,9 @@ type Actions struct {
 	SendWorkLogs  *SendWorkLogsAction
 }
 
-func NewActions(client *jira.Client, screen *goncurses.Window) *Actions {
+func NewActions(client *jira.Client, window *goncurses.Window) *Actions {
 	return &Actions{
-		PrintWorkLogs: NewPrintWorkLogsAction(client, screen),
-		SendWorkLogs:  NewSendWorkLogsAction(client, screen),
+		PrintWorkLogs: NewPrintWorkLogsAction(client, window),
+		SendWorkLogs:  NewSendWorkLogsAction(client, window),
 	}
 }

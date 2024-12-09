@@ -14,44 +14,44 @@ const (
 	footerText = " Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawWorkLogsTable(screen *goncurses.Window, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
-	if err := screen.Clear(); err != nil {
-		return nil, fmt.Errorf("error clearing screen: %v", err)
+func DrawWorkLogsTable(window *goncurses.Window, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
+	if err := window.Clear(); err != nil {
+		return nil, fmt.Errorf("error clearing window: %v", err)
 	}
 
-	height, width := screen.MaxYX()
+	height, width := window.MaxYX()
 	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs, width)
 
 	t := table.NewTable(
 		getHeader(workLogsTableWidth),
 		getRows(workLogs, workLogsTableWidth, selectedRow),
-		screen,
+		window,
 	)
 
-	element.DrawBox(screen, height-2, width, pageName)
+	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawTimeRow(screen, 2, workLogs)
-	drawFooter(screen, height)
+	drawTimeRow(window, 2, workLogs)
+	drawFooter(window, height)
 
-	screen.Refresh()
+	window.Refresh()
 	return t, nil
 }
 
-func drawTimeRow(screen *goncurses.Window, x int, workLogs []model.WorkLog) {
+func drawTimeRow(window *goncurses.Window, x int, workLogs []model.WorkLog) {
 	elements := getTimeRow(workLogs)
-	screen.Move(5+len(workLogs), x+1)
+	window.Move(5+len(workLogs), x+1)
 
 	for i, e := range elements {
-		screen.Printf(" %s ", e)
+		window.Printf(" %s ", e)
 
 		if i < len(elements)-1 {
-			screen.AddChar(goncurses.ACS_VLINE)
+			window.AddChar(goncurses.ACS_VLINE)
 		}
 	}
 }
 
-func drawFooter(screen *goncurses.Window, height int) {
-	screen.MovePrint(height-1, 2, footerText)
+func drawFooter(window *goncurses.Window, height int) {
+	window.MovePrint(height-1, 2, footerText)
 }
 
 func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {

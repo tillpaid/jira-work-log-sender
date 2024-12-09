@@ -2,12 +2,12 @@ package app
 
 import "github.com/rthornton128/goncurses"
 
-func waitForAction(screen *goncurses.Window) int {
+func waitForAction(window *goncurses.Window) int {
 	var pressedKey, previousKey goncurses.Key
 
 	for {
 		previousKey = pressedKey
-		pressedKey = screen.GetChar()
+		pressedKey = window.GetChar()
 
 		switch pressedKey {
 		case 'r':

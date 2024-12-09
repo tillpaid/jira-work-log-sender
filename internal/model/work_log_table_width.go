@@ -20,7 +20,7 @@ type WorkLogTableWidth struct {
 	TotalTime    int
 }
 
-func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, screenWidth int) *WorkLogTableWidth {
+func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, width int) *WorkLogTableWidth {
 	w := &WorkLogTableWidth{
 		Number:     len(strconv.Itoa(len(workLogs))) + 1,
 		SendStatus: SendStatusWidth,
@@ -45,10 +45,10 @@ func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, screenWidth int) *
 		}
 	}
 
-	screenWidth -= 20
+	width -= 20
 	total := w.Number + w.HeaderText + w.OriginalTime + w.ModifiedTime + w.IssueNumber + w.Description
-	if total > screenWidth {
-		w.Description = w.Description - (total - screenWidth)
+	if total > width {
+		w.Description = w.Description - (total - width)
 	}
 
 	return w

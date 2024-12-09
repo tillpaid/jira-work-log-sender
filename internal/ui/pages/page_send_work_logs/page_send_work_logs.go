@@ -15,30 +15,30 @@ const (
 	footerText = " Action keys: R-Reload | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawSendWorkLogsPage(screen *goncurses.Window, workLogs []model.WorkLog) (*table.Table, error) {
-	if err := screen.Clear(); err != nil {
-		return nil, fmt.Errorf("error clearing screen: %v", err)
+func DrawSendWorkLogsPage(window *goncurses.Window, workLogs []model.WorkLog) (*table.Table, error) {
+	if err := window.Clear(); err != nil {
+		return nil, fmt.Errorf("error clearing window: %v", err)
 	}
 
-	height, width := screen.MaxYX()
+	height, width := window.MaxYX()
 	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs, width)
 
 	t := table.NewTable(
 		getHeader(workLogsTableWidth),
 		getRows(workLogs, workLogsTableWidth),
-		screen,
+		window,
 	)
 
-	element.DrawBox(screen, height-2, width, pageName)
+	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawFooter(screen, height)
+	drawFooter(window, height)
 
-	screen.Refresh()
+	window.Refresh()
 	return t, nil
 }
 
-func drawFooter(screen *goncurses.Window, height int) {
-	screen.MovePrint(height-1, 2, footerText)
+func drawFooter(window *goncurses.Window, height int) {
+	window.MovePrint(height-1, 2, footerText)
 }
 
 func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {

@@ -8,11 +8,11 @@ import (
 type Table struct {
 	Header *Header
 	Rows   []*Row
-	screen *goncurses.Window
+	window *goncurses.Window
 }
 
-func NewTable(header *Header, rows []*Row, screen *goncurses.Window) *Table {
-	return &Table{Header: header, Rows: rows, screen: screen}
+func NewTable(header *Header, rows []*Row, window *goncurses.Window) *Table {
+	return &Table{Header: header, Rows: rows, window: window}
 }
 
 func (t *Table) GetBorderChars(borderType uint16) []TableBorderChars {
@@ -55,30 +55,30 @@ func (t *Table) drawRows() {
 }
 
 func (t *Table) printRowText(row *Row) {
-	defer t.screen.MoveAddChar(row.Number, row.Columns[0].Position-1, goncurses.ACS_VLINE)
-	utils.SelectedOn(t.screen, row.IsSelected)
+	defer t.window.MoveAddChar(row.Number, row.Columns[0].Position-1, goncurses.ACS_VLINE)
+	utils.SelectedOn(t.window, row.IsSelected)
 
 	for _, column := range row.Columns {
 		t.printColumnText(row, column)
 	}
 
-	utils.SelectedOff(t.screen, row.IsSelected)
-	t.screen.MoveAddChar(row.Number, row.CalculateLastPosition(), goncurses.ACS_VLINE)
+	utils.SelectedOff(t.window, row.IsSelected)
+	t.window.MoveAddChar(row.Number, row.CalculateLastPosition(), goncurses.ACS_VLINE)
 }
 
 func (t *Table) printColumnText(row *Row, column *Column) {
-	t.screen.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
-	utils.ColorOn(t.screen, column.Color)
-	t.screen.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
-	utils.ColorOff(t.screen, column.Color)
+	t.window.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
+	utils.ColorOn(t.window, column.Color)
+	t.window.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
+	utils.ColorOff(t.window, column.Color)
 }
 
 func (t *Table) printBorderChars(y int, x int, borderChars []TableBorderChars) {
-	t.screen.Move(y, x)
+	t.window.Move(y, x)
 
 	for _, borderChar := range borderChars {
 		for i := 0; i < borderChar.Count; i++ {
-			t.screen.AddChar(borderChar.Char)
+			t.window.AddChar(borderChar.Char)
 		}
 	}
 }

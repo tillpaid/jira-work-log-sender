@@ -12,15 +12,15 @@ import (
 
 type PrintWorkLogsAction struct {
 	client *jira.Client
-	screen *goncurses.Window
+	window *goncurses.Window
 }
 
-func NewPrintWorkLogsAction(client *jira.Client, screen *goncurses.Window) *PrintWorkLogsAction {
-	return &PrintWorkLogsAction{client: client, screen: screen}
+func NewPrintWorkLogsAction(client *jira.Client, window *goncurses.Window) *PrintWorkLogsAction {
+	return &PrintWorkLogsAction{client: client, window: window}
 }
 
 func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model.RowSelector) (*table.Table, error) {
-	t, err := page_work_logs.DrawWorkLogsTable(a.screen, workLogs, rowSelector.Row)
+	t, err := page_work_logs.DrawWorkLogsTable(a.window, workLogs, rowSelector.Row)
 	if err != nil {
 		return t, err
 	}
@@ -35,7 +35,7 @@ func (a *PrintWorkLogsAction) UpdateSelectedRow(t *table.Table, rowSelector *mod
 	t.Rows[rowSelector.Row-1].IsSelected = true
 	t.ReDrawRow(t.Rows[rowSelector.Row-1])
 
-	a.screen.Refresh()
+	a.window.Refresh()
 }
 
 func (a *PrintWorkLogsAction) checkWorkLogs(t *table.Table, workLogs []model.WorkLog) error {
@@ -52,7 +52,7 @@ func (a *PrintWorkLogsAction) checkWorkLogs(t *table.Table, workLogs []model.Wor
 		row.ShowText = true
 
 		t.ReDrawRow(row)
-		a.screen.Refresh()
+		a.window.Refresh()
 	}
 
 	return nil
