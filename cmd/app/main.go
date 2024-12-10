@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	defer panicHandler()
+	defer service.HandlePanic()
 
 	config, window, client := initResources()
 
@@ -42,11 +42,4 @@ func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
 	}
 
 	return config, window, client
-}
-
-func panicHandler() {
-	if r := recover(); r != nil {
-		ui.EndWindow()
-		panic(r)
-	}
 }
