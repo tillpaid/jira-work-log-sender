@@ -40,6 +40,16 @@ func (a *PrintWorkLogsAction) UpdateSelectedRow(t *table.Table, rowSelector *mod
 
 func (a *PrintWorkLogsAction) checkWorkLogs(t *table.Table, workLogs []model.WorkLog) error {
 	for i, workLog := range workLogs {
+		issueExists := a.client.IssueService.IsIssueExistsInCache(workLog.IssueNumber)
+		if !issueExists {
+			continue
+		}
+
+		t.ShowRow(i)
+		a.window.Refresh()
+	}
+
+	for i, workLog := range workLogs {
 		issueExists, err := a.client.IssueService.IsIssueExists(workLog.IssueNumber)
 		if err != nil {
 			return fmt.Errorf("impossible to check issue %s in jira: %s", workLog.IssueNumber, err)
@@ -48,10 +58,7 @@ func (a *PrintWorkLogsAction) checkWorkLogs(t *table.Table, workLogs []model.Wor
 			return fmt.Errorf("issue %s does not exist", workLog.IssueNumber)
 		}
 
-		row := t.Rows[i]
-		row.ShowText = true
-
-		t.ReDrawRow(row)
+		t.ShowRow(i)
 		a.window.Refresh()
 	}
 

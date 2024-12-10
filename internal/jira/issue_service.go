@@ -47,3 +47,7 @@ func (i *issueService) IsIssueExists(issueID string) (bool, error) {
 
 	return true, nil
 }
+
+func (i *issueService) IsIssueExistsInCache(issueID string) bool {
+	return i.issuesExistenceCache.IsExists(issueID)
+}

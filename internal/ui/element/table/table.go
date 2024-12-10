@@ -30,6 +30,11 @@ func (t *Table) GetBorderChars(borderType uint16) []TableBorderChars {
 	return chars
 }
 
+func (t *Table) ShowRow(i int) {
+	t.Rows[i].ShowText = true
+	t.ReDrawRow(t.Rows[i])
+}
+
 func (t *Table) Draw() {
 	t.drawHeader()
 	t.drawRows()

@@ -11,6 +11,7 @@ import (
 
 type IssueServiceInterface interface {
 	IsIssueExists(issueID string) (bool, error)
+	IsIssueExistsInCache(issueID string) bool
 }
 
 type WorkLogServiceInterface interface {
