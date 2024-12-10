@@ -3,12 +3,12 @@ package table
 import "github.com/rthornton128/goncurses"
 
 const (
-	BorderTypeHeaderTop    = iota
-	BorderTypeHeaderBottom = iota
-	BorderTypeTableBottom  = iota
-	BorderCharFirst        = iota
-	BorderCharMiddle       = iota
-	BorderCharLast         = iota
+	BorderTypeHeaderTop = iota
+	BorderTypeHeaderBottom
+	BorderTypeTableBottom
+	BorderCharFirst
+	BorderCharMiddle
+	BorderCharLast
 )
 
 var borderTypesMap = map[uint16]map[uint16]goncurses.Char{

@@ -14,6 +14,11 @@ func NewRowSelector(rowsCount int) *RowSelector {
 	}
 }
 
+func (r *RowSelector) Reset() {
+	r.Row = 1
+	r.PreviousRow = 0
+}
+
 func (r *RowSelector) FirstRow() {
 	r.PreviousRow = r.Row
 	r.Row = 1

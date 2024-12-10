@@ -1,6 +1,10 @@
 package app
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
 	"github.com/tillpaid/paysera-log-time-golang/internal/clipboard"
@@ -9,17 +13,18 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 )
 
 const (
-	actionReload   = iota
-	actionSend     = iota
-	actionNextRow  = iota
-	actionPrevRow  = iota
-	actionFirstRow = iota
-	actionLastRow  = iota
-	actionCopy     = iota
-	actionQuit     = iota
+	actionReload = iota
+	actionSend
+	actionNextRow
+	actionPrevRow
+	actionFirstRow
+	actionLastRow
+	actionCopy
+	actionQuit
 )
 
 func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Window) error {
@@ -37,6 +42,8 @@ func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Wi
 	if err != nil {
 		return err
 	}
+
+	handleResize(&window, &t, rowSelector, actions, &workLogs)
 
 	for {
 		switch waitForAction(window) {
@@ -82,6 +89,41 @@ func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Wi
 		case actionQuit:
 			ui.EndWindow()
 			return nil
+		}
+	}
+}
+
+func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model.RowSelector, actions *action.Actions, workLogs *[]model.WorkLog) {
+	sigchan := make(chan os.Signal, 1)
+	signal.Notify(sigchan, syscall.SIGWINCH)
+
+	go func() {
+		for {
+			<-sigchan
+
+			ui.EndWindow()
+
+			newWindow, _ := ui.InitializeWindow()
+			newWindow.Refresh()
+
+			rowSelector.Reset()
+			newTable, _ := actions.PrintWorkLogs.Print(*workLogs, rowSelector)
+
+			discardResidualInput(newWindow)
+
+			*window = newWindow
+			*t = newTable
+		}
+	}()
+}
+
+func discardResidualInput(window *goncurses.Window) {
+	window.Timeout(0)
+	defer window.Timeout(-1)
+
+	for {
+		if key := window.GetChar(); key == 0 {
+			break
 		}
 	}
 }
