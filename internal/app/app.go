@@ -81,6 +81,10 @@ func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Wi
 			rowSelector.LastRow()
 			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
 		case actionCopy:
+			if len(workLogs) == 0 {
+				continue
+			}
+
 			if err = clipboard.CopyToClipboard(workLogs[rowSelector.Row-1].HeaderText); err != nil {
 				return err
 			}

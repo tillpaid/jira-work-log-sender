@@ -22,9 +22,14 @@ type WorkLogTableWidth struct {
 
 func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, width int) *WorkLogTableWidth {
 	w := &WorkLogTableWidth{
-		Number:     len(strconv.Itoa(len(workLogs))) + 1,
-		SendStatus: SendStatusWidth,
-		TotalTime:  TotalTimeWidth,
+		Number:       len(strconv.Itoa(len(workLogs))) + 1,
+		HeaderText:   4,
+		OriginalTime: 1,
+		ModifiedTime: 2,
+		IssueNumber:  5,
+		Description:  11,
+		SendStatus:   SendStatusWidth,
+		TotalTime:    TotalTimeWidth,
 	}
 
 	for _, workLog := range workLogs {

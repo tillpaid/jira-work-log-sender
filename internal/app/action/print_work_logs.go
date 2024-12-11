@@ -29,6 +29,10 @@ func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model
 }
 
 func (a *PrintWorkLogsAction) UpdateSelectedRow(t *table.Table, rowSelector *model.RowSelector) {
+	if len(t.Rows) == 0 {
+		return
+	}
+
 	t.Rows[rowSelector.PreviousRow-1].IsSelected = false
 	t.ReDrawRow(t.Rows[rowSelector.PreviousRow-1])
 
