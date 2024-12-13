@@ -1,10 +1,6 @@
 package app
 
 import (
-	"os"
-	"os/signal"
-	"syscall"
-
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
 	"github.com/tillpaid/paysera-log-time-golang/internal/clipboard"
@@ -12,7 +8,6 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 )
@@ -28,69 +23,66 @@ const (
 	actionQuit
 )
 
-func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Window) error {
-	var workLogsSent bool
+type Application struct {
+	window  *goncurses.Window
+	client  *jira.Client
+	actions *action.Actions
+	config  *resource.Config
 
-	workLogs, err := import_data.ParseWorkLogs(config)
-	if err != nil {
+	table        *table.Table
+	workLogs     []model.WorkLog
+	selector     *model.RowSelector
+	workLogsSent bool
+}
+
+func NewApplication(window *goncurses.Window, client *jira.Client, actions *action.Actions, config *resource.Config) *Application {
+	selector := model.NewRowSelector(0)
+
+	return &Application{
+		window:       window,
+		client:       client,
+		config:       config,
+		actions:      actions,
+		selector:     selector,
+		workLogsSent: false,
+	}
+}
+
+func (a *Application) Start() error {
+	if err := a.loadWorkLogs(); err != nil {
 		return err
 	}
 
-	actions := action.NewActions(client, window)
-	rowSelector := model.NewRowSelector(len(workLogs))
-
-	t, err := actions.PrintWorkLogs.Print(workLogs, rowSelector)
-	if err != nil {
+	if err := a.printTable(); err != nil {
 		return err
 	}
 
-	handleResize(&window, &t, rowSelector, actions, &workLogs)
+	handleResize(&a.window, &a.table, a.selector, a.actions, &a.workLogs)
 
 	for {
-		switch waitForAction(window) {
+		switch waitForAction(a.window) {
 		case actionReload:
-			workLogs, err = import_data.ParseWorkLogs(config)
-			if err != nil {
-				return err
-			}
-
-			rowSelector = model.NewRowSelector(len(workLogs))
-
-			t, err = actions.PrintWorkLogs.Print(workLogs, rowSelector)
-			if err != nil {
+			if err := a.processActionReload(); err != nil {
 				return err
 			}
 		case actionSend:
-			if !workLogsSent {
-				workLogsSent = true
-
-				if err = actions.SendWorkLogs.Send(workLogs); err != nil {
-					return err
-				}
-			}
-		case actionNextRow:
-			rowSelector.NextRow()
-			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
-		case actionPrevRow:
-			rowSelector.PrevRow()
-			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
-		case actionFirstRow:
-			rowSelector.FirstRow()
-			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
-		case actionLastRow:
-			rowSelector.LastRow()
-			actions.PrintWorkLogs.UpdateSelectedRow(t, rowSelector)
-		case actionCopy:
-			if len(workLogs) == 0 {
-				continue
-			}
-
-			if err = clipboard.CopyToClipboard(workLogs[rowSelector.Row-1].HeaderText); err != nil {
+			if err := a.processActionSend(); err != nil {
 				return err
 			}
-
-			ui.EndWindow()
-			return nil
+		case actionNextRow:
+			a.selector.NextRow()
+			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+		case actionPrevRow:
+			a.selector.PrevRow()
+			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+		case actionFirstRow:
+			a.selector.FirstRow()
+			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+		case actionLastRow:
+			a.selector.LastRow()
+			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+		case actionCopy:
+			return a.processActionCopy()
 		case actionQuit:
 			ui.EndWindow()
 			return nil
@@ -98,34 +90,58 @@ func StartApp(client *jira.Client, config *resource.Config, window *goncurses.Wi
 	}
 }
 
-func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model.RowSelector, actions *action.Actions, workLogs *[]model.WorkLog) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGWINCH)
+func (a *Application) processActionReload() error {
+	if err := a.loadWorkLogs(); err != nil {
+		return err
+	}
 
-	go func() {
-		defer service.HandlePanic()
+	if err := a.printTable(); err != nil {
+		return err
+	}
 
-		for range c {
-			ui.EndWindow()
-
-			newWindow, _ := ui.InitializeWindow()
-			newWindow.Refresh()
-
-			rowSelector.Reset()
-			newTable, _ := actions.PrintWorkLogs.Print(*workLogs, rowSelector)
-
-			discardResidualInput(newWindow)
-
-			*window = newWindow
-			*t = newTable
-		}
-	}()
+	return nil
 }
 
-func discardResidualInput(window *goncurses.Window) {
-	window.Timeout(0)
-	defer window.Timeout(-1)
-
-	for window.GetChar() != 0 {
+func (a *Application) processActionSend() error {
+	if a.workLogsSent {
+		return nil
 	}
+
+	a.workLogsSent = true
+	return a.actions.SendWorkLogs.Send(a.workLogs)
+}
+
+func (a *Application) processActionCopy() error {
+	if len(a.workLogs) == 0 {
+		return nil
+	}
+
+	if err := clipboard.CopyToClipboard(a.workLogs[a.selector.Row-1].HeaderText); err != nil {
+		return err
+	}
+
+	ui.EndWindow()
+	return nil
+}
+
+func (a *Application) loadWorkLogs() error {
+	workLogs, err := import_data.ParseWorkLogs(a.config)
+	if err != nil {
+		return err
+	}
+
+	a.workLogs = workLogs
+	a.selector.Update(len(workLogs))
+
+	return nil
+}
+
+func (a *Application) printTable() error {
+	t, err := a.actions.PrintWorkLogs.Print(a.workLogs, a.selector)
+	if err != nil {
+		return err
+	}
+
+	a.table = t
+	return nil
 }

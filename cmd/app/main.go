@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/app"
+	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/service"
@@ -14,15 +14,15 @@ import (
 func main() {
 	defer service.HandlePanic()
 
-	config, window, client := initResources()
+	application := initResources()
 
-	if err := app.StartApp(client, config, window); err != nil {
+	if err := application.Start(); err != nil {
 		ui.EndWindow()
 		service.PrintFatalError(err)
 	}
 }
 
-func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
+func initResources() *app.Application {
 	window, err := ui.InitializeWindow()
 	if err != nil {
 		ui.EndWindow()
@@ -41,5 +41,7 @@ func initResources() (*resource.Config, *goncurses.Window, *jira.Client) {
 		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
 	}
 
-	return config, window, client
+	actions := action.NewActions(client, window)
+
+	return app.NewApplication(window, client, actions, config)
 }
