@@ -2,6 +2,8 @@ package table
 
 import (
 	"strings"
+
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 )
 
 type Column struct {
@@ -29,4 +31,12 @@ func (c *Column) GetText(showText bool) string {
 	}
 
 	return text
+}
+
+func (c *Column) ResolveColor(row *Row) int16 {
+	if c.Color != ui.DefaultColor {
+		return c.Color
+	}
+
+	return row.Color
 }

@@ -26,7 +26,6 @@ func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model
 			newWindow, _ := ui.InitializeWindow()
 			newWindow.Refresh()
 
-			rowSelector.Reset()
 			newTable, _ := actions.PrintWorkLogs.Print(*workLogs, rowSelector)
 
 			discardResidualInput(newWindow)

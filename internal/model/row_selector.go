@@ -15,14 +15,12 @@ func NewRowSelector(rowsCount int) *RowSelector {
 }
 
 func (r *RowSelector) Update(rowsCount int) {
-	r.Row = 1
-	r.PreviousRow = 0
 	r.rowsCount = rowsCount
-}
 
-func (r *RowSelector) Reset() {
-	r.Row = 1
-	r.PreviousRow = 0
+	if r.Row > r.rowsCount {
+		r.Row = 1
+		r.PreviousRow = 0
+	}
 }
 
 func (r *RowSelector) FirstRow() {
