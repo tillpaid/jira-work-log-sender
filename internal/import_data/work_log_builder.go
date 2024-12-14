@@ -43,29 +43,34 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 }
 
 func getMainInformation(line string) (string, model.WorkLogTime, error) {
-	dashIndex := strings.Index(line, "-")
-	pipeIndex := strings.Index(line, "|")
-	lastSpaceRelativeIndex := strings.Index(line[pipeIndex+2:], " ")
-	lastSpaceIndex := pipeIndex + 2 + lastSpaceRelativeIndex
-
-	if dashIndex == -1 || pipeIndex == -1 {
-		return "", model.WorkLogTime{}, errors.New("no dash or pipe or space after pipe")
+	mainParts := strings.Split(line, "|")
+	if len(mainParts) != 2 {
+		return "", model.WorkLogTime{}, errors.New("no pipe in main information or too many pipes")
 	}
 
-	if lastSpaceIndex <= pipeIndex+2 {
-		lastSpaceIndex = len(line)
-	}
+	parts := strings.Split(mainParts[1], " ")
+	var secondParts []string
 
-	issueNumber := strings.TrimSpace(line[pipeIndex+2 : lastSpaceIndex])
-	originalTime := model.WorkLogTime{}
-
-	if lastSpaceRelativeIndex != -1 {
-		var err error
-		originalTime, err = parseTimeString(strings.TrimSpace(line[lastSpaceIndex+1:]))
-		if err != nil {
-			return "", model.WorkLogTime{}, fmt.Errorf("impossible to parse time string: %s", err)
+	for _, part := range parts {
+		trimmedPart := strings.TrimSpace(part)
+		if len(trimmedPart) > 0 {
+			secondParts = append(secondParts, trimmedPart)
 		}
 	}
 
-	return issueNumber, originalTime, nil
+	switch len(secondParts) {
+	case 0:
+		return "", model.WorkLogTime{}, errors.New("no information after pipe")
+	case 1:
+		return secondParts[0], model.WorkLogTime{}, nil
+	case 2:
+		originalTime, err := parseTimeString(secondParts[1])
+		if err != nil {
+			return "", originalTime, fmt.Errorf("impossible to parse time string: %s", err)
+		}
+
+		return secondParts[0], originalTime, nil
+	default:
+		return "", model.WorkLogTime{}, errors.New("too many parts after pipe")
+	}
 }
