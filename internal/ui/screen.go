@@ -49,6 +49,7 @@ func initColors() error {
 
 	colorPairs := map[int16][2]int16{
 		RedOnBlack:     {goncurses.C_RED, DefaultColor},
+		YellowOnBlack:  {goncurses.C_YELLOW, DefaultColor},
 		GreenOnBlack:   {goncurses.C_GREEN, DefaultColor},
 		CyanOnBlack:    {goncurses.C_CYAN, DefaultColor},
 		MagentaOnBlack: {goncurses.C_MAGENTA, DefaultColor},

@@ -11,12 +11,13 @@ type WorkLogTime struct {
 }
 
 type WorkLog struct {
-	HeaderText   string
-	Number       int
-	OriginalTime WorkLogTime
-	ModifiedTime WorkLogTime
-	IssueNumber  string
-	Description  string
+	HeaderText                     string
+	Number                         int
+	OriginalTime                   WorkLogTime
+	ModifiedTime                   WorkLogTime
+	IssueNumber                    string
+	Description                    string
+	ExcludedFromSpentTimeHighlight bool
 }
 
 func (w *WorkLog) GetHeader() string {
@@ -35,6 +36,10 @@ func (wt *WorkLogTime) AddMinutes(minutes int) {
 		wt.Hours += wt.Minutes / 60
 		wt.Minutes = wt.Minutes % 60
 	}
+}
+
+func (wt *WorkLogTime) AddSeconds(seconds int) {
+	wt.AddMinutes(seconds / 60)
 }
 
 func (wt *WorkLogTime) String() string {

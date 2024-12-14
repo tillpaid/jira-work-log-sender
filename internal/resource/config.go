@@ -30,6 +30,10 @@ var allowedTags = []string{
 	"[Other]",
 }
 
+var excludedFromSpentTimeHighlight = []string{
+	"TIME",
+}
+
 type jiraConfig struct {
 	BaseUrl  string
 	Username string
@@ -37,10 +41,11 @@ type jiraConfig struct {
 }
 
 type Config struct {
-	PathToInputFile string
-	CacheDir        string
-	Jira            jiraConfig
-	AllowedTags     []string
+	PathToInputFile                string
+	CacheDir                       string
+	Jira                           jiraConfig
+	AllowedTags                    []string
+	ExcludedFromSpentTimeHighlight []string
 }
 
 func InitConfig() (*Config, error) {
@@ -69,7 +74,8 @@ func InitConfig() (*Config, error) {
 			Username: envValues[envKeyJiraUsername],
 			ApiToken: envValues[envKeyJiraApiToken],
 		},
-		AllowedTags: allowedTags,
+		AllowedTags:                    allowedTags,
+		ExcludedFromSpentTimeHighlight: excludedFromSpentTimeHighlight,
 	}, nil
 }
 

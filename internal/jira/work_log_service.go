@@ -1,9 +1,6 @@
 package jira
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 )
@@ -17,28 +14,23 @@ func newWorkLogService(currentUsername string, jiraClient *jira.Client) *workLog
 	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient}
 }
 
-func (w *workLogService) GetSpentTime(issueID string) string {
-	defaultAnswer := "n/a"
-
+func (w *workLogService) GetSpentTime(issueID string) (*model.WorkLogTime, error) {
 	workLogs, _, err := w.jiraClient.Issue.GetWorklogs(issueID)
 	if err != nil {
-		return defaultAnswer
+		return nil, err
 	}
 
-	var totalTimeSpent time.Duration
+	totalTimeSpent := &model.WorkLogTime{}
 
 	for _, workLog := range workLogs.Worklogs {
 		if workLog.Author.EmailAddress != w.currentUsername {
 			continue
 		}
 
-		totalTimeSpent += time.Duration(workLog.TimeSpentSeconds) * time.Second
+		totalTimeSpent.AddSeconds(workLog.TimeSpentSeconds)
 	}
 
-	hours := int(totalTimeSpent.Hours())
-	minutes := int(totalTimeSpent.Minutes()) % 60
-
-	return fmt.Sprintf("%02dh %02dm", hours, minutes)
+	return totalTimeSpent, nil
 }
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {

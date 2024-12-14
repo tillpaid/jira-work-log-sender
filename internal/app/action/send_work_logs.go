@@ -119,9 +119,20 @@ func (a *SendWorkLogsAction) sendWorkLog(table *table.Table, workLog model.WorkL
 func (a *SendWorkLogsAction) setSpentTime(table *table.Table, workLog model.WorkLog, i int) {
 	a.applyTransition(table, i, timeIndex, transitions[toCalculating])
 
-	totalTime := a.client.WorkLogService.GetSpentTime(workLog.IssueNumber)
+	transitions[toCustomText].Next = "n/a"
+	transitions[toCustomText].Color = ui.DefaultColor
 
-	transitions[toCustomText].Next = totalTime
+	workLogTime, err := a.client.WorkLogService.GetSpentTime(workLog.IssueNumber)
+	if err != nil {
+		a.applyTransition(table, i, timeIndex, transitions[toCustomText])
+		return
+	}
+
+	transitions[toCustomText].Next = workLogTime.String()
+	if !workLog.ExcludedFromSpentTimeHighlight && workLogTime.Hours >= 16 {
+		transitions[toCustomText].Color = ui.YellowOnBlack
+	}
+
 	a.applyTransition(table, i, timeIndex, transitions[toCustomText])
 }
 

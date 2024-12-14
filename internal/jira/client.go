@@ -15,7 +15,7 @@ type IssueServiceInterface interface {
 }
 
 type WorkLogServiceInterface interface {
-	GetSpentTime(issueID string) string
+	GetSpentTime(issueID string) (*model.WorkLogTime, error)
 	SendWorkLog(workLog model.WorkLog) error
 }
 

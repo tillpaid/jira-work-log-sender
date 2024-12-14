@@ -37,6 +37,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
 	workLog.Description = strings.TrimLeft(strings.Join(section[1:], "\n"), "- ")
+	workLog.ExcludedFromSpentTimeHighlight = resolveWorkLogExcludedFromTimeHighlight(workLog.IssueNumber, config)
 
 	return workLog, nil
 }
