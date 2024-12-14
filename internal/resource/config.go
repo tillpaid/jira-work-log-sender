@@ -40,12 +40,18 @@ type jiraConfig struct {
 	ApiToken string
 }
 
+type issueHighlightConfig struct {
+	HighlightAfterHours int
+	ExcludedNumbers     []string
+}
+
 type Config struct {
-	PathToInputFile                string
-	CacheDir                       string
-	Jira                           jiraConfig
-	AllowedTags                    []string
-	ExcludedFromSpentTimeHighlight []string
+	IsDevRun        bool
+	PathToInputFile string
+	CacheDir        string
+	Jira            jiraConfig
+	AllowedTags     []string
+	IssueHighlight  issueHighlightConfig
 }
 
 func InitConfig() (*Config, error) {
@@ -67,6 +73,7 @@ func InitConfig() (*Config, error) {
 	}
 
 	return &Config{
+		IsDevRun:        isDevRun(),
 		PathToInputFile: filepath.Join(homeDir, envValues[envKeyPathToInputFile]),
 		CacheDir:        filepath.Join(homeDir, envValues[envKeyCacheDir]),
 		Jira: jiraConfig{
@@ -74,8 +81,11 @@ func InitConfig() (*Config, error) {
 			Username: envValues[envKeyJiraUsername],
 			ApiToken: envValues[envKeyJiraApiToken],
 		},
-		AllowedTags:                    allowedTags,
-		ExcludedFromSpentTimeHighlight: excludedFromSpentTimeHighlight,
+		AllowedTags: allowedTags,
+		IssueHighlight: issueHighlightConfig{
+			HighlightAfterHours: 16,
+			ExcludedNumbers:     excludedFromSpentTimeHighlight,
+		},
 	}, nil
 }
 
@@ -92,4 +102,14 @@ func getEnvValues(keys ...string) (map[string]string, error) {
 	}
 
 	return envMap, nil
+}
+
+func isDevRun() bool {
+	for _, arg := range os.Args {
+		if arg == "--dev" {
+			return true
+		}
+	}
+
+	return false
 }

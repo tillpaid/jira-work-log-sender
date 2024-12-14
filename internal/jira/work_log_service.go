@@ -1,17 +1,22 @@
 package jira
 
 import (
+	"math/rand"
+	"time"
+
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 )
 
 type workLogService struct {
 	currentUsername string
 	jiraClient      *jira.Client
+	config          *resource.Config
 }
 
-func newWorkLogService(currentUsername string, jiraClient *jira.Client) *workLogService {
-	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient}
+func newWorkLogService(currentUsername string, jiraClient *jira.Client, config *resource.Config) *workLogService {
+	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient, config: config}
 }
 
 func (w *workLogService) GetSpentTime(issueID string) (*model.WorkLogTime, error) {
@@ -34,6 +39,11 @@ func (w *workLogService) GetSpentTime(issueID string) (*model.WorkLogTime, error
 }
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
+	if w.config.IsDevRun {
+		time.Sleep(time.Duration(rand.Intn(500-100)+100) * time.Millisecond)
+		return nil
+	}
+
 	record := &jira.WorklogRecord{
 		TimeSpent: workLog.ModifiedTime.String(),
 		Comment:   workLog.Description,

@@ -8,6 +8,7 @@ import (
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_send_work_logs"
@@ -62,10 +63,11 @@ var transitions = map[int16]*Transition{
 type SendWorkLogsAction struct {
 	client *jira.Client
 	window *goncurses.Window
+	config *resource.Config
 }
 
-func NewSendWorkLogsAction(client *jira.Client, window *goncurses.Window) *SendWorkLogsAction {
-	return &SendWorkLogsAction{client: client, window: window}
+func NewSendWorkLogsAction(client *jira.Client, window *goncurses.Window, config *resource.Config) *SendWorkLogsAction {
+	return &SendWorkLogsAction{client: client, window: window, config: config}
 }
 
 func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
@@ -129,7 +131,7 @@ func (a *SendWorkLogsAction) setSpentTime(table *table.Table, workLog model.Work
 	}
 
 	transitions[toCustomText].Next = workLogTime.String()
-	if !workLog.ExcludedFromSpentTimeHighlight && workLogTime.Hours >= 16 {
+	if !workLog.ExcludedFromSpentTimeHighlight && workLogTime.Hours >= a.config.IssueHighlight.HighlightAfterHours {
 		transitions[toCustomText].Color = ui.YellowOnBlack
 	}
 

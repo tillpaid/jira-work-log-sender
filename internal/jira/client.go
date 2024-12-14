@@ -44,7 +44,7 @@ func NewClient(config *resource.Config) (*Client, error) {
 	return &Client{
 		jiraClient:     jiraClient,
 		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
-		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient),
+		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient, config),
 	}, nil
 }
 

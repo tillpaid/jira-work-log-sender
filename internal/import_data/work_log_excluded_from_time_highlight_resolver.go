@@ -7,7 +7,7 @@ import (
 )
 
 func resolveWorkLogExcludedFromTimeHighlight(issueNumber string, config *resource.Config) bool {
-	for _, value := range config.ExcludedFromSpentTimeHighlight {
+	for _, value := range config.IssueHighlight.ExcludedNumbers {
 		if strings.HasPrefix(issueNumber, value) {
 			return true
 		}

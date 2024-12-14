@@ -41,7 +41,7 @@ func initResources() *app.Application {
 		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
 	}
 
-	actions := action.NewActions(client, window)
+	actions := action.NewActions(client, window, config)
 
 	return app.NewApplication(window, client, actions, config)
 }
