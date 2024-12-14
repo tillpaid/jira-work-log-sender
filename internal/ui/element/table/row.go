@@ -1,10 +1,13 @@
 package table
 
+import "github.com/tillpaid/paysera-log-time-golang/internal/ui"
+
 type Row struct {
 	Columns    []*Column
 	Number     int
 	IsSelected bool
 	ShowText   bool
+	Color      int16
 }
 
 func NewRow(columns []*Column, number int, isSelected bool, position int, showText bool) *Row {
@@ -13,6 +16,7 @@ func NewRow(columns []*Column, number int, isSelected bool, position int, showTe
 		Number:     number,
 		IsSelected: isSelected,
 		ShowText:   showText,
+		Color:      ui.DefaultColor,
 	}
 
 	for _, column := range columns {

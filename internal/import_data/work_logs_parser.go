@@ -9,7 +9,7 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 )
 
-func ParseWorkLogs(config *resource.Config) ([]model.WorkLog, error) {
+func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]model.WorkLog, error) {
 	file, err := os.Open(config.PathToInputFile)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file during parsing work logs: %v", err)
@@ -32,7 +32,24 @@ func ParseWorkLogs(config *resource.Config) ([]model.WorkLog, error) {
 		workLogs = append(workLogs, workLog)
 	}
 
+	workLogs = copyTempValuesFromOldWorkLogs(oldWorkLogs, workLogs)
 	workLogs = service.ModifyWorkLogsTime(workLogs)
 
 	return workLogs, nil
+}
+
+func copyTempValuesFromOldWorkLogs(oldWorkLogs []model.WorkLog, workLogs []model.WorkLog) []model.WorkLog {
+	for _, oldWorkLog := range oldWorkLogs {
+		if !oldWorkLog.ModifyTimeDisabled {
+			continue
+		}
+
+		for i, workLog := range workLogs {
+			if oldWorkLog.IssueNumber == workLog.IssueNumber && oldWorkLog.Description == workLog.Description {
+				workLogs[i].ModifyTimeDisabled = true
+			}
+		}
+	}
+
+	return workLogs
 }

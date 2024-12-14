@@ -28,6 +28,10 @@ func waitForAction(window *goncurses.Window) int {
 			return actionLastRow
 		case 'y':
 			return actionCopy
+		case 'm':
+			return actionToggleModifyTime
+		case 'M':
+			return actionToggleAllModifyTime
 		case 'q', ' ', goncurses.KEY_ESC, goncurses.KEY_RETURN:
 			return actionQuit
 		}

@@ -8,6 +8,7 @@ import (
 	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
 	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/paysera-log-time-golang/internal/service"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 )
@@ -20,6 +21,8 @@ const (
 	actionFirstRow
 	actionLastRow
 	actionCopy
+	actionToggleModifyTime
+	actionToggleAllModifyTime
 	actionQuit
 )
 
@@ -83,6 +86,14 @@ func (a *Application) Start() error {
 			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
 		case actionCopy:
 			return a.processActionCopy()
+		case actionToggleModifyTime:
+			if err := a.processActionToggleModifyTime(false); err != nil {
+				return err
+			}
+		case actionToggleAllModifyTime:
+			if err := a.processActionToggleModifyTime(true); err != nil {
+				return err
+			}
 		case actionQuit:
 			ui.EndWindow()
 			return nil
@@ -95,11 +106,7 @@ func (a *Application) processActionReload() error {
 		return err
 	}
 
-	if err := a.printTable(); err != nil {
-		return err
-	}
-
-	return nil
+	return a.printTable()
 }
 
 func (a *Application) processActionSend() error {
@@ -124,8 +131,23 @@ func (a *Application) processActionCopy() error {
 	return nil
 }
 
+func (a *Application) processActionToggleModifyTime(all bool) error {
+	if len(a.workLogs) == 0 {
+		return nil
+	}
+
+	for i := range a.workLogs {
+		if all || i == a.selector.Row-1 {
+			a.workLogs[i].ToggleModifyTime()
+		}
+	}
+
+	a.workLogs = service.ModifyWorkLogsTime(a.workLogs)
+	return a.printTable()
+}
+
 func (a *Application) loadWorkLogs() error {
-	workLogs, err := import_data.ParseWorkLogs(a.config)
+	workLogs, err := import_data.ParseWorkLogs(a.config, a.workLogs)
 	if err != nil {
 		return err
 	}

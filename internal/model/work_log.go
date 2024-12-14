@@ -18,6 +18,7 @@ type WorkLog struct {
 	IssueNumber                    string
 	Description                    string
 	ExcludedFromSpentTimeHighlight bool
+	ModifyTimeDisabled             bool
 }
 
 func (w *WorkLog) GetHeader() string {
@@ -26,6 +27,10 @@ func (w *WorkLog) GetHeader() string {
 	}
 
 	return w.HeaderText
+}
+
+func (w *WorkLog) ToggleModifyTime() {
+	w.ModifyTimeDisabled = !w.ModifyTimeDisabled
 }
 
 func (wt *WorkLogTime) AddMinutes(minutes int) {

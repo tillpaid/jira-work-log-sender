@@ -2,6 +2,7 @@ package table
 
 import (
 	"github.com/rthornton128/goncurses"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/utils"
 )
 
@@ -73,9 +74,17 @@ func (t *Table) printRowText(row *Row) {
 
 func (t *Table) printColumnText(row *Row, column *Column) {
 	t.window.MoveAddChar(row.Number, column.Position-1, goncurses.ACS_VLINE)
-	utils.ColorOn(t.window, column.Color)
+	utils.ColorOn(t.window, t.resolveColor(row.Color, column.Color))
 	t.window.MovePrint(row.Number, column.Position, column.GetText(row.ShowText))
-	utils.ColorOff(t.window, column.Color)
+	utils.ColorOff(t.window, t.resolveColor(row.Color, column.Color))
+}
+
+func (t *Table) resolveColor(rowColor, columnColor int16) int16 {
+	if columnColor != ui.DefaultColor {
+		return columnColor
+	}
+
+	return rowColor
 }
 
 func (t *Table) printBorderChars(y int, x int, borderChars []BorderChars) {

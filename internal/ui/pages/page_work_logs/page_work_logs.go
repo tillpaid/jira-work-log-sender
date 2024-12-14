@@ -5,6 +5,7 @@ import (
 
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element"
 	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
 )
@@ -79,7 +80,13 @@ func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWid
 		}
 
 		isSelected := i+1 == selectedRow
-		rows = append(rows, table.NewRow(columns, i+1+3, isSelected, 3, false))
+		row := table.NewRow(columns, i+1+3, isSelected, 3, false)
+
+		if log.ModifyTimeDisabled {
+			row.Color = ui.CyanOnBlack
+		}
+
+		rows = append(rows, row)
 	}
 
 	return rows
