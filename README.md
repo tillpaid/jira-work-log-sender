@@ -82,7 +82,7 @@ Command output
 
 Then you can press `l` two times to send work logs to Jira
 
-- App will send worklogs to jira and print you total time logged to the ticket (only your worklogs)
+- App will send workLogs to jira and print you total time logged to the ticket (only your workLogs)
 
 ```shell
 +---------------------------------------------------------------------------------------+

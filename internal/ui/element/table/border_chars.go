@@ -29,7 +29,7 @@ var borderTypesMap = map[uint16]map[uint16]goncurses.Char{
 	},
 }
 
-type TableBorderChars struct {
+type BorderChars struct {
 	Count int
 	Char  goncurses.Char
 }

@@ -7,24 +7,24 @@ import (
 
 func ColorOn(window *goncurses.Window, color int16) {
 	if color != ui.DefaultColor {
-		window.ColorOn(color)
+		_ = window.ColorOn(color)
 	}
 }
 
 func ColorOff(window *goncurses.Window, color int16) {
 	if color != ui.DefaultColor {
-		window.ColorOff(color)
+		_ = window.ColorOff(color)
 	}
 }
 
 func SelectedOn(window *goncurses.Window, isSelected bool) {
 	if isSelected {
-		window.AttrOn(goncurses.A_REVERSE)
+		_ = window.AttrOn(goncurses.A_REVERSE)
 	}
 }
 
 func SelectedOff(window *goncurses.Window, isSelected bool) {
 	if isSelected {
-		window.AttrOff(goncurses.A_REVERSE)
+		_ = window.AttrOff(goncurses.A_REVERSE)
 	}
 }

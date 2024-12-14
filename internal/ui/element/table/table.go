@@ -15,17 +15,17 @@ func NewTable(header *Header, rows []*Row, window *goncurses.Window) *Table {
 	return &Table{Header: header, Rows: rows, window: window}
 }
 
-func (t *Table) GetBorderChars(borderType uint16) []TableBorderChars {
-	chars := []TableBorderChars{
+func (t *Table) GetBorderChars(borderType uint16) []BorderChars {
+	chars := []BorderChars{
 		{1, borderTypesMap[borderType][BorderCharFirst]},
 	}
 
 	for _, column := range t.Header.Row.Columns {
-		chars = append(chars, TableBorderChars{column.Width + 2, goncurses.ACS_HLINE})
-		chars = append(chars, TableBorderChars{1, borderTypesMap[borderType][BorderCharMiddle]})
+		chars = append(chars, BorderChars{column.Width + 2, goncurses.ACS_HLINE})
+		chars = append(chars, BorderChars{1, borderTypesMap[borderType][BorderCharMiddle]})
 	}
 
-	chars[len(chars)-1] = TableBorderChars{1, borderTypesMap[borderType][BorderCharLast]}
+	chars[len(chars)-1] = BorderChars{1, borderTypesMap[borderType][BorderCharLast]}
 
 	return chars
 }
@@ -78,7 +78,7 @@ func (t *Table) printColumnText(row *Row, column *Column) {
 	utils.ColorOff(t.window, column.Color)
 }
 
-func (t *Table) printBorderChars(y int, x int, borderChars []TableBorderChars) {
+func (t *Table) printBorderChars(y int, x int, borderChars []BorderChars) {
 	t.window.Move(y, x)
 
 	for _, borderChar := range borderChars {
