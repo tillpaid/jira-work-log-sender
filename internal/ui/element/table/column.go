@@ -14,7 +14,7 @@ type Column struct {
 }
 
 func (c *Column) GetText(showText bool) string {
-	limit := c.Width + 2
+	limit := c.Width
 
 	if !showText {
 		return strings.Repeat(" ", limit)

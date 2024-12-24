@@ -21,7 +21,7 @@ func (t *Table) GetBorderChars(borderType uint16) []BorderChars {
 	}
 
 	for _, column := range t.Header.Row.Columns {
-		chars = append(chars, BorderChars{column.Width + 2, goncurses.ACS_HLINE})
+		chars = append(chars, BorderChars{column.Width, goncurses.ACS_HLINE})
 		chars = append(chars, BorderChars{1, borderTypesMap[borderType][BorderCharMiddle]})
 	}
 
