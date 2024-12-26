@@ -39,7 +39,7 @@ Tired of logging your hours manually in Jira? **Jira Work Log Sender** automates
 
 ## Requirements
 
-- Go 1.18+ (for building the project)
+- Go 1.23+ (for building the project)
 - A valid Jira account (for logging work)
 - Jira API token
 - macOS, Linux, or Windows (with some tweaks)
