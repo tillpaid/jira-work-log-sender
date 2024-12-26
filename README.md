@@ -1,54 +1,103 @@
-# Setup
+# Jira Work Log Sender ✨
 
-Copy `.env.dist` file to `~/.config/jira-work-log-sender/env`
+A simple, interactive CLI tool to help you log your daily work in Jira quickly and efficiently. This application reads a Markdown file containing your work logs and sends them to Jira, allowing you to easily track and manage your time.
 
-```shell
-mkdir -p ~/.config/jira-work-log-sender
-cp .env.dist ~/.config/jira-work-log-sender/env
-```
+## Table of Contents
 
-- Fill `PATH_TO_INPUT_FILE` - it should be a relative path from your home directory
-- Fill `CACHE_DIR` - it should be a relative path from your home directory. And this directory should exist
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Setup](#setup)
+5. [Usage](#usage)
+6. [Command Reference](#command-reference)
+7. [Troubleshooting](#troubleshooting)
+8. [Contributing](#contributing)
+9. [License](#license)
 
-Example:
+---
 
-```markdown
-PATH_TO_INPUT_FILE="Icloud/Documents/IA-writer/2. My day.md"
-CACHE_DIR=".config/jira-work-log-sender/cache"
-JIRA_BASE_URL="https://jira.example.com"
-JIRA_USERNAME="your_email"
-JIRA_API_TOKEN="your_token"
-```
+## Introduction
 
-Install the dependencies:
+Tired of logging your hours manually in Jira? **Jira Work Log Sender** automates the process by parsing a Markdown file and creating work log entries in Jira. This reduces the friction of time-tracking, so you can focus on more important tasks.
+
+**Why you’ll love it**:
+
+- Minimal configuration required
+- Simple and customizable workflow
+- Quick feedback on your logged hours
+
+---
+
+## Features
+
+- **Interactive UI:** Navigate through your parsed logs and confirm changes before sending them.
+- **Time Modification:** Proportionally adjust all your work logs to reach your desired total daily hours (e.g., 8 hours).
+- **Status Feedback:** See the total time logged per Jira ticket, along with sending statuses.
+- **Keyboard Shortcuts:** Quickly move through logs or send them with a couple of keystrokes.
+
+---
+
+## Requirements
+
+- Go 1.18+ (for building the project)
+- A valid Jira account (for logging work)
+- Jira API token
+- macOS, Linux, or Windows (with some tweaks)
+
+---
+
+## Setup
+
+1. **Copy the `.env.dist` file** to your configuration folder:
+
+    mkdir -p ~/.config/jira-work-log-sender
+    cp .env.dist ~/.config/jira-work-log-sender/env
+
+2. **Update your environment file** (`~/.config/jira-work-log-sender/env`):
+   - `PATH_TO_INPUT_FILE` — A relative path from your home directory pointing to your input `.md` file.
+   - `CACHE_DIR` — A relative path from your home directory pointing to the cache directory (this directory must exist).
+   - `JIRA_BASE_URL`, `JIRA_USERNAME`, `JIRA_API_TOKEN` — Your Jira credentials.
+
+   **Example**:
+
+        PATH_TO_INPUT_FILE="Icloud/Documents/IA-writer/2. My day.md"
+        CACHE_DIR=".config/jira-work-log-sender/cache"
+        JIRA_BASE_URL="https://jira.example.com"
+        JIRA_USERNAME="your_email"
+        JIRA_API_TOKEN="your_token"
+
+3. **Install Go dependencies**:
 
 ```shell
 go mod download
 ```
 
-Build the project:
+4. **Build the project**:
 
 ```shell
 make build
 ```
 
-Move the binary to the bin folder:
+5. **Install (move) the binary** to your `$PATH` (example for macOS):
 
-> Example for macOS. For example, I would like to call it `tt`
+    sudo mv ./bin/app /usr/local/bin/tt
 
-```shell
-sudo mv ./bin/app /usr/local/bin/tt
-```
+   *You can rename `app` to any alias you prefer, such as `tt`.*
 
-Run the application:
+6. **Run the application**:
 
 ```shell
 tt
 ```
 
-# Usage
+Congratulations! You’re ready to start logging your work.
 
-Filled .md file with the data:
+---
+
+## Usage
+
+1. **Create or open your `.md` file** (pointed to by `PATH_TO_INPUT_FILE`) and fill it with your daily tasks.  
+   For example:
 
 ```markdown
 #  Worklogs
@@ -65,9 +114,17 @@ Filled .md file with the data:
 - Fixed something broken
 ```
 
-Command output
+   > **Tip:** The `# Worklogs` heading is required. Each work log entry starts with `##`, followed by `Name | ISSUE-ID Time`.
+
+2. **Run the application**:
 
 ```shell
+tt
+```
+
+3. **View the parsed logs** and confirm before sending:
+
+```
 ┌─  Work Logs for Today  ──────────────────────────────────────────────────────┐
 │ ┌────────────────────────────┬────────┬────────┬─────────────┬─────────────┐ │
 │ │ Name                       │ T      │ MT     │ Issue       │ Description │ │
@@ -79,21 +136,17 @@ Command output
 │                                                                              │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
-
-   Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit
 ```
 
-- Name - name of the work log (you can use it for your convenience)
-- T - time you want to log
-- MT - modified time. If you have time left, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left
-- Issue - ticket number in Jira
-- Description - description of what you did
+   - **Name**: A descriptive name (for your reference).
+   - **T**: The original time you wanted to log.
+   - **MT**: The modified time (if you have leftover hours to reach 8 hours, it’s automatically distributed).
+   - **Issue**: The Jira ticket ID.
+   - **Description**: The tags or activities you performed.
 
-Then you can press `l` two times to send work logs to Jira
+4. **Send work logs** to Jira by pressing `l` twice. You’ll see a result screen like this:
 
-- App will send workLogs to jira and print you total time logged to the ticket (only your workLogs)
-
-```shell
+```
 ┌─  Send Work Logs  ──────────────────────────────────────────────────────────────┐
 │ ┌────┬─────────────┬────────┬───────────────┬───────────────┐                   │
 │ │ #  │ Issue       │ MT     │ Send status   │ Total time    │                   │
@@ -104,40 +157,52 @@ Then you can press `l` two times to send work logs to Jira
 │                                                                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
-   Action keys: R-Reload | [Q/Space/Return/Esc]-Exit
 ```
 
-- `#` - number of the work log
-- Issue - ticket number in Jira
-- MT - modified time. If you have time left, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left
-- Send status - status of sending work log to Jira (Done! or Error)
-- Total time - total time logged to the ticket (only your workLogs)
+---
 
-### Another action keys
+## Command Reference
 
-- `r` - reload data from the file.
-- `ll` - send work logs to Jira.
-- `j` or `arrow down` - move down.
-- `k` or `arrow up` - move up.
-- `gg` - move to the top of the list.
-- `G` - move to the end of the list.
-- `yy` - copy the selected line to the clipboard (will copy title like `T1 - Time | ISSUE-987`).
-- `m` - disable or enable modify time. When you disable it, you can't change the time of the work log. When you enable it, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left.
-- `M` - toggle modify time for all tickets.
-- `q` or `space` or `return` or `esc` - exit.
+- **R** — Reload the file from disk.
+- **L** — Send work logs to Jira (press twice).
+- **J** or **Arrow Down** — Move down in the list.
+- **K** or **Arrow Up** — Move up in the list.
+- **GG** — Jump to the top of the list.
+- **G** — Jump to the bottom of the list.
+- **YY** — Copy the selected line/title to clipboard.
+- **M** — Toggle "modify time" mode for the selected ticket.
+- **Shift+M** — Toggle "modify time" for all tickets at once.
+- **Q/Space/Return/Esc** — Exit the application.
 
-## Input file explanation
+---
 
-- The heading `#` and the empty line after it are required
-- The file separated by sections. Section is a separate work log
-- Each section should have a title with the `##` symbol
-- Format of title:
-  - Between `##` and `|` it's a name for you, app doesn't use it
-  - After `|` it's a ticket number in jira to which you want to log time
-  - After ticket number it's a time you want to log. Allowed `h` and `m`. You can use only `h` or only `m` or both
-- After title goes a list of descriptions of what you did
-  - Each description should start with `-` symbol
-  - The first row used as a `TAG` for the work log and will be validated against predefined tags we use in Jira
+## Troubleshooting
 
-In case is file not valid, you forgot to fill some required fields, app will show you an error message. You for sure will not send wrong data to Jira.
+- **File Not Found**: Check that your `PATH_TO_INPUT_FILE` in `~/.config/jira-work-log-sender/env` is correct and that the file exists.
+- **Incorrect Time Format**: Ensure you specify time in the format `XhYm` (e.g., `7h40m` or just `30m`).
+- **Cache Directory Issues**: Confirm `CACHE_DIR` points to a valid directory.
+- **Invalid Jira Credentials**: Double-check your `JIRA_BASE_URL`, `JIRA_USERNAME`, and `JIRA_API_TOKEN`.
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues and pull requests to help improve this project. Whether it's bug fixes, new features, or documentation improvements, every bit counts.
+
+1. **Fork** the project
+2. **Create** your feature branch (`git checkout -b feature/amazing-improvement`)
+3. **Commit** your changes (`git commit -m 'Add some amazing improvements'`)
+4. **Push** to the branch (`git push origin feature/amazing-improvement`)
+5. **Open** a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
+
+---
+
+**Happy Logging!** 🚀
+
+If you run into any issues or have questions, please open an [issue on GitHub](#) (if applicable) or send a message. We’d love to hear your feedback and suggestions!
