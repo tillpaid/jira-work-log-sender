@@ -53,12 +53,12 @@ Filled .md file with the data:
 ```markdown
 #  Worklogs
 
-##  Time | TIME-505 10m
+##  T1 - Time | ISSUE-987 10m
 [Communication]
-- RocketChat communication / emails reading
-- Daily
+- Communication with team. Emails reading
+- Daily meeting
 
-##  1 - Separate bank charge creation | COMP-904 3h
+##  1 - You task title (just for you) | ISSUE-12345 7h40m
 [Engineering activities]
 - Worked on something important
 - Added something new
@@ -68,32 +68,64 @@ Filled .md file with the data:
 Command output
 
 ```shell
-+---------------------------------------------------------------------------------------+
-| Work logs for today                                                                   |
-+---------------------------------------------------------------------------------------+
-| 1. 10m | TIME-505 | [Communication] - RocketChat communication / emails r...          |
-| 2. 3h  | COMP-904 | [Engineering activities] - Worked on something import...          |
-+---------------------------------------------------------------------------------------+
-| Total time: 3h 10m | Left: 4h 50m                                                     |
-+---------------------------------------------------------------------------------------+
-| Action keys: R-Reload | L-Send work logs (double press) | [Q/Space/Return/Esc]-Exit   |
-+---------------------------------------------------------------------------------------+
+┌─  Work Logs for Today  ──────────────────────────────────────────────────────┐
+│ ┌────────────────────────────┬────────┬────────┬─────────────┬─────────────┐ │
+│ │ Name                       │ T      │ MT     │ Issue       │ Description │ │
+│ ├────────────────────────────┼────────┼────────┼─────────────┼─────────────┤ │
+│ │ T1 - Time | ISSUE-987 10m  │ 10m    │ 10m    │ ISSUE-987   │ [Communicat │ │
+│ │ 1 - You task title (just f │ 7h 40m │ 7h 50m │ ISSUE-12345 │ [Engineerin │ │
+│ └────────────────────────────┴────────┴────────┴─────────────┴─────────────┘ │
+│   Total time: 7h 50m │ Left: 0h 10m │ Total modified time: 8h 0m             │
+│                                                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit
 ```
+
+- Name - name of the work log (you can use it for your convenience)
+- T - time you want to log
+- MT - modified time. If you have time left, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left
+- Issue - ticket number in Jira
+- Description - description of what you did
 
 Then you can press `l` two times to send work logs to Jira
 
 - App will send workLogs to jira and print you total time logged to the ticket (only your workLogs)
 
 ```shell
-+---------------------------------------------------------------------------------------+
-| Send work logs                                                                        |
-+---------------------------------------------------------------------------------------+
-| 1. TIME-505 | 10m | Done! | Total: 657h 21m                                           |
-| 2. COMP-904 | 3h  | Done! | Total: 13h 29m                                            |
-+---------------------------------------------------------------------------------------+
-| Action keys: R-Reload | L-Send work logs (double press) | [Q/Space/Return/Esc]-Exit   |
-+---------------------------------------------------------------------------------------+
+┌─  Send Work Logs  ──────────────────────────────────────────────────────────────┐
+│ ┌────┬─────────────┬────────┬───────────────┬───────────────┐                   │
+│ │ #  │ Issue       │ MT     │ Send status   │ Total time    │                   │
+│ ├────┼─────────────┼────────┼───────────────┼───────────────┤                   │
+│ │ 1  │ ISSUE-987   │ 10m    │ Done!         │ n/a           │                   │
+│ │ 2  │ ISSUE-12345 │ 7h 50m │ Done!         │ n/a           │                   │
+│ └────┴─────────────┴────────┴───────────────┴───────────────┘                   │
+│                                                                                 │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+   Action keys: R-Reload | [Q/Space/Return/Esc]-Exit
 ```
+
+- `#` - number of the work log
+- Issue - ticket number in Jira
+- MT - modified time. If you have time left, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left
+- Send status - status of sending work log to Jira (Done! or Error)
+- Total time - total time logged to the ticket (only your workLogs)
+
+### Another action keys
+
+- `r` - reload data from the file.
+- `ll` - send work logs to Jira.
+- `j` or `arrow down` - move down.
+- `k` or `arrow up` - move up.
+- `gg` - move to the top of the list.
+- `G` - move to the end of the list.
+- `yy` - copy the selected line to the clipboard (will copy title like `T1 - Time | ISSUE-987`).
+- `m` - disable or enable modify time. When you disable it, you can't change the time of the work log. When you enable it, the system will increase time of all tickets to 8 hours in total proportionally to the time you have left.
+- `M` - toggle modify time for all tickets.
+- `q` or `space` or `return` or `esc` - exit.
 
 ## Input file explanation
 
