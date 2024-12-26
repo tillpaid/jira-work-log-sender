@@ -1,6 +1,6 @@
 package table
 
-import "github.com/tillpaid/paysera-log-time-golang/internal/ui"
+import "github.com/tillpaid/jira-work-log-sender/internal/ui"
 
 type Row struct {
 	Columns    []*Column

@@ -3,7 +3,7 @@ package table
 import (
 	"strings"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 )
 
 type Column struct {

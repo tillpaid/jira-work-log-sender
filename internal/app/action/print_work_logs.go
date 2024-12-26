@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/pages/page_work_logs"
+	"github.com/tillpaid/jira-work-log-sender/internal/jira"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/pages/page_work_logs"
 )
 
 type PrintWorkLogsAction struct {

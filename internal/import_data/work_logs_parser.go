@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
 )
 
 func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]model.WorkLog, error) {

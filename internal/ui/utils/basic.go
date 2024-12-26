@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 )
 
 func ColorOn(window *goncurses.Window, color int16) {

@@ -3,7 +3,7 @@ package page_work_logs
 import (
 	"fmt"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
 func getTimeRow(workLogs []model.WorkLog) []string {

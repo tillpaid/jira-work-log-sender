@@ -3,7 +3,7 @@ package service
 import (
 	"strings"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
 func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {

@@ -6,11 +6,11 @@ import (
 	"syscall"
 
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
+	"github.com/tillpaid/jira-work-log-sender/internal/app/action"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 )
 
 func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model.RowSelector, actions *action.Actions, workLogs *[]model.WorkLog) {

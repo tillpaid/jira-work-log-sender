@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/andygrunwald/go-jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/cache"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/cache"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
 type IssueServiceInterface interface {

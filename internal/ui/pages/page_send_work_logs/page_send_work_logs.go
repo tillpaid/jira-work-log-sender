@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/element"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 )
 
 const (

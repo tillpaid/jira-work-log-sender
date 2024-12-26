@@ -2,7 +2,7 @@ package table
 
 import (
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/utils"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/utils"
 )
 
 type Table struct {

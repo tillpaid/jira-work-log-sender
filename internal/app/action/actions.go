@@ -2,8 +2,8 @@ package action
 
 import (
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/jira"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
 type Actions struct {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/andygrunwald/go-jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/cache"
+	"github.com/tillpaid/jira-work-log-sender/internal/cache"
 )
 
 type issueService struct {

@@ -1,4 +1,4 @@
-module github.com/tillpaid/paysera-log-time-golang
+module github.com/tillpaid/jira-work-log-sender
 
 go 1.22.3
 

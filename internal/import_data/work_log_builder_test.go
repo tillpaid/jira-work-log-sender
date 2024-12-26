@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
 func Test_getMainInformation(t *testing.T) {

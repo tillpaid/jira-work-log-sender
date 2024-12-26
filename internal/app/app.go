@@ -2,15 +2,15 @@ package app
 
 import (
 	"github.com/rthornton128/goncurses"
-	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
-	"github.com/tillpaid/paysera-log-time-golang/internal/clipboard"
-	"github.com/tillpaid/paysera-log-time-golang/internal/import_data"
-	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui/element/table"
+	"github.com/tillpaid/jira-work-log-sender/internal/app/action"
+	"github.com/tillpaid/jira-work-log-sender/internal/clipboard"
+	"github.com/tillpaid/jira-work-log-sender/internal/import_data"
+	"github.com/tillpaid/jira-work-log-sender/internal/jira"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 )
 
 const (

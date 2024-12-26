@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
 func parseTimeString(timeString string) (model.WorkLogTime, error) {
@@ -31,8 +31,8 @@ func parseTimeString(timeString string) (model.WorkLogTime, error) {
 		return workLogTime, err
 	}
 
-    workLogTime.Hours += workLogTime.Minutes / 60
-    workLogTime.Minutes = workLogTime.Minutes % 60
+	workLogTime.Hours += workLogTime.Minutes / 60
+	workLogTime.Minutes = workLogTime.Minutes % 60
 
 	if workLogTime.Hours == 0 && workLogTime.Minutes == 0 {
 		return workLogTime, errors.New("no hours or minutes in time string")

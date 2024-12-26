@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/app"
-	"github.com/tillpaid/paysera-log-time-golang/internal/app/action"
-	"github.com/tillpaid/paysera-log-time-golang/internal/jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
-	"github.com/tillpaid/paysera-log-time-golang/internal/service"
-	"github.com/tillpaid/paysera-log-time-golang/internal/ui"
+	"github.com/tillpaid/jira-work-log-sender/internal/app"
+	"github.com/tillpaid/jira-work-log-sender/internal/app/action"
+	"github.com/tillpaid/jira-work-log-sender/internal/jira"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 )
 
 func main() {

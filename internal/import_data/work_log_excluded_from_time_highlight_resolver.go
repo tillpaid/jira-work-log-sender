@@ -3,7 +3,7 @@ package import_data
 import (
 	"strings"
 
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
 func resolveWorkLogExcludedFromTimeHighlight(issueNumber string, config *resource.Config) bool {

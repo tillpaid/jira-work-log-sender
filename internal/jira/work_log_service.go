@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/andygrunwald/go-jira"
-	"github.com/tillpaid/paysera-log-time-golang/internal/model"
-	"github.com/tillpaid/paysera-log-time-golang/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
 type workLogService struct {
