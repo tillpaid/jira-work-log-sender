@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	envFileName           = ".config/paysera-log-time/env"
+	envFileName           = ".config/jira-work-log-sender/env"
 	envKeyPathToInputFile = "PATH_TO_INPUT_FILE"
 	envKeyJiraBaseUrl     = "JIRA_BASE_URL"
 	envKeyJiraUsername    = "JIRA_USERNAME"

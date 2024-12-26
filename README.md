@@ -1,10 +1,10 @@
 # Setup
 
-Copy `.env.dist` file to `~/.config/paysera-log-time/env`
+Copy `.env.dist` file to `~/.config/jira-work-log-sender/env`
 
 ```shell
-mkdir -p ~/.config/paysera-log-time
-cp .env.dist ~/.config/paysera-log-time/env
+mkdir -p ~/.config/jira-work-log-sender
+cp .env.dist ~/.config/jira-work-log-sender/env
 ```
 
 - Fill `PATH_TO_INPUT_FILE` - it should be a relative path from your home directory
@@ -14,8 +14,8 @@ Example:
 
 ```markdown
 PATH_TO_INPUT_FILE="Icloud/Documents/IA-writer/2. My day.md"
-CACHE_DIR=".config/paysera-log-time/cache"
-JIRA_BASE_URL="https://jira.paysera.net"
+CACHE_DIR=".config/jira-work-log-sender/cache"
+JIRA_BASE_URL="https://jira.example.com"
 JIRA_USERNAME="your_email"
 JIRA_API_TOKEN="your_token"
 ```
