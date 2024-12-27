@@ -58,8 +58,8 @@ func drawFooter(window *goncurses.Window, height int) {
 func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {
 	columns := []*table.Column{
 		{"Name", workLogsTableWidth.HeaderText, 0, 0},
-		{"T", workLogsTableWidth.OriginalTime, 0, 0},
-		{"MT", workLogsTableWidth.ModifiedTime, 0, 0},
+		{"Time", workLogsTableWidth.OriginalTime, 0, 0},
+		{"MTime", workLogsTableWidth.ModifiedTime, 0, 0},
 		{"Issue", workLogsTableWidth.IssueNumber, 0, 0},
 		{"Description", workLogsTableWidth.Description, 0, 0},
 	}

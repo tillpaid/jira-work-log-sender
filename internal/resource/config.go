@@ -23,6 +23,7 @@ type Config struct {
 	} `yaml:"issueHighlight"`
 
 	TimeModification struct {
+		Enabled         bool     `yaml:"enabled"`
 		ExcludedNumbers []string `yaml:"excludedNumbers" validate:"required"`
 	} `yaml:"timeModification"`
 

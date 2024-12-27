@@ -70,6 +70,7 @@ issueHighlight:
     - "ISSUE-123"
 
 timeModification:
+  enabled: true                         # Enable or disable time modification.
   excludedNumbers:                      # List of Jira issue IDs excluded from time modification.
     - "ISSUE-456"
 

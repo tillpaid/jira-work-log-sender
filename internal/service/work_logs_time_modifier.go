@@ -64,7 +64,7 @@ func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includ
 }
 
 func isExcluded(workLog model.WorkLog, config *resource.Config) bool {
-	if workLog.ModifyTimeDisabled {
+	if workLog.ModifyTimeDisabled || !config.TimeModification.Enabled {
 		return true
 	}
 
