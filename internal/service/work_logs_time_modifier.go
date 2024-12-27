@@ -4,11 +4,12 @@ import (
 	"strings"
 
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
-func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
-	totalInMinutes := getTotalInMinutes(workLogs, true)
-	totalNotExcludedInMinutes := getTotalInMinutes(workLogs, false)
+func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []model.WorkLog {
+	totalInMinutes := getTotalInMinutes(workLogs, config, true)
+	totalNotExcludedInMinutes := getTotalInMinutes(workLogs, config, false)
 
 	if totalInMinutes == 0 {
 		return workLogs
@@ -22,7 +23,7 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 		workLogs[i].ModifiedTime.Hours = workLog.OriginalTime.Hours
 		workLogs[i].ModifiedTime.Minutes = workLog.OriginalTime.Minutes
 
-		if isExcluded(workLog) || totalLeft <= 0 {
+		if isExcluded(workLog, config) || totalLeft <= 0 {
 			continue
 		}
 
@@ -47,11 +48,11 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog) []model.WorkLog {
 	return workLogs
 }
 
-func getTotalInMinutes(workLogs []model.WorkLog, includeExcluded bool) int {
+func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includeExcluded bool) int {
 	var total int
 
 	for _, workLog := range workLogs {
-		if includeExcluded == false && isExcluded(workLog) {
+		if includeExcluded == false && isExcluded(workLog, config) {
 			continue
 		}
 
@@ -62,15 +63,14 @@ func getTotalInMinutes(workLogs []model.WorkLog, includeExcluded bool) int {
 	return total
 }
 
-func isExcluded(workLog model.WorkLog) bool {
+func isExcluded(workLog model.WorkLog, config *resource.Config) bool {
 	if workLog.ModifyTimeDisabled {
 		return true
 	}
 
-	excluded := []string{"TIME-505"}
 	issueNumber := strings.ToLower(workLog.IssueNumber)
 
-	for _, excludedIssueNumber := range excluded {
+	for _, excludedIssueNumber := range config.TimeModification.ExcludedNumbers {
 		if issueNumber == strings.ToLower(excludedIssueNumber) {
 			return true
 		}

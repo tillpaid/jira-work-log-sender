@@ -142,7 +142,7 @@ func (a *Application) processActionToggleModifyTime(all bool) error {
 		}
 	}
 
-	a.workLogs = service.ModifyWorkLogsTime(a.workLogs)
+	a.workLogs = service.ModifyWorkLogsTime(a.workLogs, a.config)
 	return a.printTable()
 }
 

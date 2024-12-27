@@ -33,7 +33,7 @@ func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]mode
 	}
 
 	workLogs = copyTempValuesFromOldWorkLogs(oldWorkLogs, workLogs)
-	workLogs = service.ModifyWorkLogsTime(workLogs)
+	workLogs = service.ModifyWorkLogsTime(workLogs, config)
 
 	return workLogs, nil
 }

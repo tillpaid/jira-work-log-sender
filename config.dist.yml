@@ -1,0 +1,24 @@
+jira:
+    baseUrl: "https://jira.example.com"
+    username: ""
+    apiToken: ""
+issueHighlight:
+    highlightAfterHours: 16
+    excludedNumbers:
+        - "ISSUE-123"
+timeModification:
+  excludedNumbers:
+    - "ISSUE-456"
+pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
+cacheDir: ".config/jira-work-log-sender/cache"
+allowedTags:
+    - "[Engineering activities]"
+    - "[Documentation]"
+    - "[Deployment&Monitoring]"
+    - "[Research&Investigation]"
+    - "[Code review]"
+    - "[Communication]"
+    - "[Environment Issue]"
+    - "[Operational work]"
+    - "[Other]"
+
