@@ -14,7 +14,11 @@ import (
 func main() {
 	defer service.HandlePanic()
 
-	application := initResources()
+	application, err := initResources()
+	if err != nil {
+		ui.EndWindow()
+		service.PrintFatalError(err)
+	}
 
 	if err := application.Start(); err != nil {
 		ui.EndWindow()
@@ -22,26 +26,23 @@ func main() {
 	}
 }
 
-func initResources() *app.Application {
+func initResources() (*app.Application, error) {
 	window, err := ui.InitializeWindow()
 	if err != nil {
-		ui.EndWindow()
-		service.PrintFatalError(fmt.Errorf("error initializing window: %v", err))
+		return nil, fmt.Errorf("error initializing window: %v", err)
 	}
 
 	config, err := resource.InitConfig()
 	if err != nil {
-		ui.EndWindow()
-		service.PrintFatalError(err)
+		return nil, fmt.Errorf("error initializing config: %v", err)
 	}
 
 	client, err := jira.NewClient(config)
 	if err != nil {
-		ui.EndWindow()
-		service.PrintFatalError(fmt.Errorf("error initializing jira client; %v", err))
+		return nil, fmt.Errorf("error initializing jira client: %v", err)
 	}
 
 	actions := action.NewActions(client, window, config)
 
-	return app.NewApplication(window, client, actions, config)
+	return app.NewApplication(window, client, actions, config), nil
 }
