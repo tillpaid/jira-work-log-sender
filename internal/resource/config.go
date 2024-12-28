@@ -29,7 +29,7 @@ type Config struct {
 
 	PathToInputFile string   `yaml:"pathToInputFile" validate:"required"`
 	CacheDir        string   `yaml:"cacheDir" validate:"required"`
-	AllowedTags     []string `yaml:"allowedTags" validate:"required"`
+	AllowedTags     []string `yaml:"allowedTags"`
 
 	IsDevRun bool
 }

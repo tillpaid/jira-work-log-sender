@@ -82,7 +82,7 @@ cacheDir: ".config/jira-work-log-sender/cache"
                                         # Relative path to the cache directory.
                                         # A relative path from your home directory pointing to the cache directory (this directory must exist).
 
-allowedTags:
+allowedTags:                            # You may leave it empty and app won't validate tags.
   - "[Engineering activities]"          # List of allowed tags for work log descriptions.
   - "[Documentation]"
   - "[Deployment&Monitoring]"
