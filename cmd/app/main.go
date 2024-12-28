@@ -42,7 +42,8 @@ func initResources() (*app.Application, error) {
 		return nil, fmt.Errorf("error initializing jira client: %v", err)
 	}
 
+	userInput := app.NewUserInput(window)
 	actions := action.NewActions(client, window, config)
 
-	return app.NewApplication(window, client, actions, config), nil
+	return app.NewApplication(window, client, userInput, actions, config), nil
 }

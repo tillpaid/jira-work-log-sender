@@ -27,10 +27,11 @@ const (
 )
 
 type Application struct {
-	window  *goncurses.Window
-	client  *jira.Client
-	actions *action.Actions
-	config  *resource.Config
+	window    *goncurses.Window
+	client    *jira.Client
+	userInput *UserInput
+	actions   *action.Actions
+	config    *resource.Config
 
 	table        *table.Table
 	workLogs     []model.WorkLog
@@ -38,12 +39,13 @@ type Application struct {
 	workLogsSent bool
 }
 
-func NewApplication(window *goncurses.Window, client *jira.Client, actions *action.Actions, config *resource.Config) *Application {
+func NewApplication(window *goncurses.Window, client *jira.Client, input *UserInput, actions *action.Actions, config *resource.Config) *Application {
 	selector := model.NewRowSelector(0)
 
 	return &Application{
 		window:       window,
 		client:       client,
+		userInput:    input,
 		config:       config,
 		actions:      actions,
 		selector:     selector,
@@ -63,7 +65,7 @@ func (a *Application) Start() error {
 	handleResize(&a.window, &a.table, a.selector, a.actions, &a.workLogs)
 
 	for {
-		switch waitForAction(a.window) {
+		switch a.userInput.WaitForAction() {
 		case actionReload:
 			if err := a.processActionReload(); err != nil {
 				return err
