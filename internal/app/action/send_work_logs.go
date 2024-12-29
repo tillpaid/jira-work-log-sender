@@ -3,12 +3,12 @@ package action
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/jira-work-log-sender/internal/jira"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/pages/page_send_work_logs"
@@ -87,12 +87,12 @@ func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
 	}
 
 	for i := range workLogs {
-		a.mSleep(50)
+		service.SleepMilliseconds(50)
 		a.applyTransition(t, i, timeIndex, transitions[toWaiting])
 	}
 
 	for i := range workLogs {
-		a.mSleep(50)
+		service.SleepMilliseconds(50)
 		a.applyTransition(t, len(workLogs)-1-i, statusIndex, transitions[toWaiting])
 	}
 
@@ -145,8 +145,4 @@ func (a *SendWorkLogsAction) applyTransition(table *table.Table, rowI int, colum
 
 	table.ReDrawRow(row)
 	a.window.Refresh()
-}
-
-func (a *SendWorkLogsAction) mSleep(milliseconds int) {
-	time.Sleep(time.Duration(milliseconds) * time.Millisecond)
 }

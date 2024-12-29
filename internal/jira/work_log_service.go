@@ -1,12 +1,10 @@
 package jira
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/service"
 )
 
 type workLogService struct {
@@ -40,7 +38,7 @@ func (w *workLogService) GetSpentTime(issueID string) (*model.WorkLogTime, error
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 	if w.config.IsDevRun {
-		time.Sleep(time.Duration(rand.Intn(500-100)+100) * time.Millisecond)
+		service.SleepMilliseconds(service.GetRandomInt(100, 500))
 		return nil
 	}
 

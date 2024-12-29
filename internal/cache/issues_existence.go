@@ -41,18 +41,13 @@ func (c *IssuesExistenceCache) SaveExists(issueID string) error {
 }
 
 func (c *IssuesExistenceCache) removeHalf() {
-	count := len(c.checkedExistence) / 2
-	keysToRemove := make([]string, 0, count)
+	var count int
 
-	for k := range c.checkedExistence {
-		keysToRemove = append(keysToRemove, k)
-		if len(keysToRemove) >= count {
-			break
+	for key := range c.checkedExistence {
+		if count%2 == 0 {
+			delete(c.checkedExistence, key)
 		}
-	}
-
-	for _, k := range keysToRemove {
-		delete(c.checkedExistence, k)
+		count++
 	}
 }
 

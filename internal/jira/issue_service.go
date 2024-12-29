@@ -35,7 +35,7 @@ func (i *issueService) IsIssueExists(issueID string) (bool, error) {
 		}
 
 		if strings.Contains(jiraError.Error(), "no such host") {
-			return false, errors.New("cannot resolve Jura host")
+			return false, errors.New("cannot resolve Jira host")
 		}
 
 		return false, jiraError
