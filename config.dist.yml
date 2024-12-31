@@ -11,6 +11,7 @@ timeModification:
   excludedNumbers:
     - "ISSUE-456"
 targetTime: 480
+remainingTimeHighlightThreshold: 45
 pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
 cacheDir: ".config/jira-work-log-sender/cache"
 allowedTags:

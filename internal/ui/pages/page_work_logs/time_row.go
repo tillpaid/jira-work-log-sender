@@ -31,7 +31,7 @@ func getTimeRow(workLogs []model.WorkLog, config *resource.Config) []*TimeRowEle
 	left := config.TargetTime - total
 
 	var leftColor int16 = ui.DefaultColor
-	if left >= 45 || left < 0 {
+	if left > config.RemainingTimeHighlightThreshold || left < 0 {
 		leftColor = ui.YellowOnBlack
 	}
 

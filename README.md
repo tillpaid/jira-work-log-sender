@@ -75,6 +75,7 @@ timeModification:
     - "ISSUE-456"
 
 targetTime: 480                         # Target time in minutes you want to log on daily bases. This param will be used in modification and highlighting.
+remainingTimeHighlightThreshold: 45     # Threshold in minutes for highlighting remaining time. If the remaining time exceeds this limit, it will be displayed with a yellow highlight.
 
 pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
                                         # Relative path to your daily Markdown work log file.
