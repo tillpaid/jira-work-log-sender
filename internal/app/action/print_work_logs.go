@@ -6,6 +6,7 @@ import (
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/jira-work-log-sender/internal/jira"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/pages/page_work_logs"
 )
@@ -13,14 +14,15 @@ import (
 type PrintWorkLogsAction struct {
 	client *jira.Client
 	window *goncurses.Window
+	config *resource.Config
 }
 
-func NewPrintWorkLogsAction(client *jira.Client, window *goncurses.Window) *PrintWorkLogsAction {
-	return &PrintWorkLogsAction{client: client, window: window}
+func NewPrintWorkLogsAction(client *jira.Client, window *goncurses.Window, config *resource.Config) *PrintWorkLogsAction {
+	return &PrintWorkLogsAction{client: client, window: window, config: config}
 }
 
 func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model.RowSelector) (*table.Table, error) {
-	t, err := page_work_logs.DrawWorkLogsTable(a.window, workLogs, rowSelector.Row)
+	t, err := page_work_logs.DrawWorkLogsTable(a.window, a.config, workLogs, rowSelector.Row)
 	if err != nil {
 		return t, err
 	}

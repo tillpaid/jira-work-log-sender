@@ -4,69 +4,66 @@ import (
 	"fmt"
 
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 )
 
-func getTimeRow(workLogs []model.WorkLog) []string {
-	totalInMinutes := getTotalInMinutes(workLogs)
+const (
+	totalTimeText     = "Total time"
+	leftText          = "Left"
+	totalModifiedText = "Total modified time"
+)
 
-	return []string{
-		calculateTotalTime(totalInMinutes),
-		calculateLeftTime(totalInMinutes),
-		calculateTotalModifiedTime(workLogs),
+type TimeRowElement struct {
+	Text  string
+	Color int16
+}
+
+func NewTimeRowElement(text string, minutes int, color int16) *TimeRowElement {
+	return &TimeRowElement{
+		Text:  fmt.Sprintf("%s: %s", text, minutesToTimeString(minutes)),
+		Color: color,
 	}
 }
 
-func calculateTotalTime(totalInMinutes int) string {
-	var hours, minutes int
+func getTimeRow(workLogs []model.WorkLog, config *resource.Config) []*TimeRowElement {
+	total, totalModified := getTotalInMinutes(workLogs)
+	left := config.TargetTime - total
 
-	if totalInMinutes > 0 {
-		hours = totalInMinutes / 60
-		minutes = totalInMinutes % 60
+	var leftColor int16 = ui.DefaultColor
+	if left >= 45 || left < 0 {
+		leftColor = ui.YellowOnBlack
 	}
 
-	return fmt.Sprintf("Total time: %dh %dm", hours, minutes)
+	return []*TimeRowElement{
+		NewTimeRowElement(totalTimeText, total, ui.DefaultColor),
+		NewTimeRowElement(leftText, left, leftColor),
+		NewTimeRowElement(totalModifiedText, totalModified, ui.DefaultColor),
+	}
 }
 
-func calculateLeftTime(totalInMinutes int) string {
-	var hours, minutes int
-	var minusSign string
+func getTotalInMinutes(workLogs []model.WorkLog) (int, int) {
+	var total int
+	var totalModified int
 
-	minutes = 480 - totalInMinutes
-	if minutes < 0 {
-		minutes = minutes * -1
+	for _, workLog := range workLogs {
+		total += workLog.OriginalTime.GetInMinutes()
+		totalModified += workLog.ModifiedTime.GetInMinutes()
+	}
+
+	return total, totalModified
+}
+
+func minutesToTimeString(timeInMinutes int) string {
+	minusSign := ""
+
+	if timeInMinutes < 0 {
+		timeInMinutes *= -1
 		minusSign = "-"
 	}
 
-	hours += minutes / 60
-	minutes = minutes % 60
+	hours := timeInMinutes / 60
+	minutes := timeInMinutes % 60
 
-	return fmt.Sprintf("Left: %s%dh %dm", minusSign, hours, minutes)
-}
-
-func calculateTotalModifiedTime(workLogs []model.WorkLog) string {
-	var totalInMinutes int
-	var hours, minutes int
-
-	for _, workLog := range workLogs {
-		totalInMinutes += workLog.ModifiedTime.Hours * 60
-		totalInMinutes += workLog.ModifiedTime.Minutes
-	}
-
-	if totalInMinutes > 0 {
-		hours = totalInMinutes / 60
-		minutes = totalInMinutes % 60
-	}
-
-	return fmt.Sprintf("Total modified time: %dh %dm", hours, minutes)
-}
-
-func getTotalInMinutes(workLogs []model.WorkLog) int {
-	var total int
-
-	for _, workLog := range workLogs {
-		total += workLog.OriginalTime.Hours * 60
-		total += workLog.OriginalTime.Minutes
-	}
-
-	return total
+	return fmt.Sprintf("%s%dh %dm", minusSign, hours, minutes)
 }

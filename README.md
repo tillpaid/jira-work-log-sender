@@ -74,6 +74,8 @@ timeModification:
   excludedNumbers:                      # List of Jira issue IDs excluded from time modification.
     - "ISSUE-456"
 
+targetTime: 480                         # Target time in minutes you want to log on daily bases. This param will be used in modification and highlighting.
+
 pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
                                         # Relative path to your daily Markdown work log file.
                                         # A relative path from your home directory.

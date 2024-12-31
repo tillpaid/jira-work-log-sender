@@ -27,6 +27,7 @@ type Config struct {
 		ExcludedNumbers []string `yaml:"excludedNumbers" validate:"required"`
 	} `yaml:"timeModification"`
 
+	TargetTime      int      `yaml:"targetTime" validate:"required,min=0"`
 	PathToInputFile string   `yaml:"pathToInputFile" validate:"required"`
 	CacheDir        string   `yaml:"cacheDir" validate:"required"`
 	AllowedTags     []string `yaml:"allowedTags"`

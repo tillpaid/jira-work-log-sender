@@ -5,9 +5,11 @@ import (
 
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
+	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/element"
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
+	"github.com/tillpaid/jira-work-log-sender/internal/ui/utils"
 )
 
 const (
@@ -15,7 +17,7 @@ const (
 	footerText = " Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawWorkLogsTable(window *goncurses.Window, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
+func DrawWorkLogsTable(window *goncurses.Window, config *resource.Config, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
 	if err := window.Clear(); err != nil {
 		return nil, fmt.Errorf("error clearing window: %v", err)
 	}
@@ -31,19 +33,21 @@ func DrawWorkLogsTable(window *goncurses.Window, workLogs []model.WorkLog, selec
 
 	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawTimeRow(window, 2, workLogs)
+	drawTimeRow(window, 2, workLogs, config)
 	drawFooter(window, height)
 
 	window.Refresh()
 	return t, nil
 }
 
-func drawTimeRow(window *goncurses.Window, x int, workLogs []model.WorkLog) {
-	elements := getTimeRow(workLogs)
+func drawTimeRow(window *goncurses.Window, x int, workLogs []model.WorkLog, config *resource.Config) {
+	elements := getTimeRow(workLogs, config)
 	window.Move(5+len(workLogs), x+1)
 
 	for i, e := range elements {
-		window.Printf(" %s ", e)
+		utils.ColorOn(window, e.Color)
+		window.Printf(" %s ", e.Text)
+		utils.ColorOff(window, e.Color)
 
 		if i < len(elements)-1 {
 			window.AddChar(goncurses.ACS_VLINE)

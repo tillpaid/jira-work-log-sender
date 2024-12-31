@@ -15,7 +15,7 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []mod
 		return workLogs
 	}
 
-	totalLeft := 480 - totalInMinutes
+	totalLeft := config.TargetTime - totalInMinutes
 	leftToAdd := totalLeft
 	lastUpdatedIndex := -1
 
@@ -56,8 +56,7 @@ func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includ
 			continue
 		}
 
-		total += workLog.OriginalTime.Hours * 60
-		total += workLog.OriginalTime.Minutes
+		total += workLog.OriginalTime.GetInMinutes()
 	}
 
 	return total

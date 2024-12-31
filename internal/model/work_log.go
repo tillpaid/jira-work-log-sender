@@ -47,6 +47,10 @@ func (wt *WorkLogTime) AddSeconds(seconds int) {
 	wt.AddMinutes(seconds / 60)
 }
 
+func (wt *WorkLogTime) GetInMinutes() int {
+	return wt.Hours*60 + wt.Minutes
+}
+
 func (wt *WorkLogTime) String() string {
 	var parts []string
 
