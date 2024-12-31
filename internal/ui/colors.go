@@ -11,6 +11,26 @@ const (
 	MagentaOnBlack
 )
 
+func initColors() error {
+	if !goncurses.HasColors() {
+		return nil
+	}
+
+	if err := goncurses.StartColor(); err != nil {
+		return err
+	}
+
+	if err := goncurses.UseDefaultColors(); err != nil {
+		return err
+	}
+
+	if err := initColorPairs(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func initColorPairs() error {
 	colorPairs := map[int16][2]int16{
 		RedOnBlack:     {goncurses.C_RED, -1},

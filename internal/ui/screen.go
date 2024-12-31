@@ -8,22 +8,7 @@ func InitializeWindow() (*goncurses.Window, error) {
 		return nil, err
 	}
 
-	goncurses.Raw(true)
-	goncurses.Echo(false)
-
-	if err := initColors(); err != nil {
-		return nil, err
-	}
-
-	if err := goncurses.Cursor(0); err != nil {
-		return nil, err
-	}
-
-	if err := window.Keypad(true); err != nil {
-		return nil, err
-	}
-
-	if err := window.Clear(); err != nil {
+	if err := configureParams(window); err != nil {
 		return nil, err
 	}
 
@@ -34,20 +19,23 @@ func EndWindow() {
 	goncurses.End()
 }
 
-func initColors() error {
-	if !goncurses.HasColors() {
-		return nil
-	}
+func configureParams(window *goncurses.Window) error {
+	goncurses.Raw(true)
+	goncurses.Echo(false)
 
-	if err := goncurses.StartColor(); err != nil {
+	if err := initColors(); err != nil {
 		return err
 	}
 
-	if err := goncurses.UseDefaultColors(); err != nil {
+	if err := goncurses.Cursor(0); err != nil {
 		return err
 	}
 
-	if err := initColorPairs(); err != nil {
+	if err := window.Keypad(true); err != nil {
+		return err
+	}
+
+	if err := window.Clear(); err != nil {
 		return err
 	}
 
