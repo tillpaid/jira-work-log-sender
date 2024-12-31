@@ -192,12 +192,12 @@ tt
 ## Command Reference
 
 - **R** — Reload the file from disk.
-- **L** — Send work logs to Jira (press twice).
+- **LL** — Send work logs to Jira
 - **J** or **Arrow Down** — Move down in the list.
 - **K** or **Arrow Up** — Move up in the list.
 - **GG** — Jump to the top of the list.
 - **G** — Jump to the bottom of the list.
-- **YY** — Copy the selected line/title to clipboard.
+- **Y** — Copy the selected line/title to clipboard.
 - **M** — Toggle "modify time" mode for the selected ticket.
 - **Shift+M** — Toggle "modify time" for all tickets at once.
 - **Q/Space/Return/Esc** — Exit the application.
