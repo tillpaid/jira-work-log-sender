@@ -28,7 +28,8 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 		return workLog, fmt.Errorf("no description for task %s", issueNumber)
 	}
 
-	if !containAllowedTag(config, section[1]) {
+	tag := section[1]
+	if !containAllowedTag(config, tag) {
 		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
 	}
 
@@ -36,6 +37,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
 	workLog.Description = strings.TrimLeft(strings.Join(section[1:], "\n"), "- ")
+	workLog.Tag = tag
 	workLog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(workLog.IssueNumber, config)
 
 	return workLog, nil

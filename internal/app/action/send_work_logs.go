@@ -131,7 +131,7 @@ func (a *SendWorkLogsAction) setSpentTime(table *table.Table, workLog model.Work
 	}
 
 	transitions[toCustomText].Next = workLogTime.String()
-	if !workLog.ExcludedFromSpentTimeHighlight && workLogTime.Hours >= a.config.IssueHighlight.HighlightAfterHours {
+	if service.ShouldHighlightTimeForWorkLog(workLog, workLogTime, a.config) {
 		transitions[toCustomText].Color = ui.YellowOnBlack
 	}
 

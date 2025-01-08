@@ -66,6 +66,8 @@ jira:
 
 issueHighlight:
   highlightAfterHours: 16               # Number of hours after which tickets are highlighted.
+  highlightTagsAfterHours:
+     "[Research&Investigation]": 24     # Number of hours after which tickets with specific tags are highlighted.
   excludedNumbers:                      # List of Jira issue IDs excluded from highlighting.
     - "ISSUE-123"
 

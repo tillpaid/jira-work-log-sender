@@ -4,6 +4,8 @@ jira:
     apiToken: ""
 issueHighlight:
     highlightAfterHours: 16
+    highlightTagsAfterHours:
+        "[Research&Investigation]": 24
     excludedNumbers:
         - "ISSUE-123"
 timeModification:
@@ -24,4 +26,3 @@ allowedTags:
     - "[Environment Issue]"
     - "[Operational work]"
     - "[Other]"
-

@@ -16,6 +16,7 @@ type WorkLog struct {
 	OriginalTime                   WorkLogTime
 	ModifiedTime                   WorkLogTime
 	IssueNumber                    string
+	Tag                            string
 	Description                    string
 	ExcludedFromSpentTimeHighlight bool
 	ModifyTimeDisabled             bool

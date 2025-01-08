@@ -18,8 +18,9 @@ type Config struct {
 	} `yaml:"jira"`
 
 	IssueHighlight struct {
-		HighlightAfterHours int      `yaml:"highlightAfterHours" validate:"required"`
-		ExcludedNumbers     []string `yaml:"excludedNumbers" validate:"required"`
+		HighlightAfterHours     int            `yaml:"highlightAfterHours" validate:"required"`
+		HighlightTagsAfterHours map[string]int `yaml:"highlightTagsAfterHours"`
+		ExcludedNumbers         []string       `yaml:"excludedNumbers" validate:"required"`
 	} `yaml:"issueHighlight"`
 
 	TimeModification struct {
