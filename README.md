@@ -60,43 +60,45 @@ cp config.dist.yml ~/.config/jira-work-log-sender/config.yml
 2. Edit config.yml (~/.config/jira-work-log-sender/config.yml) to match your environment. Here’s a breakdown of the fields:
 ```yaml
 jira:
-  baseUrl: "https://jira.example.com"   # Base URL for your Jira instance.
-  username: ""                          # Your Jira username or email.
-  apiToken: ""                          # API token for authenticating requests.
+    url:   "https://jira.example.com"   # Base URL for your Jira instance.
+    user:  ""                           # Your Jira username or email.
+    token: ""                           # API token for authenticating requests.
 
-issueHighlight:
-  highlightAfterHours: 16               # Number of hours after which tickets are highlighted.
-  highlightTagsAfterHours:
-     "[Research&Investigation]": 24     # Number of hours after which tickets with specific tags are highlighted.
-  excludedNumbers:                      # List of Jira issue IDs excluded from highlighting.
-    - "ISSUE-123"
+highlighting:
+    defaultThresholdHours: 16           # Number of hours after which tickets are highlighted.
+    tagSpecificThresholds:
+        "[Research&Investigation]": 24  # Number of hours after which tickets with specific tags are highlighted.
+    excludedIssues:                     # List of Jira issue IDs excluded from highlighting.
+        - "ISSUE-123"
 
-timeModification:
-  enabled: true                         # Enable or disable time modification.
-  excludedNumbers:                      # List of Jira issue IDs excluded from time modification.
-    - "ISSUE-456"
+timeAdjustment:
+    enabled: true                       # Enable or disable time modification.
+    excludedIssues:                     # List of Jira issue IDs excluded from time modification.
+        - "ISSUE-456"
+    targetDailyMinutes: 480             # Target time in minutes you want to log on daily bases. This param will be used in modification and highlighting.
+    remainingTimeThreshold: 45          # Threshold in minutes for highlighting remaining time. If the remaining time exceeds this limit, it will be displayed with a yellow highlight.
 
-targetTime: 480                         # Target time in minutes you want to log on daily bases. This param will be used in modification and highlighting.
-remainingTimeHighlightThreshold: 45     # Threshold in minutes for highlighting remaining time. If the remaining time exceeds this limit, it will be displayed with a yellow highlight.
-
-pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
+input:
+    workLogFile: "Icloud/Documents/IA-writer/2. My day.md"
                                         # Relative path to your daily Markdown work log file.
                                         # A relative path from your home directory.
 
-cacheDir: ".config/jira-work-log-sender/cache"
+cache:
+    directory: ".config/jira-work-log-sender/cache"
                                         # Relative path to the cache directory.
                                         # A relative path from your home directory pointing to the cache directory (this directory must exist).
 
-allowedTags:                            # You may leave it empty and app won't validate tags.
-  - "[Engineering activities]"          # List of allowed tags for work log descriptions.
-  - "[Documentation]"
-  - "[Deployment&Monitoring]"
-  - "[Research&Investigation]"
-  - "[Code review]"
-  - "[Communication]"
-  - "[Environment Issue]"
-  - "[Operational work]"
-  - "[Other]"
+tags:
+    allowed:                            # You may leave it empty and app won't validate tags.
+        - "[Engineering activities]"    # List of allowed tags for work log descriptions.
+        - "[Documentation]"
+        - "[Deployment&Monitoring]"
+        - "[Research&Investigation]"
+        - "[Code review]"
+        - "[Communication]"
+        - "[Environment Issue]"
+        - "[Operational work]"
+        - "[Other]"
 ```
 
 3. **Install Go dependencies**:

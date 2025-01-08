@@ -27,16 +27,16 @@ type Client struct {
 
 func NewClient(config *resource.Config) (*Client, error) {
 	tp := jira.BasicAuthTransport{
-		Username: config.Jira.Username,
-		Password: config.Jira.ApiToken,
+		Username: config.Jira.User,
+		Password: config.Jira.Token,
 	}
 
-	issuesExistenceCache, err := cache.NewIssuesExistenceCache(config.CacheDir)
+	issuesExistenceCache, err := cache.NewIssuesExistenceCache(config.Cache.Directory)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create issues existence cache: %v", err)
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), config.Jira.BaseUrl)
+	jiraClient, err := jira.NewClient(tp.Client(), config.Jira.Url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Jira client: %v", err)
 	}
@@ -44,7 +44,7 @@ func NewClient(config *resource.Config) (*Client, error) {
 	return &Client{
 		jiraClient:     jiraClient,
 		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
-		WorkLogService: newWorkLogService(config.Jira.Username, jiraClient, config),
+		WorkLogService: newWorkLogService(config.Jira.User, jiraClient, config),
 	}, nil
 }
 

@@ -5,11 +5,11 @@ import (
 )
 
 func containAllowedTag(config *resource.Config, tag string) bool {
-	if len(config.AllowedTags) == 0 {
+	if len(config.Tags.Allowed) == 0 {
 		return true
 	}
 
-	for _, allowedTag := range config.AllowedTags {
+	for _, allowedTag := range config.Tags.Allowed {
 		if tag == allowedTag {
 			return true
 		}

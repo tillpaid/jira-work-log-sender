@@ -1,28 +1,31 @@
 jira:
-    baseUrl: "https://jira.example.com"
-    username: ""
-    apiToken: ""
-issueHighlight:
-    highlightAfterHours: 16
-    highlightTagsAfterHours:
+    url: "https://jira.example.com"
+    user: ""
+    token: ""
+highlighting:
+    defaultThresholdHours: 16
+    tagSpecificThresholds:
         "[Research&Investigation]": 24
-    excludedNumbers:
+    excludedIssues:
         - "ISSUE-123"
-timeModification:
-  enabled: true
-  excludedNumbers:
-    - "ISSUE-456"
-targetTime: 480
-remainingTimeHighlightThreshold: 45
-pathToInputFile: "Icloud/Documents/IA-writer/2. My day.md"
-cacheDir: ".config/jira-work-log-sender/cache"
-allowedTags:
-    - "[Engineering activities]"
-    - "[Documentation]"
-    - "[Deployment&Monitoring]"
-    - "[Research&Investigation]"
-    - "[Code review]"
-    - "[Communication]"
-    - "[Environment Issue]"
-    - "[Operational work]"
-    - "[Other]"
+timeAdjustment:
+    enabled: true
+    excludedIssues:
+        - "ISSUE-456"
+    targetDailyMinutes: 480
+    remainingTimeThreshold: 45
+input:
+    workLogFile: "Icloud/Documents/IA-writer/2. My day.md"
+cache:
+    directory: ".config/jira-work-log-sender/cache"
+tags:
+    allowed:
+        - "[Engineering activities]"
+        - "[Documentation]"
+        - "[Deployment&Monitoring]"
+        - "[Research&Investigation]"
+        - "[Code review]"
+        - "[Communication]"
+        - "[Environment Issue]"
+        - "[Operational work]"
+        - "[Other]"

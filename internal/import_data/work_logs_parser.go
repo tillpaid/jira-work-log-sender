@@ -10,7 +10,7 @@ import (
 )
 
 func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]model.WorkLog, error) {
-	file, err := os.Open(config.PathToInputFile)
+	file, err := os.Open(config.Input.WorkLogFile)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file during parsing work logs: %v", err)
 	}

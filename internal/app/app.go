@@ -134,7 +134,7 @@ func (a *Application) processActionCopy() error {
 }
 
 func (a *Application) processActionToggleModifyTime(all bool) error {
-	if len(a.workLogs) == 0 || !a.config.TimeModification.Enabled {
+	if len(a.workLogs) == 0 || !a.config.TimeAdjustment.Enabled {
 		return nil
 	}
 

@@ -15,7 +15,7 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []mod
 		return workLogs
 	}
 
-	totalLeft := config.TargetTime - totalInMinutes
+	totalLeft := config.TimeAdjustment.TargetDailyMinutes - totalInMinutes
 	leftToAdd := totalLeft
 	lastUpdatedIndex := -1
 
@@ -63,13 +63,13 @@ func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includ
 }
 
 func isExcluded(workLog model.WorkLog, config *resource.Config) bool {
-	if workLog.ModifyTimeDisabled || !config.TimeModification.Enabled {
+	if workLog.ModifyTimeDisabled || !config.TimeAdjustment.Enabled {
 		return true
 	}
 
 	issueNumber := strings.ToLower(workLog.IssueNumber)
 
-	for _, excludedIssueNumber := range config.TimeModification.ExcludedNumbers {
+	for _, excludedIssueNumber := range config.TimeAdjustment.ExcludedIssues {
 		if issueNumber == strings.ToLower(excludedIssueNumber) {
 			return true
 		}

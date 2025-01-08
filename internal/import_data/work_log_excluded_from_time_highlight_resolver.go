@@ -5,8 +5,8 @@ import (
 )
 
 func isExcludedFromTimeHighlight(issueNumber string, config *resource.Config) bool {
-	for _, excludedNumber := range config.IssueHighlight.ExcludedNumbers {
-		if issueNumber == excludedNumber {
+	for _, excludedIssue := range config.Highlighting.ExcludedIssues {
+		if issueNumber == excludedIssue {
 			return true
 		}
 	}

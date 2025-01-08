@@ -28,10 +28,10 @@ func NewTimeRowElement(text string, minutes int, color int16) *TimeRowElement {
 
 func getTimeRow(workLogs []model.WorkLog, config *resource.Config) []*TimeRowElement {
 	total, totalModified := getTotalInMinutes(workLogs)
-	left := config.TargetTime - total
+	left := config.TimeAdjustment.TargetDailyMinutes - total
 
 	var leftColor int16 = ui.DefaultColor
-	if left > config.RemainingTimeHighlightThreshold || left < 0 {
+	if left > config.TimeAdjustment.RemainingTimeThreshold || left < 0 {
 		leftColor = ui.YellowOnBlack
 	}
 

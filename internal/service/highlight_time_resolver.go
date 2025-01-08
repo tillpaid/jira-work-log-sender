@@ -10,10 +10,10 @@ func ShouldHighlightTimeForWorkLog(workLog model.WorkLog, workLogTime *model.Wor
 		return false
 	}
 
-	highlightAfterTime := config.IssueHighlight.HighlightAfterHours
-	if tagTime, ok := config.IssueHighlight.HighlightTagsAfterHours[workLog.Tag]; ok {
-		highlightAfterTime = tagTime
+	thresholdHours := config.Highlighting.DefaultThresholdHours
+	if tagThreshold, ok := config.Highlighting.TagSpecificThresholds[workLog.Tag]; ok {
+		thresholdHours = tagThreshold
 	}
 
-	return workLogTime.Hours >= highlightAfterTime
+	return workLogTime.Hours >= thresholdHours
 }

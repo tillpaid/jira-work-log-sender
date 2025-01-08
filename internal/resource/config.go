@@ -12,27 +12,35 @@ const configFilePath = ".config/jira-work-log-sender/config.yml"
 
 type Config struct {
 	Jira struct {
-		BaseUrl  string `yaml:"baseUrl" validate:"required"`
-		Username string `yaml:"username" validate:"required"`
-		ApiToken string `yaml:"apiToken" validate:"required"`
+		Url   string `yaml:"url" validate:"required"`
+		User  string `yaml:"user" validate:"required"`
+		Token string `yaml:"token" validate:"required"`
 	} `yaml:"jira"`
 
-	IssueHighlight struct {
-		HighlightAfterHours     int            `yaml:"highlightAfterHours" validate:"required"`
-		HighlightTagsAfterHours map[string]int `yaml:"highlightTagsAfterHours"`
-		ExcludedNumbers         []string       `yaml:"excludedNumbers" validate:"required"`
-	} `yaml:"issueHighlight"`
+	Highlighting struct {
+		DefaultThresholdHours int            `yaml:"defaultThresholdHours" validate:"required"`
+		TagSpecificThresholds map[string]int `yaml:"tagSpecificThresholds"`
+		ExcludedIssues        []string       `yaml:"excludedIssues" validate:"required"`
+	} `yaml:"highlighting"`
 
-	TimeModification struct {
-		Enabled         bool     `yaml:"enabled"`
-		ExcludedNumbers []string `yaml:"excludedNumbers" validate:"required"`
-	} `yaml:"timeModification"`
+	TimeAdjustment struct {
+		Enabled                bool     `yaml:"enabled"`
+		ExcludedIssues         []string `yaml:"excludedIssues"`
+		TargetDailyMinutes     int      `yaml:"targetDailyMinutes" validate:"required,min=0"`
+		RemainingTimeThreshold int      `yaml:"remainingTimeThreshold" validate:"required,min=0"`
+	} `yaml:"timeAdjustment"`
 
-	TargetTime                      int      `yaml:"targetTime" validate:"required,min=0"`
-	RemainingTimeHighlightThreshold int      `yaml:"remainingTimeHighlightThreshold" validate:"required,min=0"`
-	PathToInputFile                 string   `yaml:"pathToInputFile" validate:"required"`
-	CacheDir                        string   `yaml:"cacheDir" validate:"required"`
-	AllowedTags                     []string `yaml:"allowedTags"`
+	Input struct {
+		WorkLogFile string `yaml:"workLogFile" validate:"required"`
+	} `yaml:"input"`
+
+	Cache struct {
+		Directory string `yaml:"directory" validate:"required"`
+	} `yaml:"cache"`
+
+	Tags struct {
+		Allowed []string `yaml:"allowed"`
+	} `yaml:"tags"`
 
 	IsDevRun bool
 }
@@ -55,8 +63,8 @@ func InitConfig() (*Config, error) {
 func updateConfigValues(config *Config) {
 	homeDir := os.Getenv("HOME")
 
-	config.PathToInputFile = filepath.Join(homeDir, config.PathToInputFile)
-	config.CacheDir = filepath.Join(homeDir, config.CacheDir)
+	config.Input.WorkLogFile = filepath.Join(homeDir, config.Input.WorkLogFile)
+	config.Cache.Directory = filepath.Join(homeDir, config.Cache.Directory)
 	config.IsDevRun = isDevRun()
 }
 
