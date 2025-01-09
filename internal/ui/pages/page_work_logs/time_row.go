@@ -14,6 +14,10 @@ const (
 	totalModifiedText = "Total modified time"
 )
 
+type TimeRow struct {
+	Elements []*TimeRowElement
+}
+
 type TimeRowElement struct {
 	Text  string
 	Color int16
@@ -26,7 +30,7 @@ func NewTimeRowElement(text string, minutes int, color int16) *TimeRowElement {
 	}
 }
 
-func getTimeRow(workLogs []model.WorkLog, config *resource.Config) []*TimeRowElement {
+func getTimeRow(workLogs []model.WorkLog, config *resource.Config) *TimeRow {
 	total, totalModified := getTotalInMinutes(workLogs)
 	left := config.TimeAdjustment.TargetDailyMinutes - total
 
@@ -35,11 +39,21 @@ func getTimeRow(workLogs []model.WorkLog, config *resource.Config) []*TimeRowEle
 		leftColor = ui.YellowOnBlack
 	}
 
-	return []*TimeRowElement{
+	return &TimeRow{[]*TimeRowElement{
 		NewTimeRowElement(totalTimeText, total, ui.DefaultColor),
 		NewTimeRowElement(leftText, left, leftColor),
 		NewTimeRowElement(totalModifiedText, totalModified, ui.DefaultColor),
+	}}
+}
+
+func (tr *TimeRow) GetTotalTextLen(additionalSpaces int) int {
+	totalLen := 0
+
+	for _, e := range tr.Elements {
+		totalLen += len(e.Text) + additionalSpaces
 	}
+
+	return totalLen - additionalSpaces
 }
 
 func getTotalInMinutes(workLogs []model.WorkLog) (int, int) {

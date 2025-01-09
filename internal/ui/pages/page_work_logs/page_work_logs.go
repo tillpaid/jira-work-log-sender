@@ -33,24 +33,31 @@ func DrawWorkLogsTable(window *goncurses.Window, config *resource.Config, workLo
 
 	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawTimeRow(window, 2, workLogs, config)
+	drawTimeRow(window, 2, width, workLogs, config)
 	drawFooter(window, height)
 
 	window.Refresh()
 	return t, nil
 }
 
-func drawTimeRow(window *goncurses.Window, x int, workLogs []model.WorkLog, config *resource.Config) {
-	elements := getTimeRow(workLogs, config)
-	window.Move(5+len(workLogs), x+1)
+func drawTimeRow(window *goncurses.Window, x int, width int, workLogs []model.WorkLog, config *resource.Config) {
+	timeRow := getTimeRow(workLogs, config)
+	useSeparateLines := timeRow.GetTotalTextLen(3) >= width-6
 
-	for i, e := range elements {
+	y := 5 + len(workLogs)
+	window.Move(y, x+1)
+
+	for i, e := range timeRow.Elements {
 		utils.ColorOn(window, e.Color)
 		window.Printf(" %s ", e.Text)
 		utils.ColorOff(window, e.Color)
 
-		if i < len(elements)-1 {
+		if !useSeparateLines && i < len(timeRow.Elements)-1 {
 			window.AddChar(goncurses.ACS_VLINE)
+		}
+
+		if useSeparateLines {
+			window.Move(y+i+1, x+1)
 		}
 	}
 }
