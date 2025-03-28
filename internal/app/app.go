@@ -21,6 +21,7 @@ const (
 	actionFirstRow
 	actionLastRow
 	actionCopy
+	actionCopyWithoutExit
 	actionToggleModifyTime
 	actionToggleAllModifyTime
 	actionQuit
@@ -87,7 +88,11 @@ func (a *Application) Start() error {
 			a.selector.LastRow()
 			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
 		case actionCopy:
-			return a.processActionCopy()
+			return a.processActionCopy(true)
+		case actionCopyWithoutExit:
+			if err := a.processActionCopy(false); err != nil {
+				return err
+			}
 		case actionToggleModifyTime:
 			if err := a.processActionToggleModifyTime(false); err != nil {
 				return err
@@ -120,7 +125,7 @@ func (a *Application) processActionSend() error {
 	return a.actions.SendWorkLogs.Send(a.workLogs)
 }
 
-func (a *Application) processActionCopy() error {
+func (a *Application) processActionCopy(exit bool) error {
 	if len(a.workLogs) == 0 {
 		return nil
 	}
@@ -129,7 +134,10 @@ func (a *Application) processActionCopy() error {
 		return err
 	}
 
-	ui.EndWindow()
+	if exit {
+		ui.EndWindow()
+	}
+
 	return nil
 }
 

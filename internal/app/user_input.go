@@ -13,6 +13,7 @@ func NewUserInput(window *goncurses.Window) *UserInput {
 		actionReload:              {'r'},
 		actionLastRow:             {'G'},
 		actionCopy:                {'y'},
+		actionCopyWithoutExit:     {'Y'},
 		actionToggleModifyTime:    {'m'},
 		actionToggleAllModifyTime: {'M'},
 		actionNextRow:             {'j', goncurses.KEY_DOWN},
