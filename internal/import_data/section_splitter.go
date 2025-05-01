@@ -25,7 +25,7 @@ func splitFileToSections(file *os.File) ([][]string, error) {
 	scanner.Scan()
 
 	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+		line := scanner.Text()
 		lineNum++
 
 		if line == "" {
@@ -60,5 +60,6 @@ func isMainInformationLine(line string) bool {
 }
 
 func isDescriptionLine(line string) bool {
-	return strings.Index(line, descriptionAnchor) == 0 || strings.Index(line, tagAnchor) == 0
+	trimmedLine := strings.TrimSpace(line)
+	return strings.Index(trimmedLine, descriptionAnchor) == 0 || strings.Index(trimmedLine, tagAnchor) == 0
 }
