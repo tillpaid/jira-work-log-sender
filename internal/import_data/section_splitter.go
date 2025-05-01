@@ -61,5 +61,5 @@ func isMainInformationLine(line string) bool {
 
 func isDescriptionLine(line string) bool {
 	trimmedLine := strings.TrimSpace(line)
-	return strings.Index(trimmedLine, descriptionAnchor) == 0 || strings.Index(trimmedLine, tagAnchor) == 0
+	return strings.Index(trimmedLine, descriptionAnchor) == 0 || strings.Index(line, tagAnchor) == 0
 }
