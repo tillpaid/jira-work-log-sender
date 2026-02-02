@@ -24,6 +24,10 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 		return workLog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
 	}
 
+	if isForbiddenProject(issueNumber, config) {
+		return workLog, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
+	}
+
 	if len(section) < 2 {
 		return workLog, fmt.Errorf("no description for task %s", issueNumber)
 	}
@@ -74,4 +78,14 @@ func getMainInformation(line string) (string, model.WorkLogTime, error) {
 	default:
 		return "", model.WorkLogTime{}, errors.New("too many parts after pipe")
 	}
+}
+
+func isForbiddenProject(issueNumber string, config *resource.Config) bool {
+	for _, forbiddenProject := range config.ForbiddenProjects {
+		if strings.HasPrefix(issueNumber, forbiddenProject) {
+			return true
+		}
+	}
+
+	return false
 }

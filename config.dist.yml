@@ -14,6 +14,9 @@ timeAdjustment:
         - "ISSUE-456"
     targetDailyMinutes: 480
     remainingTimeThreshold: 45
+forbiddenProjects:
+    - "TIME"
+    - "SUPPORT"
 input:
     workLogFile: "Icloud/Documents/IA-writer/2. My day.md"
 cache:

@@ -30,6 +30,8 @@ type Config struct {
 		RemainingTimeThreshold int      `yaml:"remainingTimeThreshold" validate:"required,min=0"`
 	} `yaml:"timeAdjustment"`
 
+	ForbiddenProjects []string `yaml:"forbiddenProjects" validate:"required"`
+
 	Input struct {
 		WorkLogFile string `yaml:"workLogFile" validate:"required"`
 	} `yaml:"input"`
