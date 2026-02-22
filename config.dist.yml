@@ -2,6 +2,11 @@ jira:
     url: "https://jira.example.com"
     user: ""
     token: ""
+tempo:
+    useApiToSendWorklogs: false
+    attributeKey: "_EngineeringActivities_"
+    attributeName: "Activity type"
+    workAttributeId: 4
 highlighting:
     defaultThresholdHours: 16
     tagSpecificThresholds:

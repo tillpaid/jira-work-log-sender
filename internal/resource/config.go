@@ -17,6 +17,13 @@ type Config struct {
 		Token string `yaml:"token" validate:"required"`
 	} `yaml:"jira"`
 
+	Tempo struct {
+		UseApiToSendWorklogs bool   `yaml:"useApiToSendWorklogs"`
+		AttributeKey         string `yaml:"attributeKey" validate:"required_if=UseApiToSendWorklogs true"`
+		AttributeName        string `yaml:"attributeName" validate:"required_if=UseApiToSendWorklogs true"`
+		WorkAttributeID      int    `yaml:"workAttributeId" validate:"required_if=UseApiToSendWorklogs true"`
+	} `yaml:"tempo"`
+
 	Highlighting struct {
 		DefaultThresholdHours int            `yaml:"defaultThresholdHours" validate:"required"`
 		TagSpecificThresholds map[string]int `yaml:"tagSpecificThresholds"`
