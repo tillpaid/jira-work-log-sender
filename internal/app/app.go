@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+
 	"github.com/rthornton128/goncurses"
 	"github.com/tillpaid/jira-work-log-sender/internal/app/action"
 	"github.com/tillpaid/jira-work-log-sender/internal/clipboard"
@@ -63,6 +65,10 @@ func (a *Application) Start() error {
 		return err
 	}
 
+	if err := a.setIssueIDs(); err != nil {
+		return err
+	}
+
 	handleResize(&a.window, &a.table, a.selector, a.actions, &a.workLogs)
 
 	for {
@@ -113,7 +119,11 @@ func (a *Application) processActionReload() error {
 		return err
 	}
 
-	return a.printTable()
+	if err := a.printTable(); err != nil {
+		return err
+	}
+
+	return a.setIssueIDs()
 }
 
 func (a *Application) processActionSend() error {
@@ -164,6 +174,21 @@ func (a *Application) loadWorkLogs() error {
 
 	a.workLogs = workLogs
 	a.selector.Update(len(workLogs))
+
+	return nil
+}
+
+func (a *Application) setIssueIDs() error {
+	for i := range a.workLogs {
+		workLog := &a.workLogs[i]
+
+		issueID, err := a.client.IssueService.GetIssueID(workLog.IssueNumber)
+		if err != nil {
+			return fmt.Errorf("failed to get issue ID for issue number %s: %w", workLog.IssueNumber, err)
+		}
+
+		workLog.IssueID = issueID
+	}
 
 	return nil
 }

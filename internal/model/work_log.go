@@ -16,6 +16,7 @@ type WorkLog struct {
 	OriginalTime                   WorkLogTime
 	ModifiedTime                   WorkLogTime
 	IssueNumber                    string
+	IssueID                        string
 	Tag                            string
 	Description                    string
 	ExcludedFromSpentTimeHighlight bool
@@ -50,6 +51,10 @@ func (wt *WorkLogTime) AddSeconds(seconds int) {
 
 func (wt *WorkLogTime) GetInMinutes() int {
 	return wt.Hours*60 + wt.Minutes
+}
+
+func (wt *WorkLogTime) GetInSeconds() int {
+	return wt.Hours*3600 + wt.Minutes*60
 }
 
 func (wt *WorkLogTime) String() string {

@@ -10,6 +10,7 @@ import (
 )
 
 type IssueServiceInterface interface {
+	GetIssueID(issueKey string) (string, error)
 	IsIssueExists(issueKey string) (bool, error)
 	IsIssueExistsInCache(issueKey string) bool
 }

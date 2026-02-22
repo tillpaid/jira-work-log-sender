@@ -18,10 +18,10 @@ type Config struct {
 	} `yaml:"jira"`
 
 	Tempo struct {
-		UseTempoApiToSendWorklogs bool   `yaml:"useTempoApiToSendWorklogs"`
-		AttributeKey              string `yaml:"attributeKey" validate:"required_if=UseTempoApiToSendWorklogs true"`
-		AttributeName             string `yaml:"attributeName" validate:"required_if=UseTempoApiToSendWorklogs true"`
-		WorkAttributeID           int    `yaml:"workAttributeId" validate:"required_if=UseTempoApiToSendWorklogs true"`
+		UseTempoApiToSendWorklogs          bool   `yaml:"useTempoApiToSendWorklogs"`
+		WorkerID                           string `yaml:"workerID" validate:"required_if=UseTempoApiToSendWorklogs true"`
+		EngineeringActivityName            string `yaml:"engineeringActivityName" validate:"required_if=UseTempoApiToSendWorklogs true"`
+		EngineeringActivityWorkAttributeID int    `yaml:"engineeringActivityWorkAttributeID" validate:"required_if=UseTempoApiToSendWorklogs true"`
 	} `yaml:"tempo"`
 
 	Highlighting struct {

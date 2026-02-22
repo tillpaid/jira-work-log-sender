@@ -4,9 +4,9 @@ jira:
     token: ""
 tempo:
     useTempoApiToSendWorklogs: false
-    attributeKey: "_EngineeringActivities_"
-    attributeName: "Activity type"
-    workAttributeId: 4
+    workerID: "JIRAUSER1009"
+    engineeringActivityName: "Activity type"
+    engineeringActivityWorkAttributeID: 4
 highlighting:
     defaultThresholdHours: 16
     tagSpecificThresholds:

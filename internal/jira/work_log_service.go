@@ -64,6 +64,26 @@ func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
 }
 
 func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
+	//payload := TempoCreateWorklogRequest{
+	//	Attributes: tempoCreateWorklogAttributes{
+	//		EngineeringActivities: tempoCreateWorklogEngineeringActivitiesAttribute{
+	//			Name:            w.config.Tempo.EngineeringActivityName,
+	//			WorkAttributeId: w.config.Tempo.EngineeringActivityWorkAttributeID,
+	//			Value:           strings.Trim(workLog.Tag, "[]"),
+	//		},
+	//	},
+	//	BillableSeconds:       nil,
+	//	OriginId:              -1,
+	//	Worker:                w.config.Tempo.WorkerID,
+	//	Comment:               workLog.Description,
+	//	Started:               time.Now().Format(time.DateOnly),
+	//	TimeSpentSeconds:      workLog.ModifiedTime.GetInSeconds(),
+	//	OriginTaskId:          workLog.IssueID,
+	//	RemainingEstimate:     "",
+	//	EndDate:               nil,
+	//	IncludeNonWorkingDays: false,
+	//}
+
 	log.Fatal("Tempo API is not implemented yet")
 	return nil
 }

@@ -22,26 +22,32 @@ func newIssueService(jiraClient *jira.Client, issuesCache *cache.IssuesCache) *i
 	}
 }
 
+func (i *issueService) GetIssueID(issueKey string) (string, error) {
+	issueCacheItem, ok := i.issuesCache.GetIssue(issueKey)
+	if ok {
+		return issueCacheItem.IssueID, nil
+	}
+
+	issue, err := i.getIssue(issueKey)
+	if err != nil {
+		return "", err
+	}
+
+	if err := i.issuesCache.SaveIssue(issue.Key, issue.ID); err != nil {
+		return "", err
+	}
+
+	return issue.ID, nil
+}
+
 func (i *issueService) IsIssueExists(issueKey string) (bool, error) {
 	if i.issuesCache.IsIssueExists(issueKey) {
 		return true, nil
 	}
 
-	issue, response, jiraError := i.jiraClient.Issue.Get(issueKey, nil)
-	if jiraError != nil {
-		if response != nil {
-			if response.StatusCode == http.StatusNotFound {
-				return false, errors.New("issue not found in Jira")
-			}
-
-			return false, fmt.Errorf("got %d status code", response.StatusCode)
-		}
-
-		if strings.Contains(jiraError.Error(), "no such host") {
-			return false, errors.New("cannot resolve Jira host")
-		}
-
-		return false, jiraError
+	issue, err := i.getIssue(issueKey)
+	if err != nil {
+		return false, err
 	}
 
 	if err := i.issuesCache.SaveIssue(issue.Key, issue.ID); err != nil {
@@ -53,4 +59,26 @@ func (i *issueService) IsIssueExists(issueKey string) (bool, error) {
 
 func (i *issueService) IsIssueExistsInCache(issueKey string) bool {
 	return i.issuesCache.IsIssueExists(issueKey)
+}
+
+func (i *issueService) getIssue(issueKey string) (*jira.Issue, error) {
+	issue, response, jiraError := i.jiraClient.Issue.Get(issueKey, nil)
+
+	if jiraError != nil {
+		if response != nil {
+			if response.StatusCode == http.StatusNotFound {
+				return nil, errors.New("issue not found in Jira")
+			}
+
+			return nil, fmt.Errorf("got %d status code", response.StatusCode)
+		}
+
+		if strings.Contains(jiraError.Error(), "no such host") {
+			return nil, errors.New("cannot resolve Jira host")
+		}
+
+		return nil, jiraError
+	}
+
+	return issue, nil
 }
