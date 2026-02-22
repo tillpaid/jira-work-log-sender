@@ -3,7 +3,7 @@ jira:
     user: ""
     token: ""
 tempo:
-    useApiToSendWorklogs: false
+    useTempoApiToSendWorklogs: false
     attributeKey: "_EngineeringActivities_"
     attributeName: "Activity type"
     workAttributeId: 4

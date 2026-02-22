@@ -1,6 +1,8 @@
 package jira
 
 import (
+	"log"
+
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
@@ -42,6 +44,10 @@ func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 		return nil
 	}
 
+	if w.config.Tempo.UseTempoApiToSendWorklogs {
+		return w.sendWorkLogViaTempoApi(workLog)
+	}
+
 	return w.sendWorkLogViaJiraApi(workLog)
 }
 
@@ -57,5 +63,6 @@ func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
 }
 
 func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
+	log.Fatal("Tempo API is not implemented yet")
 	return nil
 }
