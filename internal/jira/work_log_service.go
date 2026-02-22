@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/andygrunwald/go-jira"
@@ -54,7 +55,7 @@ func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
 	record := &jira.WorklogRecord{
 		TimeSpent: workLog.ModifiedTime.String(),
-		Comment:   workLog.Description,
+		Comment:   fmt.Sprintf("%s\n%s", workLog.Tag, workLog.Description),
 	}
 
 	_, _, err := w.jiraClient.Issue.AddWorklogRecord(workLog.IssueNumber, record)

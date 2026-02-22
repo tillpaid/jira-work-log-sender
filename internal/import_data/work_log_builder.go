@@ -40,7 +40,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	workLog.HeaderText = strings.TrimLeft(section[0], "# ")
 	workLog.IssueNumber = issueNumber
 	workLog.OriginalTime = originalTime
-	workLog.Description = strings.TrimLeft(strings.Join(section[1:], "\n"), "- ")
+	workLog.Description = strings.Join(section[2:], "\n")
 	workLog.Tag = tag
 	workLog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(workLog.IssueNumber, config)
 
