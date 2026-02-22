@@ -31,9 +31,9 @@ func NewClient(config *resource.Config) (*Client, error) {
 		Password: config.Jira.Token,
 	}
 
-	issuesExistenceCache, err := cache.NewIssuesExistenceCache(config.Cache.Directory)
+	issuesCache, err := cache.NewIssuesCache(config.Cache.Directory)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create issues existence cache: %v", err)
+		return nil, fmt.Errorf("failed to create issues cache: %v", err)
 	}
 
 	jiraClient, err := jira.NewClient(tp.Client(), config.Jira.Url)
@@ -43,7 +43,7 @@ func NewClient(config *resource.Config) (*Client, error) {
 
 	return &Client{
 		jiraClient:     jiraClient,
-		IssueService:   newIssueService(jiraClient, issuesExistenceCache),
+		IssueService:   newIssueService(jiraClient, issuesCache),
 		WorkLogService: newWorkLogService(config.Jira.User, jiraClient, config),
 	}, nil
 }

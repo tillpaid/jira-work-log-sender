@@ -11,20 +11,23 @@ import (
 )
 
 type issueService struct {
-	jiraClient           *jira.Client
-	issuesExistenceCache *cache.IssuesExistenceCache
+	jiraClient  *jira.Client
+	issuesCache *cache.IssuesCache
 }
 
-func newIssueService(jiraClient *jira.Client, issuesExistenceCache *cache.IssuesExistenceCache) *issueService {
-	return &issueService{jiraClient: jiraClient, issuesExistenceCache: issuesExistenceCache}
+func newIssueService(jiraClient *jira.Client, issuesCache *cache.IssuesCache) *issueService {
+	return &issueService{
+		jiraClient:  jiraClient,
+		issuesCache: issuesCache,
+	}
 }
 
-func (i *issueService) IsIssueExists(issueID string) (bool, error) {
-	if i.issuesExistenceCache.IsExists(issueID) {
+func (i *issueService) IsIssueExists(issueKey string) (bool, error) {
+	if i.issuesCache.IsIssueExists(issueKey) {
 		return true, nil
 	}
 
-	_, response, jiraError := i.jiraClient.Issue.Get(issueID, nil)
+	issue, response, jiraError := i.jiraClient.Issue.Get(issueKey, nil)
 	if jiraError != nil {
 		if response != nil {
 			if response.StatusCode == http.StatusNotFound {
@@ -41,13 +44,13 @@ func (i *issueService) IsIssueExists(issueID string) (bool, error) {
 		return false, jiraError
 	}
 
-	if err := i.issuesExistenceCache.SaveExists(issueID); err != nil {
+	if err := i.issuesCache.SaveIssue(issue.Key, issue.ID); err != nil {
 		return false, err
 	}
 
 	return true, nil
 }
 
-func (i *issueService) IsIssueExistsInCache(issueID string) bool {
-	return i.issuesExistenceCache.IsExists(issueID)
+func (i *issueService) IsIssueExistsInCache(issueKey string) bool {
+	return i.issuesCache.IsIssueExists(issueKey)
 }
