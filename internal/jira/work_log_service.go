@@ -42,6 +42,10 @@ func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 		return nil
 	}
 
+	return w.sendWorkLogViaJiraApi(workLog)
+}
+
+func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
 	record := &jira.WorklogRecord{
 		TimeSpent: workLog.ModifiedTime.String(),
 		Comment:   workLog.Description,
@@ -50,4 +54,8 @@ func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
 	_, _, err := w.jiraClient.Issue.AddWorklogRecord(workLog.IssueNumber, record)
 
 	return err
+}
+
+func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
+	return nil
 }
