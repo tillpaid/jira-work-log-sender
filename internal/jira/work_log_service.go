@@ -17,8 +17,8 @@ func newWorkLogService(currentUsername string, jiraClient *jira.Client, config *
 	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient, config: config}
 }
 
-func (w *workLogService) GetSpentTime(issueID string) (*model.WorkLogTime, error) {
-	workLogs, _, err := w.jiraClient.Issue.GetWorklogs(issueID)
+func (w *workLogService) GetSpentTime(issueKey string) (*model.WorkLogTime, error) {
+	workLogs, _, err := w.jiraClient.Issue.GetWorklogs(issueKey)
 	if err != nil {
 		return nil, err
 	}

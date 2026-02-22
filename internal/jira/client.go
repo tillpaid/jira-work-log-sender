@@ -10,12 +10,12 @@ import (
 )
 
 type IssueServiceInterface interface {
-	IsIssueExists(issueID string) (bool, error)
-	IsIssueExistsInCache(issueID string) bool
+	IsIssueExists(issueKey string) (bool, error)
+	IsIssueExistsInCache(issueKey string) bool
 }
 
 type WorkLogServiceInterface interface {
-	GetSpentTime(issueID string) (*model.WorkLogTime, error)
+	GetSpentTime(issueKey string) (*model.WorkLogTime, error)
 	SendWorkLog(workLog model.WorkLog) error
 }
 
