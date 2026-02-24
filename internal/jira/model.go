@@ -19,7 +19,6 @@ type TempoCreateWorklogRequest struct {
 	Started               string                       `json:"started"`
 	TimeSpentSeconds      int                          `json:"timeSpentSeconds"`
 	OriginTaskId          string                       `json:"originTaskId"`
-	RemainingEstimate     string                       `json:"remainingEstimate"`
 	EndDate               interface{}                  `json:"endDate"`
 	IncludeNonWorkingDays bool                         `json:"includeNonWorkingDays"`
 }

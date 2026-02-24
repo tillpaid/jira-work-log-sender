@@ -1,8 +1,12 @@
 package jira
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"log"
+	"net/http"
+	"strings"
+	"time"
 
 	"github.com/andygrunwald/go-jira"
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
@@ -64,26 +68,48 @@ func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
 }
 
 func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
-	//payload := TempoCreateWorklogRequest{
-	//	Attributes: tempoCreateWorklogAttributes{
-	//		EngineeringActivities: tempoCreateWorklogEngineeringActivitiesAttribute{
-	//			Name:            w.config.Tempo.EngineeringActivityName,
-	//			WorkAttributeId: w.config.Tempo.EngineeringActivityWorkAttributeID,
-	//			Value:           strings.Trim(workLog.Tag, "[]"),
-	//		},
-	//	},
-	//	BillableSeconds:       nil,
-	//	OriginId:              -1,
-	//	Worker:                w.config.Tempo.WorkerID,
-	//	Comment:               workLog.Description,
-	//	Started:               time.Now().Format(time.DateOnly),
-	//	TimeSpentSeconds:      workLog.ModifiedTime.GetInSeconds(),
-	//	OriginTaskId:          workLog.IssueID,
-	//	RemainingEstimate:     "",
-	//	EndDate:               nil,
-	//	IncludeNonWorkingDays: false,
-	//}
+	data := TempoCreateWorklogRequest{
+		Attributes: tempoCreateWorklogAttributes{
+			EngineeringActivities: tempoCreateWorklogEngineeringActivitiesAttribute{
+				Name:            w.config.Tempo.EngineeringActivityName,
+				WorkAttributeId: w.config.Tempo.EngineeringActivityWorkAttributeID,
+				Value:           strings.ReplaceAll(strings.Trim(workLog.Tag, "[]"), " ", ""),
+			},
+		},
+		BillableSeconds:       nil,
+		OriginId:              -1,
+		Worker:                w.config.Tempo.WorkerID,
+		Comment:               workLog.Description,
+		Started:               time.Now().Format(time.DateOnly),
+		TimeSpentSeconds:      workLog.ModifiedTime.GetInSeconds(),
+		OriginTaskId:          workLog.IssueID,
+		EndDate:               nil,
+		IncludeNonWorkingDays: false,
+	}
 
-	log.Fatal("Tempo API is not implemented yet")
+	url := w.config.Jira.Url + "/rest/tempo-timesheets/4/worklogs"
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(w.config.Jira.User, w.config.Jira.Token)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
 	return nil
 }
