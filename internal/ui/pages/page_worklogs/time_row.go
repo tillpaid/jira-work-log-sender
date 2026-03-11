@@ -1,4 +1,4 @@
-package page_work_logs
+package page_worklogs
 
 import (
 	"fmt"
@@ -30,8 +30,8 @@ func NewTimeRowElement(text string, minutes int, color int16) *TimeRowElement {
 	}
 }
 
-func getTimeRow(workLogs []model.WorkLog, cfg *resource.Config) *TimeRow {
-	total, totalModified := getTotalInMinutes(workLogs)
+func getTimeRow(worklogs []model.Worklog, cfg *resource.Config) *TimeRow {
+	total, totalModified := getTotalInMinutes(worklogs)
 	left := cfg.TimeAdjustment.TargetDailyMinutes - total
 
 	var leftColor int16 = ui.DefaultColor
@@ -56,13 +56,13 @@ func (tr *TimeRow) GetTotalTextLen(additionalSpaces int) int {
 	return totalLen - additionalSpaces
 }
 
-func getTotalInMinutes(workLogs []model.WorkLog) (int, int) {
+func getTotalInMinutes(worklogs []model.Worklog) (int, int) {
 	var total int
 	var totalModified int
 
-	for _, workLog := range workLogs {
-		total += workLog.OriginalTime.GetInMinutes()
-		totalModified += workLog.ModifiedTime.GetInMinutes()
+	for _, worklog := range worklogs {
+		total += worklog.OriginalTime.GetInMinutes()
+		totalModified += worklog.ModifiedTime.GetInMinutes()
 	}
 
 	return total, totalModified

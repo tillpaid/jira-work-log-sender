@@ -14,75 +14,75 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/service"
 )
 
-type workLogService struct {
+type worklogService struct {
 	currentUsername string
 	jiraClient      *jira.Client
 	cfg             *resource.Config
 }
 
-func newWorkLogService(currentUsername string, jiraClient *jira.Client, cfg *resource.Config) *workLogService {
-	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient, cfg: cfg}
+func newWorklogService(currentUsername string, jiraClient *jira.Client, cfg *resource.Config) *worklogService {
+	return &worklogService{currentUsername: currentUsername, jiraClient: jiraClient, cfg: cfg}
 }
 
-func (w *workLogService) GetSpentTime(issueKey string) (*model.WorkLogTime, error) {
-	workLogs, _, err := w.jiraClient.Issue.GetWorklogs(issueKey)
+func (w *worklogService) GetSpentTime(issueKey string) (*model.WorklogTime, error) {
+	worklogs, _, err := w.jiraClient.Issue.GetWorklogs(issueKey)
 	if err != nil {
 		return nil, err
 	}
 
-	totalTimeSpent := &model.WorkLogTime{}
+	totalTimeSpent := &model.WorklogTime{}
 
-	for _, workLog := range workLogs.Worklogs {
-		if workLog.Author.EmailAddress != w.currentUsername {
+	for _, worklog := range worklogs.Worklogs {
+		if worklog.Author.EmailAddress != w.currentUsername {
 			continue
 		}
 
-		totalTimeSpent.AddSeconds(workLog.TimeSpentSeconds)
+		totalTimeSpent.AddSeconds(worklog.TimeSpentSeconds)
 	}
 
 	return totalTimeSpent, nil
 }
 
-func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
+func (w *worklogService) SendWorklog(worklog model.Worklog) error {
 	if w.cfg.IsDevRun {
 		service.SleepMilliseconds(service.GetRandomInt(100, 500))
 		return nil
 	}
 
 	if w.cfg.Tempo.UseTempoApiToSendWorklogs {
-		return w.sendWorkLogViaTempoApi(workLog)
+		return w.sendWorklogViaTempoApi(worklog)
 	}
 
-	return w.sendWorkLogViaJiraApi(workLog)
+	return w.sendWorklogViaJiraApi(worklog)
 }
 
-func (w *workLogService) sendWorkLogViaJiraApi(workLog model.WorkLog) error {
+func (w *worklogService) sendWorklogViaJiraApi(worklog model.Worklog) error {
 	record := &jira.WorklogRecord{
-		TimeSpent: workLog.ModifiedTime.String(),
-		Comment:   fmt.Sprintf("%s\n%s", workLog.Tag, workLog.Description),
+		TimeSpent: worklog.ModifiedTime.String(),
+		Comment:   fmt.Sprintf("%s\n%s", worklog.Tag, worklog.Description),
 	}
 
-	_, _, err := w.jiraClient.Issue.AddWorklogRecord(workLog.IssueNumber, record)
+	_, _, err := w.jiraClient.Issue.AddWorklogRecord(worklog.IssueNumber, record)
 
 	return err
 }
 
-func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
+func (w *worklogService) sendWorklogViaTempoApi(worklog model.Worklog) error {
 	data := TempoCreateWorklogRequest{
 		Attributes: tempoCreateWorklogAttributes{
 			EngineeringActivities: tempoCreateWorklogEngineeringActivitiesAttribute{
 				Name:            w.cfg.Tempo.EngineeringActivityName,
 				WorkAttributeId: w.cfg.Tempo.EngineeringActivityWorkAttributeID,
-				Value:           strings.ReplaceAll(strings.Trim(workLog.Tag, "[]"), " ", ""),
+				Value:           strings.ReplaceAll(strings.Trim(worklog.Tag, "[]"), " ", ""),
 			},
 		},
 		BillableSeconds:       nil,
 		OriginId:              -1,
 		Worker:                w.cfg.Tempo.WorkerID,
-		Comment:               workLog.Description,
+		Comment:               worklog.Description,
 		Started:               time.Now().Format(time.DateOnly),
-		TimeSpentSeconds:      workLog.ModifiedTime.GetInSeconds(),
-		OriginTaskId:          workLog.IssueID,
+		TimeSpentSeconds:      worklog.ModifiedTime.GetInSeconds(),
+		OriginTaskId:          worklog.IssueID,
 		EndDate:               nil,
 		IncludeNonWorkingDays: false,
 	}

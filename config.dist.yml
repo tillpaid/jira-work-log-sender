@@ -23,7 +23,7 @@ forbiddenProjects:
     - "TIME"
     - "SUPPORT"
 input:
-    workLogFile: "Icloud/Documents/IA-writer/2. My day.md"
+    worklogFile: "Icloud/Documents/IA-writer/2. My day.md"
 cache:
     directory: ".config/jira-work-log-sender/cache"
 tags:

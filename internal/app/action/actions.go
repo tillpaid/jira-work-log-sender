@@ -7,13 +7,13 @@ import (
 )
 
 type Actions struct {
-	PrintWorkLogs *PrintWorkLogsAction
-	SendWorkLogs  *SendWorkLogsAction
+	PrintWorklogs *PrintWorklogsAction
+	SendWorklogs  *SendWorklogsAction
 }
 
 func NewActions(client *jira.Client, window *goncurses.Window, cfg *resource.Config) *Actions {
 	return &Actions{
-		PrintWorkLogs: NewPrintWorkLogsAction(client, window, cfg),
-		SendWorkLogs:  NewSendWorkLogsAction(client, window, cfg),
+		PrintWorklogs: NewPrintWorklogsAction(client, window, cfg),
+		SendWorklogs:  NewSendWorklogsAction(client, window, cfg),
 	}
 }

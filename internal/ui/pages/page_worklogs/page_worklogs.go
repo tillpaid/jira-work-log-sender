@@ -1,4 +1,4 @@
-package page_work_logs
+package page_worklogs
 
 import (
 	"fmt"
@@ -17,34 +17,34 @@ const (
 	footerText = " Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawWorkLogsTable(window *goncurses.Window, cfg *resource.Config, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
+func DrawWorklogsTable(window *goncurses.Window, cfg *resource.Config, worklogs []model.Worklog, selectedRow int) (*table.Table, error) {
 	if err := window.Clear(); err != nil {
 		return nil, fmt.Errorf("error clearing window: %v", err)
 	}
 
 	height, width := window.MaxYX()
-	workLogsTableWidth := model.NewWorkLogTableWidthWithCalculations(workLogs, width)
+	worklogsTableWidth := model.NewWorklogTableWidthWithCalculations(worklogs, width)
 
 	t := table.NewTable(
-		getHeader(workLogsTableWidth),
-		getRows(workLogs, workLogsTableWidth, selectedRow),
+		getHeader(worklogsTableWidth),
+		getRows(worklogs, worklogsTableWidth, selectedRow),
 		window,
 	)
 
 	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawTimeRow(window, 2, width, workLogs, cfg)
+	drawTimeRow(window, 2, width, worklogs, cfg)
 	drawFooter(window, height)
 
 	window.Refresh()
 	return t, nil
 }
 
-func drawTimeRow(window *goncurses.Window, x int, width int, workLogs []model.WorkLog, cfg *resource.Config) {
-	timeRow := getTimeRow(workLogs, cfg)
+func drawTimeRow(window *goncurses.Window, x int, width int, worklogs []model.Worklog, cfg *resource.Config) {
+	timeRow := getTimeRow(worklogs, cfg)
 	useSeparateLines := timeRow.GetTotalTextLen(3) >= width-6
 
-	y := 5 + len(workLogs)
+	y := 5 + len(worklogs)
 	window.Move(y, x+1)
 
 	for i, e := range timeRow.Elements {
@@ -66,28 +66,28 @@ func drawFooter(window *goncurses.Window, height int) {
 	window.MovePrint(height-1, 2, footerText)
 }
 
-func getHeader(workLogsTableWidth *model.WorkLogTableWidth) *table.Header {
+func getHeader(worklogsTableWidth *model.WorklogTableWidth) *table.Header {
 	columns := []*table.Column{
-		{"Name", workLogsTableWidth.HeaderText, 0, 0},
-		{"Time", workLogsTableWidth.OriginalTime, 0, 0},
-		{"MTime", workLogsTableWidth.ModifiedTime, 0, 0},
-		{"Issue", workLogsTableWidth.IssueNumber, 0, 0},
-		{"Description", workLogsTableWidth.Description, 0, 0},
+		{"Name", worklogsTableWidth.HeaderText, 0, 0},
+		{"Time", worklogsTableWidth.OriginalTime, 0, 0},
+		{"MTime", worklogsTableWidth.ModifiedTime, 0, 0},
+		{"Issue", worklogsTableWidth.IssueNumber, 0, 0},
+		{"Description", worklogsTableWidth.Description, 0, 0},
 	}
 
 	return table.NewHeader(columns, 3)
 }
 
-func getRows(workLogs []model.WorkLog, workLogsTableWidth *model.WorkLogTableWidth, selectedRow int) []*table.Row {
+func getRows(worklogs []model.Worklog, worklogsTableWidth *model.WorklogTableWidth, selectedRow int) []*table.Row {
 	var rows []*table.Row
 
-	for i, log := range workLogs {
+	for i, log := range worklogs {
 		columns := []*table.Column{
-			{log.GetHeader(), workLogsTableWidth.HeaderText, 0, 0},
-			{log.OriginalTime.String(), workLogsTableWidth.OriginalTime, 0, 0},
-			{log.ModifiedTime.String(), workLogsTableWidth.ModifiedTime, 0, 0},
-			{log.IssueNumber, workLogsTableWidth.IssueNumber, 0, 0},
-			{log.Description, workLogsTableWidth.Description, 0, 0},
+			{log.GetHeader(), worklogsTableWidth.HeaderText, 0, 0},
+			{log.OriginalTime.String(), worklogsTableWidth.OriginalTime, 0, 0},
+			{log.ModifiedTime.String(), worklogsTableWidth.ModifiedTime, 0, 0},
+			{log.IssueNumber, worklogsTableWidth.IssueNumber, 0, 0},
+			{log.Description, worklogsTableWidth.Description, 0, 0},
 		}
 
 		isSelected := i+1 == selectedRow

@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-type WorkLogTime struct {
+type WorklogTime struct {
 	Hours   int
 	Minutes int
 }
 
-type WorkLog struct {
+type Worklog struct {
 	HeaderText                     string
 	Number                         int
-	OriginalTime                   WorkLogTime
-	ModifiedTime                   WorkLogTime
+	OriginalTime                   WorklogTime
+	ModifiedTime                   WorklogTime
 	IssueNumber                    string
 	IssueID                        string
 	Tag                            string
@@ -23,7 +23,7 @@ type WorkLog struct {
 	ModifyTimeDisabled             bool
 }
 
-func (w *WorkLog) GetHeader() string {
+func (w *Worklog) GetHeader() string {
 	if len(w.HeaderText) > 30 {
 		return w.HeaderText[:30]
 	}
@@ -31,11 +31,11 @@ func (w *WorkLog) GetHeader() string {
 	return w.HeaderText
 }
 
-func (w *WorkLog) ToggleModifyTime() {
+func (w *Worklog) ToggleModifyTime() {
 	w.ModifyTimeDisabled = !w.ModifyTimeDisabled
 }
 
-func (wt *WorkLogTime) AddMinutes(minutes int) {
+func (wt *WorklogTime) AddMinutes(minutes int) {
 	wt.Hours += minutes / 60
 	wt.Minutes += minutes % 60
 
@@ -45,19 +45,19 @@ func (wt *WorkLogTime) AddMinutes(minutes int) {
 	}
 }
 
-func (wt *WorkLogTime) AddSeconds(seconds int) {
+func (wt *WorklogTime) AddSeconds(seconds int) {
 	wt.AddMinutes(seconds / 60)
 }
 
-func (wt *WorkLogTime) GetInMinutes() int {
+func (wt *WorklogTime) GetInMinutes() int {
 	return wt.Hours*60 + wt.Minutes
 }
 
-func (wt *WorkLogTime) GetInSeconds() int {
+func (wt *WorklogTime) GetInSeconds() int {
 	return wt.Hours*3600 + wt.Minutes*60
 }
 
-func (wt *WorkLogTime) String() string {
+func (wt *WorklogTime) String() string {
 	var parts []string
 
 	if wt.Hours > 0 {

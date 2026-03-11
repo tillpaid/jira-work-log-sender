@@ -37,9 +37,9 @@ type Application struct {
 	cfg       *resource.Config
 
 	table        *table.Table
-	workLogs     []model.WorkLog
+	worklogs     []model.Worklog
 	selector     *model.RowSelector
-	workLogsSent bool
+	worklogsSent bool
 }
 
 func NewApplication(window *goncurses.Window, client *jira.Client, input *UserInput, actions *action.Actions, cfg *resource.Config) *Application {
@@ -52,12 +52,12 @@ func NewApplication(window *goncurses.Window, client *jira.Client, input *UserIn
 		cfg:          cfg,
 		actions:      actions,
 		selector:     selector,
-		workLogsSent: false,
+		worklogsSent: false,
 	}
 }
 
 func (a *Application) Start() error {
-	if err := a.loadWorkLogs(); err != nil {
+	if err := a.loadWorklogs(); err != nil {
 		return err
 	}
 
@@ -69,7 +69,7 @@ func (a *Application) Start() error {
 		return err
 	}
 
-	handleResize(&a.window, &a.table, a.selector, a.actions, &a.workLogs)
+	handleResize(&a.window, &a.table, a.selector, a.actions, &a.worklogs)
 
 	for {
 		switch a.userInput.WaitForAction() {
@@ -83,16 +83,16 @@ func (a *Application) Start() error {
 			}
 		case actionNextRow:
 			a.selector.NextRow()
-			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+			a.actions.PrintWorklogs.UpdateSelectedRow(a.table, a.selector)
 		case actionPrevRow:
 			a.selector.PrevRow()
-			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+			a.actions.PrintWorklogs.UpdateSelectedRow(a.table, a.selector)
 		case actionFirstRow:
 			a.selector.FirstRow()
-			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+			a.actions.PrintWorklogs.UpdateSelectedRow(a.table, a.selector)
 		case actionLastRow:
 			a.selector.LastRow()
-			a.actions.PrintWorkLogs.UpdateSelectedRow(a.table, a.selector)
+			a.actions.PrintWorklogs.UpdateSelectedRow(a.table, a.selector)
 		case actionCopy:
 			return a.processActionCopy(true)
 		case actionCopyWithoutExit:
@@ -115,7 +115,7 @@ func (a *Application) Start() error {
 }
 
 func (a *Application) processActionReload() error {
-	if err := a.loadWorkLogs(); err != nil {
+	if err := a.loadWorklogs(); err != nil {
 		return err
 	}
 
@@ -127,20 +127,20 @@ func (a *Application) processActionReload() error {
 }
 
 func (a *Application) processActionSend() error {
-	if a.workLogsSent {
+	if a.worklogsSent {
 		return nil
 	}
 
-	a.workLogsSent = true
-	return a.actions.SendWorkLogs.Send(a.workLogs)
+	a.worklogsSent = true
+	return a.actions.SendWorklogs.Send(a.worklogs)
 }
 
 func (a *Application) processActionCopy(exit bool) error {
-	if len(a.workLogs) == 0 {
+	if len(a.worklogs) == 0 {
 		return nil
 	}
 
-	if err := clipboard.CopyToClipboard(a.workLogs[a.selector.Row-1].HeaderText); err != nil {
+	if err := clipboard.CopyToClipboard(a.worklogs[a.selector.Row-1].HeaderText); err != nil {
 		return err
 	}
 
@@ -152,49 +152,49 @@ func (a *Application) processActionCopy(exit bool) error {
 }
 
 func (a *Application) processActionToggleModifyTime(all bool) error {
-	if len(a.workLogs) == 0 || !a.cfg.TimeAdjustment.Enabled {
+	if len(a.worklogs) == 0 || !a.cfg.TimeAdjustment.Enabled {
 		return nil
 	}
 
-	for i := range a.workLogs {
+	for i := range a.worklogs {
 		if all || i == a.selector.Row-1 {
-			a.workLogs[i].ToggleModifyTime()
+			a.worklogs[i].ToggleModifyTime()
 		}
 	}
 
-	a.workLogs = service.ModifyWorkLogsTime(a.workLogs, a.cfg)
+	a.worklogs = service.ModifyWorklogsTime(a.worklogs, a.cfg)
 	return a.printTable()
 }
 
-func (a *Application) loadWorkLogs() error {
-	workLogs, err := import_data.ParseWorkLogs(a.cfg, a.workLogs)
+func (a *Application) loadWorklogs() error {
+	worklogs, err := import_data.ParseWorklogs(a.cfg, a.worklogs)
 	if err != nil {
 		return err
 	}
 
-	a.workLogs = workLogs
-	a.selector.Update(len(workLogs))
+	a.worklogs = worklogs
+	a.selector.Update(len(worklogs))
 
 	return nil
 }
 
 func (a *Application) setIssueIDs() error {
-	for i := range a.workLogs {
-		workLog := &a.workLogs[i]
+	for i := range a.worklogs {
+		worklog := &a.worklogs[i]
 
-		issueID, err := a.client.IssueService.GetIssueID(workLog.IssueNumber)
+		issueID, err := a.client.IssueService.GetIssueID(worklog.IssueNumber)
 		if err != nil {
-			return fmt.Errorf("failed to get issue ID for issue number %s: %w", workLog.IssueNumber, err)
+			return fmt.Errorf("failed to get issue ID for issue number %s: %w", worklog.IssueNumber, err)
 		}
 
-		workLog.IssueID = issueID
+		worklog.IssueID = issueID
 	}
 
 	return nil
 }
 
 func (a *Application) printTable() error {
-	t, err := a.actions.PrintWorkLogs.Print(a.workLogs, a.selector)
+	t, err := a.actions.PrintWorklogs.Print(a.worklogs, a.selector)
 	if err != nil {
 		return err
 	}

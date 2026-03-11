@@ -15,15 +15,15 @@ type IssueServiceInterface interface {
 	IsIssueExistsInCache(issueKey string) bool
 }
 
-type WorkLogServiceInterface interface {
-	GetSpentTime(issueKey string) (*model.WorkLogTime, error)
-	SendWorkLog(workLog model.WorkLog) error
+type WorklogServiceInterface interface {
+	GetSpentTime(issueKey string) (*model.WorklogTime, error)
+	SendWorklog(worklog model.Worklog) error
 }
 
 type Client struct {
 	jiraClient     *jira.Client
 	IssueService   IssueServiceInterface
-	WorkLogService WorkLogServiceInterface
+	WorklogService WorklogServiceInterface
 }
 
 func NewClient(cfg *resource.Config) (*Client, error) {
@@ -45,7 +45,7 @@ func NewClient(cfg *resource.Config) (*Client, error) {
 	return &Client{
 		jiraClient:     jiraClient,
 		IssueService:   newIssueService(jiraClient, issuesCache),
-		WorkLogService: newWorkLogService(cfg.Jira.User, jiraClient, cfg),
+		WorklogService: newWorklogService(cfg.Jira.User, jiraClient, cfg),
 	}, nil
 }
 

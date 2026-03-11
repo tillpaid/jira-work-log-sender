@@ -79,7 +79,7 @@ timeAdjustment:
     remainingTimeThreshold: 45          # Threshold in minutes for highlighting remaining time. If the remaining time exceeds this limit, it will be displayed with a yellow highlight.
 
 input:
-    workLogFile: "Icloud/Documents/IA-writer/2. My day.md"
+    worklogFile: "Icloud/Documents/IA-writer/2. My day.md"
                                         # Relative path to your daily Markdown work log file.
                                         # A relative path from your home directory.
 

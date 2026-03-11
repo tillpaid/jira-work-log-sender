@@ -9,36 +9,36 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
-func parseTimeString(timeString string) (model.WorkLogTime, error) {
-	var workLogTime model.WorkLogTime
+func parseTimeString(timeString string) (model.WorklogTime, error) {
+	var worklogTime model.WorklogTime
 	var err error
 
 	if strings.Count(timeString, hoursChar) > 1 || strings.Count(timeString, minutesChar) > 1 {
-		return workLogTime, errors.New("too many hours or minutes in time string")
+		return worklogTime, errors.New("too many hours or minutes in time string")
 	}
 
-	workLogTime.Hours, err = parseTimeForChar(timeString, hoursChar)
+	worklogTime.Hours, err = parseTimeForChar(timeString, hoursChar)
 	if err != nil {
-		return workLogTime, err
+		return worklogTime, err
 	}
 
-	if workLogTime.Hours > 0 {
+	if worklogTime.Hours > 0 {
 		timeString = timeString[strings.Index(timeString, hoursChar)+1:]
 	}
 
-	workLogTime.Minutes, err = parseTimeForChar(timeString, minutesChar)
+	worklogTime.Minutes, err = parseTimeForChar(timeString, minutesChar)
 	if err != nil {
-		return workLogTime, err
+		return worklogTime, err
 	}
 
-	workLogTime.Hours += workLogTime.Minutes / 60
-	workLogTime.Minutes = workLogTime.Minutes % 60
+	worklogTime.Hours += worklogTime.Minutes / 60
+	worklogTime.Minutes = worklogTime.Minutes % 60
 
-	if workLogTime.Hours == 0 && workLogTime.Minutes == 0 {
-		return workLogTime, errors.New("no hours or minutes in time string")
+	if worklogTime.Hours == 0 && worklogTime.Minutes == 0 {
+		return worklogTime, errors.New("no hours or minutes in time string")
 	}
 
-	return workLogTime, nil
+	return worklogTime, nil
 }
 
 func parseTimeForChar(timeString string, char string) (int, error) {

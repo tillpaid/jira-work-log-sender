@@ -13,7 +13,7 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/ui/element/table"
 )
 
-func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model.RowSelector, actions *action.Actions, workLogs *[]model.WorkLog) {
+func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model.RowSelector, actions *action.Actions, worklogs *[]model.Worklog) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGWINCH)
 
@@ -26,7 +26,7 @@ func handleResize(window **goncurses.Window, t **table.Table, rowSelector *model
 			newWindow, _ := ui.InitializeWindow()
 			newWindow.Refresh()
 
-			newTable, _ := actions.PrintWorkLogs.Print(*workLogs, rowSelector)
+			newTable, _ := actions.PrintWorklogs.Print(*worklogs, rowSelector)
 
 			discardResidualInput(newWindow)
 

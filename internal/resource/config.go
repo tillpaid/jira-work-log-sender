@@ -37,7 +37,7 @@ type TimeAdjustmentConfig struct {
 }
 
 type InputConfig struct {
-	WorkLogFile string `yaml:"workLogFile" validate:"required"`
+	WorklogFile string `yaml:"worklogFile" validate:"required"`
 }
 
 type CacheConfig struct {
@@ -80,7 +80,7 @@ func InitConfig() (*Config, error) {
 func updateConfigValues(cfg *Config) {
 	homeDir := os.Getenv("HOME")
 
-	cfg.Input.WorkLogFile = filepath.Join(homeDir, cfg.Input.WorkLogFile)
+	cfg.Input.WorklogFile = filepath.Join(homeDir, cfg.Input.WorklogFile)
 	cfg.Cache.Directory = filepath.Join(homeDir, cfg.Cache.Directory)
 	cfg.IsDevRun = isDevRun()
 }

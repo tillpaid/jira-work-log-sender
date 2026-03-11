@@ -15,7 +15,7 @@ const (
 	totalTimeSecondMinWidth   = 8
 )
 
-type WorkLogTableWidth struct {
+type WorklogTableWidth struct {
 	Number       int
 	HeaderText   int
 	OriginalTime int
@@ -26,11 +26,11 @@ type WorkLogTableWidth struct {
 	TotalTime    int
 }
 
-func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, width int) *WorkLogTableWidth {
+func NewWorklogTableWidthWithCalculations(worklogs []Worklog, width int) *WorklogTableWidth {
 	width -= 6 // box borders and table dividers
 
-	w := &WorkLogTableWidth{
-		Number:       len(strconv.Itoa(len(workLogs))) + 3,
+	w := &WorklogTableWidth{
+		Number:       len(strconv.Itoa(len(worklogs))) + 3,
 		HeaderText:   headerTextFirstMinWidth,
 		OriginalTime: 4,
 		ModifiedTime: 4,
@@ -40,39 +40,39 @@ func NewWorkLogTableWidthWithCalculations(workLogs []WorkLog, width int) *WorkLo
 		TotalTime:    totalTimeFirstMinWidth,
 	}
 
-	for _, workLog := range workLogs {
-		w.resolveWidthForWorkLog(workLog)
+	for _, worklog := range worklogs {
+		w.resolveWidthForWorklog(worklog)
 	}
 
-	w.adjustWidthForWorkLogTable(width)
+	w.adjustWidthForWorklogTable(width)
 	w.adjustWidthForSendTable(width)
 
 	return w
 }
 
-func (w *WorkLogTableWidth) getTotalForWorkLogTable() int {
+func (w *WorklogTableWidth) getTotalForWorklogTable() int {
 	return w.Number + w.HeaderText + w.OriginalTime + w.ModifiedTime + w.IssueNumber + w.Description
 }
 
-func (w *WorkLogTableWidth) getTotalForSendTable() int {
+func (w *WorklogTableWidth) getTotalForSendTable() int {
 	return w.Number + w.IssueNumber + w.SendStatus + w.TotalTime
 }
 
-func (w *WorkLogTableWidth) resolveWidthForWorkLog(workLog WorkLog) {
-	w.resolveWidth(&w.HeaderText, workLog.GetHeader())
-	w.resolveWidth(&w.OriginalTime, workLog.OriginalTime.String())
-	w.resolveWidth(&w.ModifiedTime, workLog.ModifiedTime.String())
-	w.resolveWidth(&w.IssueNumber, workLog.IssueNumber)
-	w.resolveWidth(&w.Description, workLog.Description)
+func (w *WorklogTableWidth) resolveWidthForWorklog(worklog Worklog) {
+	w.resolveWidth(&w.HeaderText, worklog.GetHeader())
+	w.resolveWidth(&w.OriginalTime, worklog.OriginalTime.String())
+	w.resolveWidth(&w.ModifiedTime, worklog.ModifiedTime.String())
+	w.resolveWidth(&w.IssueNumber, worklog.IssueNumber)
+	w.resolveWidth(&w.Description, worklog.Description)
 }
 
-func (w *WorkLogTableWidth) resolveWidth(currentWidth *int, text string) {
+func (w *WorklogTableWidth) resolveWidth(currentWidth *int, text string) {
 	if len(text)+2 > *currentWidth {
 		*currentWidth = len(text) + 2
 	}
 }
 
-func (w *WorkLogTableWidth) adjustWidthForWorkLogTable(width int) {
+func (w *WorklogTableWidth) adjustWidthForWorklogTable(width int) {
 	type widthAdjustment struct {
 		field    *int
 		minWidth int
@@ -85,7 +85,7 @@ func (w *WorkLogTableWidth) adjustWidthForWorkLogTable(width int) {
 	}
 
 	for _, adj := range adjustments {
-		total := w.getTotalForWorkLogTable()
+		total := w.getTotalForWorklogTable()
 		if total <= width {
 			break
 		}
@@ -94,7 +94,7 @@ func (w *WorkLogTableWidth) adjustWidthForWorkLogTable(width int) {
 	}
 }
 
-func (w *WorkLogTableWidth) adjustWidthForSendTable(width int) {
+func (w *WorklogTableWidth) adjustWidthForSendTable(width int) {
 	if w.getTotalForSendTable() > width {
 		w.SendStatus = sendStatusSecondMinWidth
 		w.TotalTime = totalTimeSecondMinWidth

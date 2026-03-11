@@ -14,43 +14,43 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorkLogFromSection(cfg *resource.Config, section []string, number int) (model.WorkLog, error) {
-	workLog := model.WorkLog{
+func buildWorklogFromSection(cfg *resource.Config, section []string, number int) (model.Worklog, error) {
+	worklog := model.Worklog{
 		Number: number,
 	}
 
 	issueNumber, originalTime, err := getMainInformation(section[0])
 	if err != nil {
-		return workLog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
+		return worklog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
 	}
 
 	if isForbiddenProject(issueNumber, cfg) {
-		return workLog, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
+		return worklog, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
 	}
 
 	if len(section) < 2 {
-		return workLog, fmt.Errorf("no description for task %s", issueNumber)
+		return worklog, fmt.Errorf("no description for task %s", issueNumber)
 	}
 
 	tag := section[1]
 	if !containAllowedTag(cfg, tag) {
-		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
+		return worklog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
 	}
 
-	workLog.HeaderText = strings.TrimLeft(section[0], "# ")
-	workLog.IssueNumber = issueNumber
-	workLog.OriginalTime = originalTime
-	workLog.Description = strings.Join(section[2:], "\n")
-	workLog.Tag = tag
-	workLog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(workLog.IssueNumber, cfg)
+	worklog.HeaderText = strings.TrimLeft(section[0], "# ")
+	worklog.IssueNumber = issueNumber
+	worklog.OriginalTime = originalTime
+	worklog.Description = strings.Join(section[2:], "\n")
+	worklog.Tag = tag
+	worklog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(worklog.IssueNumber, cfg)
 
-	return workLog, nil
+	return worklog, nil
 }
 
-func getMainInformation(line string) (string, model.WorkLogTime, error) {
+func getMainInformation(line string) (string, model.WorklogTime, error) {
 	mainParts := strings.Split(line, "|")
 	if len(mainParts) != 2 {
-		return "", model.WorkLogTime{}, errors.New("no pipe in main information or too many pipes")
+		return "", model.WorklogTime{}, errors.New("no pipe in main information or too many pipes")
 	}
 
 	parts := strings.Split(mainParts[1], " ")
@@ -65,9 +65,9 @@ func getMainInformation(line string) (string, model.WorkLogTime, error) {
 
 	switch len(secondParts) {
 	case 0:
-		return "", model.WorkLogTime{}, errors.New("no information after pipe")
+		return "", model.WorklogTime{}, errors.New("no information after pipe")
 	case 1:
-		return secondParts[0], model.WorkLogTime{}, nil
+		return secondParts[0], model.WorklogTime{}, nil
 	case 2:
 		originalTime, err := parseTimeString(secondParts[1])
 		if err != nil {
@@ -76,7 +76,7 @@ func getMainInformation(line string) (string, model.WorkLogTime, error) {
 
 		return secondParts[0], originalTime, nil
 	default:
-		return "", model.WorkLogTime{}, errors.New("too many parts after pipe")
+		return "", model.WorklogTime{}, errors.New("too many parts after pipe")
 	}
 }
 
