@@ -10,48 +10,56 @@ import (
 
 const configFilePath = ".config/jira-work-log-sender/config.yml"
 
+type JiraConfig struct {
+	Url   string `yaml:"url" validate:"required"`
+	User  string `yaml:"user" validate:"required"`
+	Token string `yaml:"token" validate:"required"`
+}
+
+type TempoConfig struct {
+	UseTempoApiToSendWorklogs          bool   `yaml:"useTempoApiToSendWorklogs"`
+	WorkerID                           string `yaml:"workerID" validate:"required_if=UseTempoApiToSendWorklogs true"`
+	EngineeringActivityName            string `yaml:"engineeringActivityName" validate:"required_if=UseTempoApiToSendWorklogs true"`
+	EngineeringActivityWorkAttributeID int    `yaml:"engineeringActivityWorkAttributeID" validate:"required_if=UseTempoApiToSendWorklogs true"`
+}
+
+type HighlightingConfig struct {
+	DefaultThresholdHours int            `yaml:"defaultThresholdHours" validate:"required"`
+	TagSpecificThresholds map[string]int `yaml:"tagSpecificThresholds"`
+	ExcludedIssues        []string       `yaml:"excludedIssues" validate:"required"`
+}
+
+type TimeAdjustmentConfig struct {
+	Enabled                bool     `yaml:"enabled"`
+	ExcludedIssues         []string `yaml:"excludedIssues"`
+	TargetDailyMinutes     int      `yaml:"targetDailyMinutes" validate:"required,min=0"`
+	RemainingTimeThreshold int      `yaml:"remainingTimeThreshold" validate:"required,min=0"`
+}
+
+type InputConfig struct {
+	WorkLogFile string `yaml:"workLogFile" validate:"required"`
+}
+
+type CacheConfig struct {
+	Directory string `yaml:"directory" validate:"required"`
+}
+
+type TagsConfig struct {
+	Allowed []string `yaml:"allowed"`
+}
+
+type ForbiddenProjects []string
+
 type Config struct {
-	Jira struct {
-		Url   string `yaml:"url" validate:"required"`
-		User  string `yaml:"user" validate:"required"`
-		Token string `yaml:"token" validate:"required"`
-	} `yaml:"jira"`
-
-	Tempo struct {
-		UseTempoApiToSendWorklogs          bool   `yaml:"useTempoApiToSendWorklogs"`
-		WorkerID                           string `yaml:"workerID" validate:"required_if=UseTempoApiToSendWorklogs true"`
-		EngineeringActivityName            string `yaml:"engineeringActivityName" validate:"required_if=UseTempoApiToSendWorklogs true"`
-		EngineeringActivityWorkAttributeID int    `yaml:"engineeringActivityWorkAttributeID" validate:"required_if=UseTempoApiToSendWorklogs true"`
-	} `yaml:"tempo"`
-
-	Highlighting struct {
-		DefaultThresholdHours int            `yaml:"defaultThresholdHours" validate:"required"`
-		TagSpecificThresholds map[string]int `yaml:"tagSpecificThresholds"`
-		ExcludedIssues        []string       `yaml:"excludedIssues" validate:"required"`
-	} `yaml:"highlighting"`
-
-	TimeAdjustment struct {
-		Enabled                bool     `yaml:"enabled"`
-		ExcludedIssues         []string `yaml:"excludedIssues"`
-		TargetDailyMinutes     int      `yaml:"targetDailyMinutes" validate:"required,min=0"`
-		RemainingTimeThreshold int      `yaml:"remainingTimeThreshold" validate:"required,min=0"`
-	} `yaml:"timeAdjustment"`
-
-	ForbiddenProjects []string `yaml:"forbiddenProjects" validate:"required"`
-
-	Input struct {
-		WorkLogFile string `yaml:"workLogFile" validate:"required"`
-	} `yaml:"input"`
-
-	Cache struct {
-		Directory string `yaml:"directory" validate:"required"`
-	} `yaml:"cache"`
-
-	Tags struct {
-		Allowed []string `yaml:"allowed"`
-	} `yaml:"tags"`
-
-	IsDevRun bool
+	Jira              JiraConfig           `yaml:"jira"`
+	Tempo             TempoConfig          `yaml:"tempo"`
+	Highlighting      HighlightingConfig   `yaml:"highlighting"`
+	TimeAdjustment    TimeAdjustmentConfig `yaml:"timeAdjustment"`
+	ForbiddenProjects ForbiddenProjects    `yaml:"forbiddenProjects" validate:"required"`
+	Input             InputConfig          `yaml:"input"`
+	Cache             CacheConfig          `yaml:"cache"`
+	Tags              TagsConfig           `yaml:"tags"`
+	IsDevRun          bool
 }
 
 func InitConfig() (*Config, error) {
