@@ -32,18 +32,18 @@ func initResources() (*app.Application, error) {
 		return nil, fmt.Errorf("error initializing window: %v", err)
 	}
 
-	config, err := resource.InitConfig()
+	cfg, err := resource.InitConfig()
 	if err != nil {
 		return nil, fmt.Errorf("error initializing config: %v", err)
 	}
 
-	client, err := jira.NewClient(config)
+	client, err := jira.NewClient(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing jira client: %v", err)
 	}
 
 	userInput := app.NewUserInput(window)
-	actions := action.NewActions(client, window, config)
+	actions := action.NewActions(client, window, cfg)
 
-	return app.NewApplication(window, client, userInput, actions, config), nil
+	return app.NewApplication(window, client, userInput, actions, cfg), nil
 }

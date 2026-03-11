@@ -17,7 +17,7 @@ const (
 	footerText = " Action keys: R-Reload | L-Send work logs | [Q/Space/Return/Esc]-Exit "
 )
 
-func DrawWorkLogsTable(window *goncurses.Window, config *resource.Config, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
+func DrawWorkLogsTable(window *goncurses.Window, cfg *resource.Config, workLogs []model.WorkLog, selectedRow int) (*table.Table, error) {
 	if err := window.Clear(); err != nil {
 		return nil, fmt.Errorf("error clearing window: %v", err)
 	}
@@ -33,15 +33,15 @@ func DrawWorkLogsTable(window *goncurses.Window, config *resource.Config, workLo
 
 	element.DrawBox(window, height-2, width, pageName)
 	t.Draw()
-	drawTimeRow(window, 2, width, workLogs, config)
+	drawTimeRow(window, 2, width, workLogs, cfg)
 	drawFooter(window, height)
 
 	window.Refresh()
 	return t, nil
 }
 
-func drawTimeRow(window *goncurses.Window, x int, width int, workLogs []model.WorkLog, config *resource.Config) {
-	timeRow := getTimeRow(workLogs, config)
+func drawTimeRow(window *goncurses.Window, x int, width int, workLogs []model.WorkLog, cfg *resource.Config) {
+	timeRow := getTimeRow(workLogs, cfg)
 	useSeparateLines := timeRow.GetTotalTextLen(3) >= width-6
 
 	y := 5 + len(workLogs)

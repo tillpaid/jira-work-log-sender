@@ -26,18 +26,18 @@ type Client struct {
 	WorkLogService WorkLogServiceInterface
 }
 
-func NewClient(config *resource.Config) (*Client, error) {
+func NewClient(cfg *resource.Config) (*Client, error) {
 	tp := jira.BasicAuthTransport{
-		Username: config.Jira.User,
-		Password: config.Jira.Token,
+		Username: cfg.Jira.User,
+		Password: cfg.Jira.Token,
 	}
 
-	issuesCache, err := cache.NewIssuesCache(config.Cache.Directory)
+	issuesCache, err := cache.NewIssuesCache(cfg.Cache.Directory)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create issues cache: %v", err)
 	}
 
-	jiraClient, err := jira.NewClient(tp.Client(), config.Jira.Url)
+	jiraClient, err := jira.NewClient(tp.Client(), cfg.Jira.Url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Jira client: %v", err)
 	}
@@ -45,7 +45,7 @@ func NewClient(config *resource.Config) (*Client, error) {
 	return &Client{
 		jiraClient:     jiraClient,
 		IssueService:   newIssueService(jiraClient, issuesCache),
-		WorkLogService: newWorkLogService(config.Jira.User, jiraClient, config),
+		WorkLogService: newWorkLogService(cfg.Jira.User, jiraClient, cfg),
 	}, nil
 }
 

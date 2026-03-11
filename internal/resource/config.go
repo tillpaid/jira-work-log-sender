@@ -55,26 +55,26 @@ type Config struct {
 }
 
 func InitConfig() (*Config, error) {
-	config, err := loadConfig()
+	cfg, err := loadConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	if err := validateConfig(config); err != nil {
+	if err := validateConfig(cfg); err != nil {
 		return nil, err
 	}
 
-	updateConfigValues(config)
+	updateConfigValues(cfg)
 
-	return config, nil
+	return cfg, nil
 }
 
-func updateConfigValues(config *Config) {
+func updateConfigValues(cfg *Config) {
 	homeDir := os.Getenv("HOME")
 
-	config.Input.WorkLogFile = filepath.Join(homeDir, config.Input.WorkLogFile)
-	config.Cache.Directory = filepath.Join(homeDir, config.Cache.Directory)
-	config.IsDevRun = isDevRun()
+	cfg.Input.WorkLogFile = filepath.Join(homeDir, cfg.Input.WorkLogFile)
+	cfg.Cache.Directory = filepath.Join(homeDir, cfg.Cache.Directory)
+	cfg.IsDevRun = isDevRun()
 }
 
 func loadConfig() (*Config, error) {
@@ -86,18 +86,18 @@ func loadConfig() (*Config, error) {
 	}
 	defer file.Close()
 
-	config := &Config{}
+	cfg := &Config{}
 	decoder := yaml.NewDecoder(file)
-	if err := decoder.Decode(&config); err != nil {
+	if err := decoder.Decode(&cfg); err != nil {
 		return nil, err
 	}
 
-	return config, nil
+	return cfg, nil
 }
 
-func validateConfig(config *Config) error {
+func validateConfig(cfg *Config) error {
 	validate := validator.New()
-	return validate.Struct(config)
+	return validate.Struct(cfg)
 }
 
 func isDevRun() bool {

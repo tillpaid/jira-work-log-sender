@@ -9,8 +9,8 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/service"
 )
 
-func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]model.WorkLog, error) {
-	file, err := os.Open(config.Input.WorkLogFile)
+func ParseWorkLogs(cfg *resource.Config, oldWorkLogs []model.WorkLog) ([]model.WorkLog, error) {
+	file, err := os.Open(cfg.Input.WorkLogFile)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file during parsing work logs: %v", err)
 	}
@@ -24,7 +24,7 @@ func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]mode
 	}
 
 	for i, section := range sections {
-		workLog, err := buildWorkLogFromSection(config, section, i+1)
+		workLog, err := buildWorkLogFromSection(cfg, section, i+1)
 		if err != nil {
 			return nil, fmt.Errorf("error building work log: %v", err)
 		}
@@ -33,7 +33,7 @@ func ParseWorkLogs(config *resource.Config, oldWorkLogs []model.WorkLog) ([]mode
 	}
 
 	workLogs = copyTempValuesFromOldWorkLogs(oldWorkLogs, workLogs)
-	workLogs = service.ModifyWorkLogsTime(workLogs, config)
+	workLogs = service.ModifyWorkLogsTime(workLogs, cfg)
 
 	return workLogs, nil
 }

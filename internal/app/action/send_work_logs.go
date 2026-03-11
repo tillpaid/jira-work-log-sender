@@ -63,11 +63,11 @@ var transitions = map[int16]*Transition{
 type SendWorkLogsAction struct {
 	client *jira.Client
 	window *goncurses.Window
-	config *resource.Config
+	cfg    *resource.Config
 }
 
-func NewSendWorkLogsAction(client *jira.Client, window *goncurses.Window, config *resource.Config) *SendWorkLogsAction {
-	return &SendWorkLogsAction{client: client, window: window, config: config}
+func NewSendWorkLogsAction(client *jira.Client, window *goncurses.Window, cfg *resource.Config) *SendWorkLogsAction {
+	return &SendWorkLogsAction{client: client, window: window, cfg: cfg}
 }
 
 func (a *SendWorkLogsAction) Send(workLogs []model.WorkLog) error {
@@ -131,7 +131,7 @@ func (a *SendWorkLogsAction) setSpentTime(table *table.Table, workLog model.Work
 	}
 
 	transitions[toCustomText].Next = workLogTime.String()
-	if service.ShouldHighlightTimeForWorkLog(workLog, workLogTime, a.config) {
+	if service.ShouldHighlightTimeForWorkLog(workLog, workLogTime, a.cfg) {
 		transitions[toCustomText].Color = ui.YellowOnBlack
 	}
 

@@ -14,15 +14,15 @@ import (
 type PrintWorkLogsAction struct {
 	client *jira.Client
 	window *goncurses.Window
-	config *resource.Config
+	cfg    *resource.Config
 }
 
-func NewPrintWorkLogsAction(client *jira.Client, window *goncurses.Window, config *resource.Config) *PrintWorkLogsAction {
-	return &PrintWorkLogsAction{client: client, window: window, config: config}
+func NewPrintWorkLogsAction(client *jira.Client, window *goncurses.Window, cfg *resource.Config) *PrintWorkLogsAction {
+	return &PrintWorkLogsAction{client: client, window: window, cfg: cfg}
 }
 
 func (a *PrintWorkLogsAction) Print(workLogs []model.WorkLog, rowSelector *model.RowSelector) (*table.Table, error) {
-	t, err := page_work_logs.DrawWorkLogsTable(a.window, a.config, workLogs, rowSelector.Row)
+	t, err := page_work_logs.DrawWorkLogsTable(a.window, a.cfg, workLogs, rowSelector.Row)
 	if err != nil {
 		return t, err
 	}

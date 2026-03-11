@@ -17,11 +17,11 @@ import (
 type workLogService struct {
 	currentUsername string
 	jiraClient      *jira.Client
-	config          *resource.Config
+	cfg             *resource.Config
 }
 
-func newWorkLogService(currentUsername string, jiraClient *jira.Client, config *resource.Config) *workLogService {
-	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient, config: config}
+func newWorkLogService(currentUsername string, jiraClient *jira.Client, cfg *resource.Config) *workLogService {
+	return &workLogService{currentUsername: currentUsername, jiraClient: jiraClient, cfg: cfg}
 }
 
 func (w *workLogService) GetSpentTime(issueKey string) (*model.WorkLogTime, error) {
@@ -44,12 +44,12 @@ func (w *workLogService) GetSpentTime(issueKey string) (*model.WorkLogTime, erro
 }
 
 func (w *workLogService) SendWorkLog(workLog model.WorkLog) error {
-	if w.config.IsDevRun {
+	if w.cfg.IsDevRun {
 		service.SleepMilliseconds(service.GetRandomInt(100, 500))
 		return nil
 	}
 
-	if w.config.Tempo.UseTempoApiToSendWorklogs {
+	if w.cfg.Tempo.UseTempoApiToSendWorklogs {
 		return w.sendWorkLogViaTempoApi(workLog)
 	}
 
@@ -71,14 +71,14 @@ func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
 	data := TempoCreateWorklogRequest{
 		Attributes: tempoCreateWorklogAttributes{
 			EngineeringActivities: tempoCreateWorklogEngineeringActivitiesAttribute{
-				Name:            w.config.Tempo.EngineeringActivityName,
-				WorkAttributeId: w.config.Tempo.EngineeringActivityWorkAttributeID,
+				Name:            w.cfg.Tempo.EngineeringActivityName,
+				WorkAttributeId: w.cfg.Tempo.EngineeringActivityWorkAttributeID,
 				Value:           strings.ReplaceAll(strings.Trim(workLog.Tag, "[]"), " ", ""),
 			},
 		},
 		BillableSeconds:       nil,
 		OriginId:              -1,
-		Worker:                w.config.Tempo.WorkerID,
+		Worker:                w.cfg.Tempo.WorkerID,
 		Comment:               workLog.Description,
 		Started:               time.Now().Format(time.DateOnly),
 		TimeSpentSeconds:      workLog.ModifiedTime.GetInSeconds(),
@@ -87,7 +87,7 @@ func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
 		IncludeNonWorkingDays: false,
 	}
 
-	url := w.config.Jira.Url + "/rest/tempo-timesheets/4/worklogs"
+	url := w.cfg.Jira.Url + "/rest/tempo-timesheets/4/worklogs"
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ func (w *workLogService) sendWorkLogViaTempoApi(workLog model.WorkLog) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.SetBasicAuth(w.config.Jira.User, w.config.Jira.Token)
+	req.SetBasicAuth(w.cfg.Jira.User, w.cfg.Jira.Token)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

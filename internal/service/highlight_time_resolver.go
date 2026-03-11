@@ -5,13 +5,13 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
-func ShouldHighlightTimeForWorkLog(workLog model.WorkLog, workLogTime *model.WorkLogTime, config *resource.Config) bool {
+func ShouldHighlightTimeForWorkLog(workLog model.WorkLog, workLogTime *model.WorkLogTime, cfg *resource.Config) bool {
 	if workLog.ExcludedFromSpentTimeHighlight {
 		return false
 	}
 
-	thresholdHours := config.Highlighting.DefaultThresholdHours
-	if tagThreshold, ok := config.Highlighting.TagSpecificThresholds[workLog.Tag]; ok {
+	thresholdHours := cfg.Highlighting.DefaultThresholdHours
+	if tagThreshold, ok := cfg.Highlighting.TagSpecificThresholds[workLog.Tag]; ok {
 		thresholdHours = tagThreshold
 	}
 

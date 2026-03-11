@@ -7,15 +7,15 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
-func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []model.WorkLog {
-	totalInMinutes := getTotalInMinutes(workLogs, config, true)
-	totalNotExcludedInMinutes := getTotalInMinutes(workLogs, config, false)
+func ModifyWorkLogsTime(workLogs []model.WorkLog, cfg *resource.Config) []model.WorkLog {
+	totalInMinutes := getTotalInMinutes(workLogs, cfg, true)
+	totalNotExcludedInMinutes := getTotalInMinutes(workLogs, cfg, false)
 
 	if totalInMinutes == 0 {
 		return workLogs
 	}
 
-	totalLeft := config.TimeAdjustment.TargetDailyMinutes - totalInMinutes
+	totalLeft := cfg.TimeAdjustment.TargetDailyMinutes - totalInMinutes
 	leftToAdd := totalLeft
 	lastUpdatedIndex := -1
 
@@ -23,7 +23,7 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []mod
 		workLogs[i].ModifiedTime.Hours = workLog.OriginalTime.Hours
 		workLogs[i].ModifiedTime.Minutes = workLog.OriginalTime.Minutes
 
-		if isExcluded(workLog, config) || totalLeft <= 0 {
+		if isExcluded(workLog, cfg) || totalLeft <= 0 {
 			continue
 		}
 
@@ -48,11 +48,11 @@ func ModifyWorkLogsTime(workLogs []model.WorkLog, config *resource.Config) []mod
 	return workLogs
 }
 
-func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includeExcluded bool) int {
+func getTotalInMinutes(workLogs []model.WorkLog, cfg *resource.Config, includeExcluded bool) int {
 	var total int
 
 	for _, workLog := range workLogs {
-		if includeExcluded == false && isExcluded(workLog, config) {
+		if includeExcluded == false && isExcluded(workLog, cfg) {
 			continue
 		}
 
@@ -62,14 +62,14 @@ func getTotalInMinutes(workLogs []model.WorkLog, config *resource.Config, includ
 	return total
 }
 
-func isExcluded(workLog model.WorkLog, config *resource.Config) bool {
-	if workLog.ModifyTimeDisabled || !config.TimeAdjustment.Enabled {
+func isExcluded(workLog model.WorkLog, cfg *resource.Config) bool {
+	if workLog.ModifyTimeDisabled || !cfg.TimeAdjustment.Enabled {
 		return true
 	}
 
 	issueNumber := strings.ToLower(workLog.IssueNumber)
 
-	for _, excludedIssueNumber := range config.TimeAdjustment.ExcludedIssues {
+	for _, excludedIssueNumber := range cfg.TimeAdjustment.ExcludedIssues {
 		if issueNumber == strings.ToLower(excludedIssueNumber) {
 			return true
 		}

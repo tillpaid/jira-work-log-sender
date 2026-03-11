@@ -14,7 +14,7 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorkLogFromSection(config *resource.Config, section []string, number int) (model.WorkLog, error) {
+func buildWorkLogFromSection(cfg *resource.Config, section []string, number int) (model.WorkLog, error) {
 	workLog := model.WorkLog{
 		Number: number,
 	}
@@ -24,7 +24,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 		return workLog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
 	}
 
-	if isForbiddenProject(issueNumber, config) {
+	if isForbiddenProject(issueNumber, cfg) {
 		return workLog, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
 	}
 
@@ -33,7 +33,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	}
 
 	tag := section[1]
-	if !containAllowedTag(config, tag) {
+	if !containAllowedTag(cfg, tag) {
 		return workLog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
 	}
 
@@ -42,7 +42,7 @@ func buildWorkLogFromSection(config *resource.Config, section []string, number i
 	workLog.OriginalTime = originalTime
 	workLog.Description = strings.Join(section[2:], "\n")
 	workLog.Tag = tag
-	workLog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(workLog.IssueNumber, config)
+	workLog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(workLog.IssueNumber, cfg)
 
 	return workLog, nil
 }
@@ -80,8 +80,8 @@ func getMainInformation(line string) (string, model.WorkLogTime, error) {
 	}
 }
 
-func isForbiddenProject(issueNumber string, config *resource.Config) bool {
-	for _, forbiddenProject := range config.ForbiddenProjects {
+func isForbiddenProject(issueNumber string, cfg *resource.Config) bool {
+	for _, forbiddenProject := range cfg.ForbiddenProjects {
 		if strings.HasPrefix(issueNumber, forbiddenProject) {
 			return true
 		}

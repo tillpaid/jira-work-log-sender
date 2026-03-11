@@ -34,7 +34,7 @@ type Application struct {
 	client    *jira.Client
 	userInput *UserInput
 	actions   *action.Actions
-	config    *resource.Config
+	cfg       *resource.Config
 
 	table        *table.Table
 	workLogs     []model.WorkLog
@@ -42,14 +42,14 @@ type Application struct {
 	workLogsSent bool
 }
 
-func NewApplication(window *goncurses.Window, client *jira.Client, input *UserInput, actions *action.Actions, config *resource.Config) *Application {
+func NewApplication(window *goncurses.Window, client *jira.Client, input *UserInput, actions *action.Actions, cfg *resource.Config) *Application {
 	selector := model.NewRowSelector(0)
 
 	return &Application{
 		window:       window,
 		client:       client,
 		userInput:    input,
-		config:       config,
+		cfg:          cfg,
 		actions:      actions,
 		selector:     selector,
 		workLogsSent: false,
@@ -152,7 +152,7 @@ func (a *Application) processActionCopy(exit bool) error {
 }
 
 func (a *Application) processActionToggleModifyTime(all bool) error {
-	if len(a.workLogs) == 0 || !a.config.TimeAdjustment.Enabled {
+	if len(a.workLogs) == 0 || !a.cfg.TimeAdjustment.Enabled {
 		return nil
 	}
 
@@ -162,12 +162,12 @@ func (a *Application) processActionToggleModifyTime(all bool) error {
 		}
 	}
 
-	a.workLogs = service.ModifyWorkLogsTime(a.workLogs, a.config)
+	a.workLogs = service.ModifyWorkLogsTime(a.workLogs, a.cfg)
 	return a.printTable()
 }
 
 func (a *Application) loadWorkLogs() error {
-	workLogs, err := import_data.ParseWorkLogs(a.config, a.workLogs)
+	workLogs, err := import_data.ParseWorkLogs(a.cfg, a.workLogs)
 	if err != nil {
 		return err
 	}
