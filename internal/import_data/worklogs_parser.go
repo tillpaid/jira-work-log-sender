@@ -24,12 +24,12 @@ func ParseWorklogs(cfg *resource.Config, oldWorklogs []model.Worklog) ([]model.W
 	}
 
 	for i, section := range sections {
-		worklog, err := buildWorklogFromSection(cfg, section, i+1)
+		sectionWorklogs, err := buildWorklogFromSection(cfg, section, i+1)
 		if err != nil {
 			return nil, fmt.Errorf("error building work log: %v", err)
 		}
 
-		worklogs = append(worklogs, worklog)
+		worklogs = append(worklogs, sectionWorklogs...)
 	}
 
 	worklogs = copyTempValuesFromOldWorklogs(oldWorklogs, worklogs)

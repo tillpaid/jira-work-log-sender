@@ -14,37 +14,58 @@ const (
 	minutesChar = "m"
 )
 
-func buildWorklogFromSection(cfg *resource.Config, section []string, number int) (model.Worklog, error) {
-	worklog := model.Worklog{
-		Number: number,
-	}
-
-	issueNumber, originalTime, err := getMainInformation(section[0])
+func buildWorklogFromSection(cfg *resource.Config, section []string, number int) ([]model.Worklog, error) {
+	issueNumberRaw, originalTime, err := getMainInformation(section[0])
 	if err != nil {
-		return worklog, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
+		return nil, fmt.Errorf("impossible to parse main information from section %d: %s", number, err)
 	}
 
-	if isForbiddenProject(issueNumber, cfg) {
-		return worklog, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
+	issueNumbers := splitIssueNumbers(issueNumberRaw)
+
+	for _, issueNumber := range issueNumbers {
+		if isForbiddenProject(issueNumber, cfg) {
+			return nil, fmt.Errorf("task %s belongs to a forbidden project", issueNumber)
+		}
 	}
 
 	if len(section) < 2 {
-		return worklog, fmt.Errorf("no description for task %s", issueNumber)
+		return nil, fmt.Errorf("no description for task %s", issueNumberRaw)
 	}
 
 	tag := section[1]
 	if !containAllowedTag(cfg, tag) {
-		return worklog, fmt.Errorf("description does not contain allowed tags for task %s", issueNumber)
+		return nil, fmt.Errorf("description does not contain allowed tags for task %s", issueNumberRaw)
 	}
 
-	worklog.HeaderText = strings.TrimLeft(section[0], "# ")
-	worklog.IssueNumber = issueNumber
-	worklog.OriginalTime = originalTime
-	worklog.Description = strings.Join(section[2:], "\n")
-	worklog.Tag = tag
-	worklog.ExcludedFromSpentTimeHighlight = isExcludedFromTimeHighlight(worklog.IssueNumber, cfg)
+	headerText := strings.TrimLeft(section[0], "# ")
+	description := strings.Join(section[2:], "\n")
 
-	return worklog, nil
+	var worklogs []model.Worklog
+	for _, issueNumber := range issueNumbers {
+		worklogs = append(worklogs, model.Worklog{
+			Number:                         number,
+			HeaderText:                     headerText,
+			IssueNumber:                    issueNumber,
+			OriginalTime:                   originalTime,
+			Description:                    description,
+			Tag:                            tag,
+			ExcludedFromSpentTimeHighlight: isExcludedFromTimeHighlight(issueNumber, cfg),
+		})
+	}
+
+	return worklogs, nil
+}
+
+func splitIssueNumbers(raw string) []string {
+	parts := strings.Split(raw, ",")
+	var result []string
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+	return result
 }
 
 func getMainInformation(line string) (string, model.WorklogTime, error) {
