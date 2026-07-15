@@ -1,8 +1,8 @@
-package import_data
+package model
 
 import "testing"
 
-func Test_parseTimeString(t *testing.T) {
+func TestParseWorklogTime(t *testing.T) {
 	type args struct {
 		timeString string
 	}
@@ -48,9 +48,9 @@ func Test_parseTimeString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parseTimeString(tt.args.timeString)
+			got, err := ParseWorklogTime(tt.args.timeString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("parseTimeString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ParseWorklogTime() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
@@ -59,10 +59,10 @@ func Test_parseTimeString(t *testing.T) {
 			}
 
 			if got.Hours != tt.hours {
-				t.Errorf("parseTimeString() got = %v, want %v", got.Hours, tt.hours)
+				t.Errorf("ParseWorklogTime() got = %v, want %v", got.Hours, tt.hours)
 			}
 			if got.Minutes != tt.minutes {
-				t.Errorf("parseTimeString() got1 = %v, want %v", got.Minutes, tt.minutes)
+				t.Errorf("ParseWorklogTime() got1 = %v, want %v", got.Minutes, tt.minutes)
 			}
 		})
 	}

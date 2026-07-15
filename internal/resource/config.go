@@ -1,10 +1,13 @@
 package resource
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/tillpaid/jira-work-log-sender/internal/model"
 	"gopkg.in/yaml.v2"
 )
 
@@ -72,9 +75,41 @@ func InitConfig() (*Config, error) {
 		return nil, err
 	}
 
+	if err := applyTargetDailyTimeArgument(cfg); err != nil {
+		return nil, err
+	}
+
 	updateConfigValues(cfg)
 
 	return cfg, nil
+}
+
+func applyTargetDailyTimeArgument(cfg *Config) error {
+	timeString := findTargetDailyTimeArgument()
+	if timeString == "" {
+		return nil
+	}
+
+	targetTime, err := model.ParseWorklogTime(timeString)
+	if err != nil {
+		return fmt.Errorf("invalid target daily time argument %q: %v", timeString, err)
+	}
+
+	cfg.TimeAdjustment.TargetDailyMinutes = targetTime.GetInMinutes()
+
+	return nil
+}
+
+func findTargetDailyTimeArgument() string {
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "-") {
+			continue
+		}
+
+		return arg
+	}
+
+	return ""
 }
 
 func updateConfigValues(cfg *Config) {

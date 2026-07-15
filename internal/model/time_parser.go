@@ -1,16 +1,19 @@
-package import_data
+package model
 
 import (
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/tillpaid/jira-work-log-sender/internal/model"
 )
 
-func parseTimeString(timeString string) (model.WorklogTime, error) {
-	var worklogTime model.WorklogTime
+const (
+	hoursChar   = "h"
+	minutesChar = "m"
+)
+
+func ParseWorklogTime(timeString string) (WorklogTime, error) {
+	var worklogTime WorklogTime
 	var err error
 
 	if strings.Count(timeString, hoursChar) > 1 || strings.Count(timeString, minutesChar) > 1 {

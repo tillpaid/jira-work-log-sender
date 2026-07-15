@@ -9,11 +9,6 @@ import (
 	"github.com/tillpaid/jira-work-log-sender/internal/resource"
 )
 
-const (
-	hoursChar   = "h"
-	minutesChar = "m"
-)
-
 func buildWorklogFromSection(cfg *resource.Config, section []string, number int) ([]model.Worklog, error) {
 	issueNumberRaw, originalTime, err := getMainInformation(section[0])
 	if err != nil {
@@ -90,7 +85,7 @@ func getMainInformation(line string) (string, model.WorklogTime, error) {
 	case 1:
 		return secondParts[0], model.WorklogTime{}, nil
 	case 2:
-		originalTime, err := parseTimeString(secondParts[1])
+		originalTime, err := model.ParseWorklogTime(secondParts[1])
 		if err != nil {
 			return "", originalTime, fmt.Errorf("impossible to parse time string: %s", err)
 		}
